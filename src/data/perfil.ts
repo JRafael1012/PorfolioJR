@@ -356,7 +356,7 @@ export const experiencia: Experiencia[] = [
     ],
     galeria: [
       'documental.jpg',
-      'foto competencia.png',
+      'foto competencia.jpg',
       'fotoig.jpg',
       'mexico 1.jpeg',
       'mexico 2.jpg',

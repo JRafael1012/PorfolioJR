@@ -1000,14 +1000,50 @@ sola regla.
   canales del documental, la URL de Instagram, el nombre de RAF VESTIGIA,
   `public/cv.pdf` y el segundo correo. Marcados con `TODO` en `perfil.ts` y sin
   inventar el dato.
-- **A6 — Dos fotos grandes sin optimizar:** `mexico 1.jpeg` (803 KB) y
-  `foto competencia.png` (399 KB). La galería pesa unos 2,2 MB. Es el mismo
-  trabajo de D28.2 pero sin comprimir.
+- **A6 — RESUELTO en D32.** Las dos fotos grandes ya están optimizadas: la
+  galería pasó de 2,22 MB a 1,27 MB. Queda una limitación de origen, no de
+  compresión: `foto competencia.jpg` es de 473×405 px, más pequeña que la
+  casilla donde se muestra. Solo se arregla con un original de mayor
+  resolución.
 - **A7 — El CSS tiene cuatro clases muertas.** `.comp-list`, `.comp-item`,
   `.comp-item__periodo`, `.comp-item__body`, `.rec-item` y `.rec-item__link`
   quedaron sin usar al convertir la lista de competencias y el bloque de
   reconocimientos. **No se han borrado**: la limpieza va después de la
   reorganización, para no mezclar dos cambios en el mismo commit.
+
+### Decisión D32 (2026-10-05) — las fotos de la galería, comprimidas
+
+A6 era el único peso muerto que quedaba de D28. Dos de las siete fotos estaban
+mal guardadas; las otras cinco ya estaban bien y **no se tocaron**.
+
+- **D32.1 — Solo se re-codifican las dos que sobraban.** `mexico 1.jpeg` pesaba
+  803 KB a 1264×842, y `foto competencia.png` 399 KB siendo de 473×405. Las
+  otras cinco se probaron a calidad 85 y **empeoraban** entre un 10 % y un 27 %:
+  ya estaban comprimidas. Rehacerlas era gastar calidad visual para nada.
+- **D32.2 — El PNG sin alfa se convirtió a JPG.** Se comprobó pixel a pixel antes
+  de convertir: los 191.565 píxeles tienen alfa 255, o sea que el canal alfa no se
+  usaba. Convertirlo a JPG no puede rellenar nada de negro. 399 KB → 60 KB.
+- **D32.3 — Sin cambiar ni un píxel de dimensión.** Re-codificar, no redimensionar:
+  las dos ya estaban por debajo del techo de 1600 px, así que no se toca el
+  encuadre ni el `object-fit`. Es un cambio de bytes, no de imagen.
+- **D32.4 — El original queda en git.** Los dos archivos estaban versionados, así
+  que `git checkout` los devuelve sin pérdida.
+- **D32.5 — Lo que no se arregla se dice.** `foto competencia.jpg` sigue siendo de
+  473×405, más pequeña que la casilla donde sale. Comprimir más no lo mejora: hace
+  falta un original de mayor resolución.
+
+### Evidencia (2026-10-05) — D32
+
+| Archivo | Antes | Después | Ahorro |
+| --- | --- | --- | --- |
+| `mexico 1.jpeg` | 803 KB | 192 KB | 76 % |
+| `foto competencia.png` → `.jpg` | 399 KB | 60 KB | 85 % |
+
+- **Galería completa:** 2.221 KB → **1.272 KB** (−43 %).
+- **Dimensiones intactas:** 1264×842 y 473×405, antes y después.
+- **Build:** `npm run build` con 0 errores y 0 warnings (el mismo hint
+  preexistente de `Trayectoria.astro:17`).
+- **Alfa verificado:** 0 píxeles no opacos de 191.565, alfa mínimo 255.
 
 ---
 

@@ -40,7 +40,7 @@ public/                       Header → Hero → Stack → Sobre mí →
 │   ├── foto2.jpeg           Foto 2 del hero
 │   ├── foto3.png            Foto 3 del hero
 │   ├── documental.jpg       ─┐
-│   ├── foto competencia.png  │  Las 7 fotos de la galería de
+│   ├── foto competencia.jpg  │  Las 7 fotos de la galería de
 │   ├── fotoig.jpg            │  Robótica, en el orden de `galeria`
 │   ├── mexico 1.jpeg         │  en `src/data/perfil.ts`
 │   ├── mexico 2.jpg          │
@@ -247,8 +247,10 @@ unos 425 px, así que no hay riesgo de desbordamiento.
 4. **Sin confirmar, marcado con `TODO` en `perfil.ts`:** el torneo de Brasil
    (falta cuál y en qué año), los canales del documental, la URL de Instagram,
    el nombre de RAF VESTIGIA y un segundo correo. No se inventó ninguno.
-5. **Dos fotos grandes sin optimizar:** `mexico 1.jpeg` (803 KB) y
-   `foto competencia.png` (399 KB). La galería pesa unos 2,2 MB.
+5. **Las fotos de la galería ya están optimizadas** (D32): pesan **1,27 MB** en
+   total, frente a 2,22 MB. Ojo a `foto competencia.jpg`: son 473×405 px, más
+   pequeñas que la casilla donde sale. No se ve mal, pero si tienes el original
+   en mayor resolución, cambiarlo es una mejora gratis.
 
 ### Los botones de contacto
 
@@ -517,7 +519,7 @@ casilla rota su propio grupo de capas cada **5 s**, sin bordes ni botones. Con
 Las 7 fotos van en `galeria` de `src/data/perfil.ts`, en este orden:
 
 ```
-documental.jpg → foto competencia.png → fotoig.jpg → mexico 1.jpeg
+documental.jpg → foto competencia.jpg → fotoig.jpg → mexico 1.jpeg
 → mexico 2.jpg → wro.jpg → wro1.jpg
 ```
 
