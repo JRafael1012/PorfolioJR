@@ -1,0 +1,575 @@
+---
+import { competencias, experiencia, robotica } from '../data/perfil';
+
+/**
+ * Sección "Robótica".
+ *
+ * Existe para una cosa: que el sitio no se lea como un portafolio de páginas
+ * web. Reúne lo que ya estaba disperso (D28) sin copiarlo:
+ *
+ *   · La trayectoria de Fundación Biosbot, leída de `experiencia` por su
+ *     `detalleEn: 'robotica'`. La línea de tiempo la sigue mostrando, pero solo
+ *     como una línea.
+ *   · Los 8 torneos, leídos de `competencias`. Antes estaban escondidos detrás
+ *     de un toggle dentro del item de robótica; aquí son el bloque principal.
+ *   · La galería, de la misma entrada de `experiencia`.
+ *
+ * Y añade lo que solo cabe aquí: el guion de las habilidades y RAF VESTIGIA.
+ */
+
+/**
+ * Primer año de un `periodo` como "2025 — 2026" o "Mayo 2026".
+ *
+ * El array `competencias` está escrito "de más reciente a más antiguo", pero
+ * `Asia Pacific Open Championship` (2024) estaba al final, después de `Cargo
+ * Connect` (2021 — 2022). Ordenar aquí, y no fiarse del orden de escritura,
+ * evita que un torneo nuevo quede en el sitio que le toque por donde se insertó
+ * en el archivo. Devuelve 0 si no encuentra ningún año, y ese caso queda al
+ * final en vez de romper la lista.
+ */
+function anioInicial(periodo: string): number {
+  const encontrado = periodo.match(/\d{4}/);
+  return encontrado ? Number(encontrado[0]) : 0;
+}
+
+const sorted = [...competencias].sort(
+  (a, b) => anioInicial(b.periodo) - anioInicial(a.periodo),
+);
+
+/** La entrada de trayectoria que cede su detalle a esta sección. */
+const experienciaRobotica = experiencia.find(
+  (item) => item.detalleEn === 'robotica',
+);
+
+/** Los diplomas y el collage que ya sabían montar, tal cual. */
+const TILES = [0, 1, 2, 3];
+
+/**
+ * Cifras de cabecera (D29).
+ *
+ * Todas se calculan desde los datos. Ninguna está escrita a mano, así que no
+ * pueden quedar desincronizadas: si mañana se añade un torneo, la cifra sube
+ * sola, porque no hay ningún número escrito a mano aquí.
+ *
+ *   · Torneos       → la longitud real de `competencias`.
+ *   · En el podio   → los que tienen `puesto` entre 1 y 3.
+ *   · Primeros      → los que tienen `puesto === 1`.
+ *   · Países        → los declarados en `robotica.paises`, los de fuera.
+ *   · Años          → años distintos que aparecen en los `periodo`.
+ *
+ * El podio y los primeros puestos cuentan sobre `puesto`, el número, no sobre
+ * `resultado`, el texto. "Campeones (1.er lugar)" y "Segundo lugar" significan
+ * lo mismo pero no se parecen, y un contador que interpretara palabras daría
+ * cifras distintas según cómo se hubiera escrito cada cartel.
+ *
+ * Los años salen de los años que aparecen en los periodos. "2025 - 2026"
+ * cuenta los dos, porque son temporadas que empiezan y acaban dentro del
+ * rango. Un torneo suelto como "Mayo 2026" cuenta uno.
+ */
+const conPuesto = sorted.filter((torneo) => typeof torneo.puesto === 'number');
+
+const enPodio = conPuesto.filter((torneo) => torneo.puesto! <= 3).length;
+
+const primeros = conPuesto.filter((torneo) => torneo.puesto === 1).length;
+
+const anios = new Set<string>();
+for (const torneo of sorted) {
+  for (const coincidencia of torneo.periodo.match(/\d{4}/g) ?? []) {
+    anios.add(coincidencia);
+  }
+}
+
+/**
+ * Qué dice la etiqueta de cada reconocimiento.
+ *
+ * Sale del campo `dirigidoA` del dato y no está escrita dentro de la tarjeta,
+ * por un motivo concreto: el Zero Project Award y la Proposición 801 se los
+ * llevó la Fundación Biosbot Robótica, no Rafael. Si ese texto viviera dentro
+ * del marcado, el día que un premio sea suyo de verdad habría que acordarse de
+ * cambiarlo, y ese día alguien se lo salta. Leyéndolo del dato, no hay forma
+ * de que la tarjeta diga una cosa y el dato otra.
+ */
+const ETIQUETA_ATRIBUCION: Record<'personal' | 'equipo' | 'fundacion', string> =
+  {
+    personal: 'Logro personal',
+    equipo: 'Logro del equipo',
+    fundacion: 'Logro de la Fundación Biosbot Robótica',
+  };
+
+/**
+ * El cambio de rol, en tres pasos.
+ *
+ * Va justo debajo de las cifras por una razón: las cifras dicen cuántas veces
+ * compitió, y esta línea dice qué fue haciendo mientras compilaba. Puestas
+ * juntas, el visitante entiende la trayectoria sin leer una palabra. Separadas,
+ * las cifras quedan sueltas.
+ *
+ * Es un `<ol>` porque es una secuencia en el tiempo y el orden importa: un
+ * `<ul>` sugeriría que los tres roles son intercambiables. Los puntos de la
+ * línea son decorativos y van con `aria-hidden`; la información real la dan el
+ * año y el rótulo, que son texto.
+ */
+const hitos = robotica.hitosRol ?? [];
+
+const cifras = [
+  { valor: sorted.length, etiqueta: 'torneos', sufijo: '' },
+  { valor: enPodio, etiqueta: 'en el podio', sufijo: '' },
+  { valor: primeros, etiqueta: 'primeros lugares', sufijo: '' },
+  { valor: robotica.paises.length, etiqueta: 'países', sufijo: '' },
+  { valor: anios.size, etiqueta: 'años compitiendo', sufijo: '' },
+].filter((item) => item.valor > 0);
+---
+
+{
+  experienciaRobotica && (
+    <section class="section robotica" id="robotica">
+      <div class="container">
+        <div class="section__head">
+          <p class="eyebrow">{robotica.eyebrow}</p>
+          <h2 class="section__title">{robotica.titulo}</h2>
+          <p class="section__subtitle">{robotica.subtitulo}</p>
+        </div>
+
+        {/* --- Las cifras van FUERA del panel a propósito (D29).
+            Esta sección existe para decir "esto no es solo web" y eso hay que
+            verlo sin pulsar nada. El botón sigue ocultando el detalle largo,
+            que es lo que ocupa pantalla: la trayectoria, los 9 torneos, las
+            habilidades y la galería.
+
+            Cada número se cuenta desde los datos, así que no hay forma de que
+            el rótulo y el dato se contradigan. */}
+        {/* `data-count` + `data-count-suffix`: el HTML ya lleva el número FINAL, no
+             un cero. Eso importa por dos motivos:
+
+               1. Sin JavaScript se ve el número correcto, no un «0» que nunca
+                  sube.
+               2. El texto plano, el PDF y los buscadores leen el dato bueno.
+
+             El contador de `main.js` solo ANIMA desde 0 hasta ese valor cuando
+             la cifra entra en pantalla. Si no está, se queda quieto. */}
+        {cifras.length > 0 && (
+          <ul class="rob-stats reveal" data-counters>
+            {cifras.map((item) => (
+              <li class="rob-stat">
+                <span
+                  class="rob-stat__valor"
+                  data-count={item.valor}
+                  data-count-suffix={item.sufijo}
+                >
+                  {item.valor}
+                  {item.sufijo}
+                </span>
+                <span class="rob-stat__etiqueta">{item.etiqueta}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {/* --- El cambio de rol: participante, luego líder, hoy mentor.
+            También va fuera del panel. Es la respuesta a "por qué está esto
+            aquí": no son tres roles sueltos, es una progresión, y la progresión
+            es lo que justifica los números de arriba. */}
+        {hitos.length > 1 && (
+          <ol class="rob-arc reveal" data-arc>
+            {hitos.map((hito) => (
+              <li class="rob-arc__step">
+                <p class="rob-arc__periodo">
+                  {hito.periodo}
+                  {hito.actual && (
+                    <span class="rob-arc__actual">actualidad</span>
+                  )}
+                </p>
+                <p class="rob-arc__rol">{hito.rol}</p>
+                {hito.detalle && (
+                  <p class="rob-arc__detalle">{hito.detalle}</p>
+                )}
+              </li>
+            ))}
+          </ol>
+        )}
+
+        {/* Botón para plegar la sección. Reutiliza el patrón `data-exp-toggle`
+            que el sitio ya tiene (Sobre mí, el panel de Diploma) para no
+            inventar un segundo sistema de plegado.
+
+            El panel arranca CERRADO en el HTML: sin JavaScript, la sección se
+            lee como una entrada más, y con `hidden` fuera del tabulado. Con JS,
+            `main.js` quita el `hidden` una vez y a partir de ahí manda
+            `aria-expanded`. */}
+        <button
+          class="exp-toggle rob-toggle"
+          type="button"
+          data-exp-toggle
+          aria-expanded="false"
+          aria-controls="panel-robotica"
+        >
+          <span data-exp-toggle-label>Ver experiencia en robótica</span>
+          <svg
+            class="exp-toggle__icon"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M4 6l4 4 4-4"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+
+        <div class="rob-panel" id="panel-robotica" hidden>
+          {/* --- Bloque 1: la trayectoria, ahora con detalle --- */}
+          <article class="rob-brief reveal">
+          <header class="rob-brief__head">
+            <p class="exp-period">{experienciaRobotica.periodo}</p>
+            <h3 class="rob-brief__role">{experienciaRobotica.puesto}</h3>
+            <p class="exp-company">{experienciaRobotica.empresa}</p>
+          </header>
+
+          <p class="rob-brief__resumen">{experienciaRobotica.resumen}</p>
+
+          <ul class="exp-achievements">
+            {experienciaRobotica.logros.map((logro) => (
+              <li>{logro}</li>
+            ))}
+          </ul>
+        </article>
+
+        {/* --- Bloque 1b: la fundación. Va pegado a la trayectoria porque explica de
+             dónde salen los números: los premios son de la fundación, no
+             personales. Nombrarla evita que un lector se pregunte quién es
+             Team Biosbot antes de ver los diplomas. */}
+        {robotica.fundacion?.nombre && (
+          <div class="rob-fundacion reveal">
+            <div class="rob-fundacion__head">
+              {robotica.fundacion.logo && (
+                /*
+                  Este logo trae fondo blanco y la pagina es oscura, asi que la
+                  hoja lo monta sobre una pastilla clara. Sin ella se veria un
+                  rectangulo blanco suelto en el bloque.
+                */
+                <img
+                  class="rob-fundacion__logo"
+                  src={`${import.meta.env.BASE_URL}/img/${robotica.fundacion.logo}`}
+                  alt={robotica.fundacion.logoAlt ?? ''}
+                  width={320}
+                  height={267}
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
+              <div class="rob-fundacion__id">
+                <h3 class="eyebrow">LA FUNDACIÓN</h3>
+                <p class="rob-fundacion__name">
+                  {robotica.fundacion.nombre}
+                  {robotica.fundacion.marca && (
+                    <span class="rob-fundacion__marca">
+                      {robotica.fundacion.marca}
+                    </span>
+                  )}
+                </p>
+              </div>
+            </div>
+            {robotica.fundacion.descripcion && (
+              <p class="rob-fundacion__desc">{robotica.fundacion.descripcion}</p>
+            )}
+            {robotica.fundacion.instagram && (
+              <p class="rob-fundacion__social">
+                <span class="rob-fundacion__socialLabel">Instagram</span>
+                {robotica.fundacion.instagramUrl ? (
+                  <a
+                    href={robotica.fundacion.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    @{robotica.fundacion.instagram}
+                  </a>
+                ) : (
+                  /* Sin URL no hay enlace. Poner un `href` al nombre sería un
+                     enlace que no lleva a ninguna parte. */
+                  <span>@{robotica.fundacion.instagram}</span>
+                )}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* --- Bloque 2: los dos reconocimientos, en destacado (D29).
+
+             Antes esto era una lista con la misma forma que los torneos, y
+             quedaba plano: un premio internacional se veía igual que un
+             cuarto lugar. Aquí van como tarjetas.
+
+             Reemplaza a la lista en lugar de añadirse al lado. Los mismos dos
+             premios en dos formatos a la vez serían contenido duplicado, que
+             es justo lo que este proyecto evita.
+
+             LA ETIQUETA DE ATRIBUCIÓN NO ES DECORATIVA. Las dos tarjetas
+             dicen "Logro de la Fundación Biosbot Robótica", y sale de leer el
+             campo `dirigidoA` del dato, no de escribirla a mano. Si algún día
+             un reconocimiento es de Rafael, esa tarjeta lo dirá sola y sin que
+             nadie tenga que acordarse de corregir el texto. */}
+        {robotica.reconocimientos.length > 0 && (
+          <div class="rob-group reveal">
+            <h3 class="eyebrow">RECONOCIMIENTOS</h3>
+
+            <ul class="rob-spot-list">
+              {robotica.reconocimientos.map((item) => (
+                <li class="rob-spot">
+                  <p class="rob-spot__periodo">{item.periodo}</p>
+                  {item.entidad && (
+                    <p class="rob-spot__entidad">{item.entidad}</p>
+                  )}
+                  <h4 class="rob-spot__name">{item.titulo}</h4>
+                  {item.detalle && (
+                    <p class="rob-spot__detail">{item.detalle}</p>
+                  )}
+                  {item.dirigidoA && (
+                    <p class="rob-spot__badge">
+                      <svg
+                        class="rob-spot__badgeIcon"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        {/* Grupo de personas: el icono dice "equipo" y dice
+                            "varios" antes de que toque leer la etiqueta. */}
+                        <circle cx="6" cy="5.5" r="2.2" stroke="currentColor" stroke-width="1.4" />
+                        <path d="M2 13c0-2.2 1.8-3.6 4-3.6s4 1.4 4 3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                        <circle cx="11.5" cy="6" r="1.7" stroke="currentColor" stroke-width="1.4" />
+                        <path d="M12.2 9.8c1.4.5 2.3 1.5 2.3 3.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                      </svg>
+                      {ETIQUETA_ATRIBUCION[item.dirigidoA]}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* --- Bloque 3: los torneos. Es el bloque que más diferencia ---
+             Reutiliza las clases del marquee de STACK, que ya saben hacer una
+             cinta horizontal. No se crea un segundo patrón para los mismos
+             datos. */}
+        <div class="rob-group reveal">
+          <h3 class="eyebrow">TORNEOS</h3>
+
+          {/*
+            Tira de torneos con el mismo patrón que el marquee de STACK (D30).
+
+            Verticalmente eran nueve tarjetas apiladas y el bloque ocupaba más
+            alto que la propia galería. Se reaprovechan las clases del marquee
+            en vez de inventar otro patrón: misma cinta, mismo
+            `translateX(-50%)`, misma pausa al pasar el cursor.
+
+            Sin logo, y sin el recuadro punteado que `.marquee__item` dibuja
+            cuando no encuentra `.marquee__logo`: aquí no falta ninguna imagen,
+            sencillamente no lleva.
+
+            La cinta se dibuja DOS veces porque la animación va de 0 a -50%: si
+            solo se pone la lista una vez, al llegar a la mitad aparecería un
+            vacío. La segunda copia va `aria-hidden` porque repetir los nueve
+            torneos ante un lector de pantalla sería ruido (WCAG 2.2.2).
+          */}
+          <div class="marquee marquee--torneos" data-marquee="torneos">
+            <div
+              class="marquee__track"
+              data-marquee-track-torneos
+              tabindex="0"
+              role="group"
+              aria-label="Torneos y competencias. El foco en esta cinta la detiene."
+            >
+              {[0, 1].map((vuelta) => (
+                <ul
+                  class="marquee__group"
+                  aria-hidden={vuelta === 1 ? 'true' : undefined}
+                >
+                  {sorted.map((torneo) => (
+                    <li class="marquee__item marquee__item--torneo">
+                      <span class="marquee__periodo">{torneo.periodo}</span>
+                      <span class="marquee__titulo">{torneo.titulo}</span>
+                      {/*
+                        Las tres líneas de apoyo son condicionales (D29). Antes
+                        cada una caía a "Ciudad por confirmar", que en una tarjeta
+                        de premios se lee como un dato pendiente en vez de como
+                        lo que sí pasó. Si no está, no se dibuja.
+
+                        Se juntan en una sola línea para que el conjunto quepa
+                        en la cinta: en vertical eran tres párrafos.
+                      */}
+                      {(torneo.evento || torneo.resultado || torneo.lugar) && (
+                        <span class="marquee__detalle">
+                          {[torneo.evento, torneo.resultado, torneo.lugar]
+                            .filter(Boolean)
+                            .join(' · ')}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* --- Bloque 4: medios. TV, entrevistas y documental. Separado de los
+             reconocimientos porque no premian: muestran.
+
+             D31: aquí NO se usa la cinta. Son pocas piezas y cada una importa
+             por separado; en una cinta pasarían por delante sin que nadie las
+             lea. Se quedan quietas, en tarjetas grandes y con el enlace siempre
+             visible, que es justo lo contrario de la lista vertical de antes. */}
+        {robotica.medios.length > 0 && (
+          <div class="rob-group reveal">
+            <h3 class="eyebrow">MEDIOS</h3>
+
+            <ul class="rob-medios">
+              {robotica.medios.map((item) => (
+                <li class="rob-medio">
+                  {item.periodo && (
+                    <p class="rob-medio__periodo">{item.periodo}</p>
+                  )}
+
+                  <h4 class="rob-medio__titulo">{item.titulo}</h4>
+
+                  {/*
+                    `entidad` es quién lo hizo o quién lo emite: el canal, el
+                    medio, la productora. Antes se pintaba siempre, incluso sin
+                    dato, y salía una línea vacía. Ahora solo si existe.
+                  */}
+                  {item.entidad && (
+                    <p class="rob-medio__entidad">{item.entidad}</p>
+                  )}
+
+                  {item.detalle && (
+                    <p class="rob-medio__detalle">{item.detalle}</p>
+                  )}
+
+                  {item.enlace && (
+                    <a
+                      class="rob-medio__link"
+                      href={item.enlace}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Ver
+                      <span aria-hidden="true">↗</span>
+                      <span class="u-visually-hidden">
+                        {' '}
+                        (se abre en una pestaña nueva)
+                      </span>
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* --- Bloque 5: lo que sabe hacer, no lo que ha ganado --- */}
+        <div class="rob-group reveal">
+          <h3 class="eyebrow">LO QUE MANEJO</h3>
+          <ul class="tag-list">
+            {robotica.habilidades.map((habilidad) => (
+              <li class="tag">{habilidad}</li>
+            ))}
+          </ul>
+        </div>
+
+        {/* --- Bloque 4: el proyecto --- */}
+        {
+          robotica.proyectos.length > 0 && (
+            <div class="rob-group reveal">
+              <h3 class="eyebrow">PROYECTO</h3>
+              <ul class="rob-project-list">
+                {robotica.proyectos.map((proyecto) => (
+                  <li class="rob-project">
+                    <h4 class="rob-project__name">{proyecto.titulo}</h4>
+                    {proyecto.descripcion && (
+                      <p class="rob-project__desc">{proyecto.descripcion}</p>
+                    )}
+                    {proyecto.participacion && (
+                      <p class="rob-project__role">{proyecto.participacion}</p>
+                    )}
+                    {proyecto.stack && (
+                      <ul class="tag-list">
+                        {proyecto.stack.map((tech) => (
+                          <li class="tag">{tech}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        {/* --- Bloque 5: la galería, tal cual estaba en Trayectoria --- */}
+        {
+          experienciaRobotica.galeria?.length ? (
+            <div class="rob-collage" data-rob-collage>
+              <div
+                class="rob-collage__grid"
+                role="img"
+                aria-label="Collage de fotos del trabajo en robótica"
+              >
+                {TILES.map((tile) => (
+                  <div class="rob-collage__tile">
+                    {(experienciaRobotica.galeria ?? []).map((foto, indice) => (
+                      <div
+                        class:list={[
+                          'rob-collage__layer',
+                          { 'is-active': indice === tile },
+                        ]}
+                        aria-hidden={indice === tile ? undefined : 'true'}
+                      >
+                        {/*
+                          Las fotos van con `object-fit: cover` y no recortadas
+                          a 4:3 en el archivo. Recortar en disco obligaba a
+                          generar copias de cada imagen, y esas copias se perdian:
+                          OneDrive revierte archivos recien escritos en `public/`.
+                          Cubrir en el navegador ademas sale gratis en peso y
+                          deja el original intacto.
+
+                          El recorte vertical si es real: `documental.jpg` es
+                          720x1599 y en una casilla 4:3 solo se ve un tercio de
+                          su alto. Por eso `object-position` esta al centro, que
+                          es donde suele estar el sujeto.
+                        */}
+                        <img
+                          class="rob-collage__img"
+                          src={`${import.meta.env.BASE_URL}/img/${foto}`}
+                          alt={
+                            experienciaRobotica.galeriaAlt?.[indice] ??
+                            `Fotografía ${indice + 1} de la galería de robótica`
+                          }
+                          /*
+                            Sin `width`/`height` a proposito: la casilla ya
+                            tiene `aspect-ratio: 4/3` y la foto se estira al
+                            100%. Poner atributos fijos diria "1200x900" para
+                            fotos que en realidad son verticales, y eso es
+                            informacion falsa en el marcado.
+                          */
+                          /* La primera casilla es la que se ve de entrada: no
+                             tiene sentido pedirle al navegador que espere. */
+                          loading={indice === 0 ? 'eager' : 'lazy'}
+                          decoding="async"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null
+        }
+        </div>
+      </div>
+    </section>
+  )
+}

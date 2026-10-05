@@ -11,6 +11,28 @@ export interface Experiencia {
    * mantiene como un item normal de la trayectoria.
    */
   galeria?: string[];
+  /**
+   * Texto alternativo de cada foto, en el mismo orden que `galeria`.
+   *
+   * Opcional a propósito: si falta, la galería cae a una descripción genérica en
+   * vez de quedarse sin texto, que es peor para quien usa lector de pantalla.
+   */
+  galeriaAlt?: string[];
+  /**
+   * El detalle de este bloque (logros, stack y galería) se muestra en una
+   * sección propia en vez de aquí, para no repetirlo dos veces. Guardar el id
+   * de esa sección y no un `true` permite enlazarla desde la línea de tiempo.
+   *
+   * Los datos NO se mueven: siguen en este mismo objeto y los lee la sección
+   * que los Detailed. Ver D28.
+   */
+  detalleEn?: 'robotica';
+  /**
+   * Una sola frase para la línea de tiempo, cuando `resumen` es demasiado largo
+   * porque el desarrollo entero vive en otra sección. Opcional a propósito: si
+   * falta, la línea se queda con fecha, puesto y empresa.
+   */
+  linea?: string;
 }
 
 /**
@@ -72,6 +94,15 @@ export interface Competencia {
   periodo: string;
   /** Puesto obtenido, por ejemplo "Campeones regionales y nacionales". */
   resultado?: string;
+  /**
+   * El mismo puesto, como número. 1 es primero.
+   *
+   * Existe aparte de `resultado` porque `resultado` es texto para la persona
+   * que lee, y un contador no puede contar sobre "Campeones (1.er lugar)" ni
+   * sobre "Segundo lugar": hay que interpretar la palabra. Con este campo el
+   * podio y los primeros puestos se cuentan, no se estiman (D29).
+   */
+  puesto?: number;
   /** Ciudad y país donde se hizo, por ejemplo "Sydney, Australia". */
   lugar?: string;
 }
@@ -271,7 +302,8 @@ export const sobreMi: SobreMi = {
  *     abajo. Con la lista vacía la sección sale con un aviso en vez de datos
  *     inventados.
  */
-export const experiencia: Experiencia[] = [  {
+export const experiencia: Experiencia[] = [
+  {
     puesto: 'Técnico en Desarrollo de Software',
     empresa: 'SENA',
     periodo: '2025 — 2026',
@@ -299,12 +331,18 @@ export const experiencia: Experiencia[] = [  {
     puesto: 'Robótica',
     empresa: 'Fundación Biosbot Robótica',
     periodo: '2020 — Actualidad',
+    // El detalle de este bloque (resumen largo, logros, stack, galería y los
+    // torneos) se renderiza en la sección "Robótica". Aquí, en la línea de
+    // tiempo, queda solo la línea compacta. Ver D28.
+    detalleEn: 'robotica',
+    linea:
+      '6 años creciendo entre proyectos, competencias y trabajo en equipo.',
     resumen:
-      'Participé en los equipos de robótica Team Biosbot Colombia aplicando lo que estudio: sensado, control de motores y ajuste de parámetros hasta que el prototipo funciona. Hoy el rol es de coach: acompañar y guiar a otras personas en el aprendizaje.',
+      'Participé seis años en espacios de robótica y tecnología: FIRST LEGO League, WRO, Open BioBots y ferias de ciencia en colegios y universidades. En cada proyecto trabajé con mi equipo en programación, diseño, construcción, investigación y electrónica, aprendiendo a convertir ideas en prototipos que funcionan. Entre 2024 y 2026 fui líder del equipo, llevándome la organización, la coordinación y la preparación de competencias y presentaciones. Hoy, tras cumplir la edad máxima para competir, sigo en la robótica como mentor: acompaño a quienes empiezan y comparto lo que aprendí.',
     logros: [
-      'Trabajo en equipo con una meta común: que el prototipo funcione de forma estable.',
-      'Aprendizaje directo de hardware, mentoría y trabajo en equipo.',
-      'Como coach, transmito lo aprendido acompañando a quienes empiezan.',
+      'Líder del equipo entre 2024 y 2026: organización, coordinación y preparación de competencias y presentaciones.',
+      'Seis años compitiendo en FLL y WRO, y en ferias de ciencia en colegios y universidades.',
+      'Como mentor, acompaño a nuevos participantes y transmito lo aprendido.',
     ],
     stack: [
       'Arduino',
@@ -317,12 +355,36 @@ export const experiencia: Experiencia[] = [  {
       'Diseño 2D',
     ],
     galeria: [
-      'robotica-1.jpg',
-      'robotica-2.jpg',
-      'robotica-3.jpg',
-      'robotica-4.jpg',
-      'robotica-5.jpg',
-      'robotica-6.jpg',
+      'documental.jpg',
+      'foto competencia.png',
+      'fotoig.jpg',
+      'mexico 1.jpeg',
+      'mexico 2.jpg',
+      'wro.jpg',
+      'wro1.jpg',
+    ],
+    /**
+     * Texto alternativo, en el mismo orden que `galeria`.
+     *
+     * Lo consume la galería y por eso es un arreglo aparte y no un objeto: el
+     * orden tiene que coincidir posición a posición con `galeria`.
+     *
+     * No se puede describir lo que muestra cada foto a simple vista, y un `alt`
+     * inventado es peor que uno genérico: el lector de pantalla announces una
+     * descripción que no es la real. Por eso de momento solo se dice qué es
+     * (documental, competencia, México, WRO) y el detalle queda pendiente de
+     * revisarlo con calma.
+     *
+     * PENDIENTE: describir el contenido real de cada una.
+     */
+    galeriaAlt: [
+      'Fotograma del documental sobre robótica',
+      'Fotografía de una competencia de robótica',
+      'Fotografía compartida en Instagram',
+      'Fotografía de la competencia en México',
+      'Fotografía de la competencia en México',
+      'Fotografía de la competencia de WRO',
+      'Fotografía de la competencia de WRO',
     ],
   },
 ];
@@ -340,19 +402,29 @@ export const competencias: Competencia[] = [
     titulo: 'WRO Future Innovator Senior',
     periodo: '2026',
     resultado: '1.er lugar',
+    puesto: 1,
   },
   {
     titulo: 'Open International FIRST LEGO League',
     evento: 'Torneo internacional',
     periodo: 'Mayo 2026',
     resultado: '15.º lugar',
+    puesto: 15,
     lugar: 'Guadalajara, México',
+  },
+  {
+    titulo: 'Open BioBots',
+    periodo: '2025',
+    resultado: 'Segundo lugar',
+    puesto: 2,
+    lugar: 'Bogotá, Colombia',
   },
   {
     titulo: 'Unearthed',
     evento: 'Torneo regional y nacional',
     periodo: '2025 — 2026',
     resultado: 'Segundo lugar',
+    puesto: 2,
     lugar: 'Bogotá, Colombia',
   },
   {
@@ -360,6 +432,7 @@ export const competencias: Competencia[] = [
     evento: 'Torneo regional y nacional',
     periodo: '2024 — 2025',
     resultado: 'Cuarto lugar',
+    puesto: 4,
     lugar: 'Cartagena, Colombia',
   },
   {
@@ -367,6 +440,7 @@ export const competencias: Competencia[] = [
     evento: 'Torneo regional y nacional',
     periodo: '2023 — 2024',
     resultado: 'Tercer lugar',
+    puesto: 3,
     lugar: 'Bogotá, Colombia',
   },
   {
@@ -374,6 +448,7 @@ export const competencias: Competencia[] = [
     evento: 'Torneo regional y nacional',
     periodo: '2022 — 2023',
     resultado: 'Segundo lugar',
+    puesto: 2,
     lugar: 'Bogotá, Colombia',
   },
   {
@@ -381,15 +456,319 @@ export const competencias: Competencia[] = [
     evento: 'Torneo regional y nacional',
     periodo: '2021 — 2022',
     resultado: 'Campeones (1.er lugar)',
+    puesto: 1,
     lugar: 'Bogotá, Colombia',
   },
   {
     titulo: 'Asia Pacific Open Championship',
     periodo: '2024',
     resultado: '15.º lugar',
+    puesto: 15,
     lugar: 'Sydney, Australia',
   },
 ];
+
+/** La sección "Robótica" completa. Ver D28 en plans/plan_midegs_completo.md. */
+export interface Robotica {
+  eyebrow: string;
+  titulo: string;
+  subtitulo: string;
+  /**
+   * Lo que sabe hacer, no lo que ha ganado. Los torneos van aparte, en
+   * `competencias`, porque son otra cosa: evidencia de resultado, no de
+   * conocimiento.
+   */
+  habilidades: string[];
+  proyectos: Proyecto[];
+  /**
+   * Distribución geográfica verificada. Cada entrada es un país donde el
+   * equipo competió representando a Colombia. Se contrasta con `competencias`:
+   * Australia y México ya aparecen ahí con su ciudad; Brasil está declarado
+   * aquí pero su torneo aún no tiene ficha (ver D29).
+   */
+  paises: string[];
+  /**
+   * El cambio de rol a lo largo de los años (D29).
+   *
+   * Es lo que da sentido a todo lo demás. Los eight torneos, el Zero Project y
+   * el reconocimiento del Concejo no son una lista de premios sueltos: son lo
+   * que pasó mientras pasó de participante a líder y luego a mentor. Sin esta
+   * línea de tiempo, un visitante ve cifras sin ver la trayectoria.
+   *
+   * Se cuenta en tres pasos a propósito. Con más, la línea se parte y deja de
+   * leerse; con menos, se pierde el cambio de rol, que es lo que importa.
+   */
+  hitosRol?: {
+    periodo: string;
+    rol: string;
+    detalle?: string;
+    /** Marca el paso en curso. Se dibuja como una etiqueta aparte. */
+    actual?: boolean;
+  }[];
+  /**
+   * La organización detrás de los números, si se quiere nombrarla.
+   *
+   * Va en su propio bloque y no mezclada con los logros de Rafael porque sus
+   * credenciales (NASA Astro Camp, Zero Project) son de la fundación. Puestas
+   * junto a un torneo, se leerían como de él.
+   */
+  fundacion?: {
+    nombre: string;
+    marca?: string;
+    descripcion?: string;
+    /**
+     * Archivo del logo dentro de `public/img`.
+     *
+     * Solo el nombre, igual que `galeria`: el componente antepone `BASE_URL`.
+     * Asi el dato no depende de la configuracion de publicacion, y cambiar el
+     * `base` de Astro no rompe la referencia.
+     *
+     * `logo-fundacion.jpg` es `logot.jpg` reducido a 320 px de ancho (587 KB ->
+     * 36 KB). El original se deja intacto.
+     *
+     * El logo trae fondo blanco y el bloque va sobre fondo oscuro, asi que la
+     * hoja lo pone sobre una pastilla clara en CSS. Quitarselo no era opcion:
+     * al borrar el blanco de un JPEG el contorno queda con halo de compresion.
+     */
+    logo?: string;
+    /** Texto alternativo del logo. Si el nombre ya aparece al lado, se describe. */
+    logoAlt?: string;
+    instagram?: string;
+    instagramUrl?: string;
+  };
+  /**
+   * Reconocimientos y visibilidad: cosas que no son un puesto en un torneo.
+   *
+   * Van separados de `competencias` a propósito. Un torneo tiene puesto y
+   * ciudad; un reconocimiento tiene entidad que lo otorga y categoría. Meter
+   * uno en el otro obligaría a inventar el campo que falta.
+   *
+   * Todos los campos menos `titulo` y `entidad` son opcionales: un dato que
+   * no se tiene se deja fuera y la tarjeta dibuja solo lo que hay. Mismo
+   * criterio que `Proyecto` (D21).
+   */
+  reconocimientos: Reconocimiento[];
+  /** Apariciones en medios: televisión, entrevistas, documental. */
+  medios: Reconocimiento[];
+}
+
+/** Un reconocimiento, una aparición en medios, o algo que indique una fecha. */
+export interface Reconocimiento {
+  /** Qué es: "Reconocimiento", "Documental", "Entrevista". */
+  titulo: string;
+  /**
+   * Quién lo otorga o quién lo hizo: "Concejo de Bogotá", "FIRST LEGO League".
+   *
+   * Opcional a propósito. En el Zero Project Award el nombre del premio ya
+   * dice quién lo otorga, y ponerlo otra vez en su propia línea solo repite
+   * el mismo texto dos veces seguidas.
+   */
+  entidad?: string;
+  /** Año o temporada, si se conoce. */
+  periodo?: string;
+  /** Categoría, motivo o de qué trataba, si se sabe. */
+  detalle?: string;
+  /** Enlace real. Nunca un enlace al perfil. */
+  enlace?: string;
+  /**
+   * A QUIÉN SE OTORGÓ. Es el campo más importante de esta interfaz.
+   *
+   * Todo lo que hay en `reconocimientos` y en `medios` se recibió la fundación
+   * o el equipo, no Rafael en persona. Sin esta marca, el sitio pondría un
+   * premio ajeno en su currículum, que es el error que un visitante
+   * comprueba en un minuto.
+   *
+   *   · 'fundacion' → a la Fundación Biosbot Robótica.
+   *   · 'equipo'    → al equipo de la temporada.
+   *   · 'personal'  → a Rafael. No hay ninguno todavía: no se inventa.
+   */
+  dirigidoA?: 'personal' | 'equipo' | 'fundacion';
+}
+
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ *  SECCIÓN ROBÓTICA
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * La sección existe para que el sitio no parezca solo un portafolio de páginas
+ * web. Reúne lo que YA estaba disperso por el sitio, sin copiarlo:
+ *
+ *   · La trayectoria de Fundación Biosbot → se lee de `experiencia`, buscando
+ *     la entrada con `detalleEn: 'robotica'`. Una sola fuente, no dos copias.
+ *   · Los 8 torneos → se leen de `competencias`. No se duplican aquí.
+ *   · La galería de fotos → se lee de la misma entrada de `experiencia`.
+ *
+ * Lo único propio de este bloque es el texto de cabecera, el guion de las
+ * habilidades y RAF VESTIGIA, que antes vivía en `proyectos` con
+ * `destacado: true` y salía en "Proyectos destacados". Si se dejara en los dos
+ * sitios, el mismo nombre se renderizaría dos veces, así que se mueve en vez de
+ * duplicarse (D28.3).
+ *
+ * TODO D28 — PENDIENTE DE CONFIRMAR POR EL USUARIO. Esto no se inventa:
+ *   · Qué es RAF VESTIGIA (equipo, robot, año, liga) y cuál es su papel.
+ *   · Qué proyectos FLL hay y en qué temporadas.
+ *   · Qué hizo exactamente en cada torneo (chasis, intake, shooter, PID...).
+ * Por eso `descripcion`, `participacion` y `stack` están fuera: la tarjeta
+ * dibuja solo lo que hay, en vez de rellenarse.
+ */
+export const robotica: Robotica = {
+  eyebrow: 'ROBÓTICA',
+  titulo: 'No todo lo que construyo vive en una pantalla.',
+  subtitulo:
+    '6 años entre robótica, código y competencias. 2 como líder de equipo. Hoy, mentor.',
+  habilidades: [
+    'Arduino',
+    'Sensores',
+    'Electrónica',
+    'Programación de hardware',
+    'Automatización',
+    'Control de motores',
+    'Resolución de problemas',
+    'Construcción de prototipos',
+    'Investigación',
+    'Liderazgo de equipo',
+    'Mentoría',
+    'C++',
+    'Python',
+    'Scratch',
+    'Diseño 3D',
+    'Diseño 2D',
+  ],
+  proyectos: [
+    {
+      titulo: 'RAF VESTIGIA',
+      // PENDIENTE: confirmar el título. Viene de la lista de candidatos que
+      // escribió el usuario en el documento de contenido, no de los datos del
+      // sitio. En `experiencia` la robótica aparece como "Robótica" en
+      // Fundación Biosbot Robótica (Team Biosbot Colombia), con 6 fotos en
+      // `robotica-N.jpg`. Si el nombre correcto es otro, cámbialo aquí.
+    },
+  ],
+  // Australia y México ya están en `competencias` con su ciudad y su puesto.
+  // Brasil no: falta saber qué torneo fue y en qué año (D29).
+  paises: ['Australia', 'México', 'Brasil'],
+  /**
+   * Participante → Líder → Mentor.
+   *
+   * Las fechas y los tres roles son del usuario. Los detalles de cada paso se
+   * escribieron a partir de lo que él ya había contado en el resumen (que fue
+   * líder entre 2024 y 2026, y que hoy acompaña a nuevos participantes como
+   * mentor tras cumplir la edad máxima), no inventados.
+   */
+  hitosRol: [
+    {
+      periodo: '2020',
+      rol: 'Participante',
+      detalle: 'Entro a los equipos de FLL como participante.',
+    },
+    {
+      periodo: '2024',
+      rol: 'Líder',
+      detalle:
+        'Asumí la organización y la coordinación del equipo, y la preparación de competencias y presentaciones.',
+    },
+    {
+      periodo: '2026',
+      rol: 'Mentor',
+      detalle:
+        'Tras cumplir la edad máxima para competir, sigo en la robótica acompañando a quienes empiezan.',
+      actual: true,
+    },
+  ],
+/**
+   * TODO D29 — ATRIBUCIÓN. LEE ESTO ANTES DE PUBLICAR.
+   *
+   * Lo que el usuario declaró textualmente es esto:okaokótextualmente es esto:
+   *
+   *   · Zero Project Award 2024, categoría "tecnología innovadora y educación
+   *     inclusiva". Lo recibió LA FUNDACIÓN.
+   *   · Reconocimiento del Concejo de Bogotá del 1 de septiembre de 2026,
+   *     Proposición 801 de la plenaria, a propuesta del Julián Espinoza
+   *     Ortiz. También LA FUNDACIÓN.
+   *   · Dos reconocimientos "de la ONU" en tecnología e inclusión.
+   *   · Launcher de televisión, entrevistas, y un documental de FIRST LEGO
+   *     League.
+   *
+   * ⚠ LO MÁS IMPORTANTE DE ESTE BLOQUE
+   * Ninguno de estos premios es personal de Rafael. Todos son de la fundación
+   * o del equipo. Por eso existe el campo `dirigidoA`: sin él, el sitio
+   * diría "reconocimiento de Rafael" sobre un premio que se llevó la
+   * fundación, y eso es exactamente el una afirmación que no se
+   * sostiene cuando alguien lo busca. Se dice lo que pasó y quién lo recibió.
+   *
+   * PIDE CONFIRMAR:
+   *   · ¿Cuáles son los DOS reconocimientos de la ONU? El Zero Project
+   *     Award 2024 podría ser uno, pero no está confirmado que cuente como
+   *     tal, y hace falta el segundo para no duplicarlo.
+   *   · ¿Rafael aparece en la entrega del Zero Project Award o solo el
+   *     equipo? Cambia el `dirigidoA`.
+   *   · Los canales de TV: cuáles, año, y el video.
+   *   · El documental de FLL: título, año, dónde se publicó, y si sale en
+   *     pantalla.
+   */
+reconocimientos: [
+    {
+      titulo: 'Zero Project Award 2024',
+      /* `entidad` no se pone: el nombre del premio ya dice quién lo otorga, y
+         escribir "Zero Project Award" en las dos líneas repetía el mismo texto
+         dos veces seguidas. Aquí no se rellena con "Zero Project" solo para
+         llenar el hueco. */
+      periodo: '2024',
+      detalle:
+        'Galardío internacional en la categoría de tecnología innovadora y educación inclusiva, por un proyecto de inclusión social a través de la robótica.',
+      dirigidoA: 'fundacion',
+    },
+    {
+      titulo: 'Reconocimiento oficial a la Fundación Biosbot Robótica',
+      entidad: 'Concejo de Bogotá',
+      periodo: '1 de septiembre de 2026',
+      detalle:
+        'Proposición 801, aprobada por la plenaria del Concejo a propuesta del concejal Julián Espinoza Ortiz. Distingue la labor de la fundación en la inclusión y el desarrollo de niños y jóvenes con autismo a través de la robótica.',
+      dirigidoA: 'fundacion',
+    },
+    // PENDIENTE: el usuario aclaró que los reconocimientos "de la ONU" son
+    // UNO, no dos. No está confirmado si ese uno es el Zero Project Award 2024
+    // u otro distinto, así que no se añade una segunda tarjeta con un nombre
+    // supuesto. Ver la nota de atribución de arriba.
+  ],
+  /**
+   * La organización detrás de los números. Va aparte porque sus credenciales
+   * (NASA, Zero Project) son de la fundación, y mezcladas con los logros de
+   * Rafael se leerían como de él.
+   */
+  fundacion: {
+    nombre: 'Fundación Biosbot Robótica',
+    marca: 'Team Biosbot Colombia',
+    descripcion:
+      'Socios oficiales autorizados de NASA ASTRO CAMP en Colombia. Compiten y preparan a niños y jóvenes en torneos nacionales e internacionales de robótica, entre ellos FIRST LEGO League.',
+    logo: 'logo-fundacion.jpg',
+    /** Texto alternativo del logo. Si el nombre ya aparece al lado, se describe. */
+    logoAlt: 'Logotipo de la Fundación Biosbot Robótica',
+    instagram: 'Team Biosbot',
+    // PENDIENTE: el usuario dio el nombre de la cuenta, no la URL. Sin URL
+    // no hay enlace; con una inventada, enlace roto.
+    instagramUrl: undefined,
+  },
+  medios: [
+    {
+      titulo: 'Apariciones en televisión',
+      entidad: 'Varios canales',
+      // PENDIENTE: cuáles canales y en qué año. "Varios canales" no es
+      // verificable por un tercero, así que sin esto queda como afirmación.
+    },
+    {
+      titulo: 'Entrevistas',
+      entidad: 'Robótica y tecnología',
+      // PENDIENTE: medio, fecha y enlace.
+    },
+    {
+      titulo: 'Participación en el documental',
+      entidad: 'FIRST LEGO League',
+      // PENDIENTE: título del documental, año, dónde se publicó, y si Rafael
+      // aparece en pantalla o solo participó del proyecto.
+    },
+  ],
+};
 
 /**
  * Tecnologías y herramientas — las que realmente usa.
@@ -527,15 +906,10 @@ export const proyectos: Proyecto[] = [
     destacado: true,
     // El proyecto final del SENA, según D13.
   },
-  {
-    titulo: 'RAF VESTIGIA',
-    destacado: true,
-    // PENDIENTE: confirmar el título. Viene de la lista de candidatos que
-    // escribió el usuario en el documento de contenido, no de los datos del
-    // sitio. En `experiencia` la robótica aparece como "Robótica" en
-    // Fundación Biosbot Robótica (Team Biosbot Colombia), con 6 fotos en
-    // `robotica-N.jpg`. Si el nombre correcto es otro, cámbialo aquí.
-  },
+  // RAF VESTIGIA se mudó a `robotica.proyectos` (D28.3): es un proyecto de
+  // robótica y su sitio natural es la sección de Robótica. Si se dejara aquí
+  // con `destacado: true`, el mismo nombre saldría en "Proyectos destacados"
+  // y en "Robótica", duplicado.
 ];
 
 /**

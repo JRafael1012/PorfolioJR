@@ -39,16 +39,16 @@ const fila = (repetir: number) =>
       <button
         class="marquee-toggle"
         type="button"
-        data-marquee-toggle
+        data-marquee-toggle="stack"
         aria-pressed="false"
       >
         <span class="marquee-toggle__icon" aria-hidden="true">❚❚</span>
-        <span data-marquee-toggle-label>Pausar</span>
+        <span data-marquee-toggle-label="stack">Pausar</span>
       </button>
     </div>
   </div>
 
-  <div class="marquee" data-marquee>
+  <div class="marquee" data-marquee="stack">
     <div class="marquee__track" data-marquee-track>
       {
         fila(2).map((copia, indice) => (

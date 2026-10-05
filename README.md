@@ -29,56 +29,68 @@ Sitio estático de una sola página, en español, construido con
 
 ```
 PortafolioAstro/              Página única. Orden de las secciones:
-public/                       Hero → Stack → Sobre mí → Trayectoria →
-                              Proyectos → Contacto
-├── favicon.png              256×256, generado desde el logo
-├── favicon-32.png           32×32
-├── apple-touch-icon.png     180×180
+public/                       Header → Hero → Stack → Sobre mí →
+├── favicon.png              Trayectoria → Robótica → Destacados →
+├── favicon-32.png           Proyectos → Contacto → Footer
+├── apple-touch-icon.png
 ├── img/
 │   ├── logo.png             Logotipo (header y favicon)
+│   ├── logo-fundacion.jpg   Logo de Fundación Biosbot, 36 KB
 │   ├── foto1.jpeg           Foto 1 del hero (la que se precarga)
 │   ├── foto2.jpeg           Foto 2 del hero
 │   ├── foto3.png            Foto 3 del hero
+│   ├── documental.jpg       ─┐
+│   ├── foto competencia.png  │  Las 7 fotos de la galería de
+│   ├── fotoig.jpg            │  Robótica, en el orden de `galeria`
+│   ├── mexico 1.jpeg         │  en `src/data/perfil.ts`
+│   ├── mexico 2.jpg          │
+│   ├── wro.jpg               │
+│   ├── wro1.jpg             ─┘
 │   ├── logos/               SVG locales: canva, chatgpt, copilot,
 │   │                        antigravity y windows. Cada uno lleva su
 │   │                        fuente y licencia en un comentario interno
 │   └── cv.pdf               ← PENDIENTE: colocar la hoja de vida
 └── js/
-    └──     main.js              Revelado al hacer scroll, anclas, carrusel de
-                         fotos del hero, galería de credenciales,
-                         collage de robótica, paneles plegables y pausa
-                         del marquee
-├── src/
-│   ├── components/          Un componente por sección (solo marcado, sin CSS)
-│   │   ├── Header.astro
-│   │   ├── Hero.astro        Carrusel de 3 fotos, cartel de disponibilidad,
-│   │   │                     línea de tecnologías clave y 4 botones
-│   │   ├── Stack.astro       Marquesina infinita de logos
-│   │   ├── SobreMi.astro     Seis preguntas plegables y propuesta de valor
-│   │   ├── Trayectoria.astro Timeline con línea que avanza al hacer scroll,
-│   │   │                     galería del diploma del SENA (Finovateh) y
-│   │   │                     collage de fotos de robótica
-│   │   ├── Destacados.astro  Solo los proyectos con `destacado: true`,
-│   │   │                     tarjetas anchas imagen + texto
-│   │   ├── ProyectoCard.astro Tarjeta compartida de las dos secciones
-│   │   ├── Proyectos.astro   Todos los proyectos en la rejilla
-│   │   ├── Contacto.astro    Cuatro tarjetas de contacto + CTA de correo
-│   │   └── Footer.astro
-│   ├── data/
-│   │   └── perfil.ts        ← TODO el contenido del sitio
-│   ├── layouts/
-│   │   └── BaseLayout.astro <head>, SEO, fuentes y esqueleto
-│   ├── pages/
-│   │   └── index.astro      La página única
-│   ├── styles/
-│   │   └── global.css       ← TODO el CSS, documentado por bloques
-│   └── paths.ts             Helper de rutas con `base`
-├── plans/                   Planes MIDEGS de las fases 1–4
-├── .github/workflows/
-│   └── deploy.yml           Despliegue automático
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+    └── main.js              Revelado al hacer scroll, anclas, carrusel de
+                             fotos del hero, galería de credenciales,
+                             collage de robótica, paneles plegables y pausa
+                             del marquee de Stack
+src/
+├── components/              Un componente por sección (solo marcado, sin CSS)
+│   ├── Header.astro         Navegación fija con subrayado que crece
+│   ├── Hero.astro           Carrusel de 3 fotos, cartel de disponibilidad,
+│   │                        línea de tecnologías clave, 2 botones y 6
+│   │                        botones circulares de redes bajo la foto
+│   ├── Stack.astro          Marquesina infinita de logos + botón de pausa
+│   ├── SobreMi.astro        Seis preguntas plegables y propuesta de valor
+│   ├── Trayectoria.astro    Timeline con línea que avanza al hacer scroll,
+│   │                        galería del diploma del SENA (Finovateh) y
+│   │                        panel de "Ver experiencia"
+│   ├── Robotica.astro       D28: trayectoria de Fundación Biosbot, 5 cifras
+│   │                        calculadas, 2 reconocimientos, 9 torneos en
+│   │                        cinta horizontal, galería de 4 casillas con 7
+│   │                        fotos, habilidades y RAF VESTIGIA
+│   ├── Destacados.astro     Solo los proyectos con `destacado: true`,
+│   │                        tarjetas anchas imagen + texto
+│   ├── ProyectoCard.astro   Tarjeta compartida de las dos secciones
+│   ├── Proyectos.astro      Todos los proyectos en la rejilla
+│   ├── Contacto.astro       Cuatro tarjetas de contacto + CTA de correo
+│   └── Footer.astro
+├── data/
+│   └── perfil.ts            ← TODO el contenido del sitio
+├── layouts/
+│   └── BaseLayout.astro     <head>, SEO, fuentes y esqueleto
+├── pages/
+│   └── index.astro          La página única, y el orden de las secciones
+├── styles/
+│   └── global.css           ← TODO el CSS, en 13 bloques por orden de página
+└── paths.ts                 Helper de rutas con `base`
+plans/                       Planes MIDEGS de las fases 1–4
+.github/workflows/
+└── deploy.yml               Despliegue automático
+astro.config.mjs
+package.json
+tsconfig.json
 ```
 
 ---
@@ -139,10 +151,34 @@ los componentes para cambiar textos.
 
 ### Los botones del hero
 
-Son cuatro: **Conoce mis proyectos** (baja a `#proyectos`), **Descargar CV**,
-**GitHub** y **Contacto** (baja a `#contacto`). Los dos externos abren en una
-pestaña nueva. El enlace de GitHub se toma de `datosContacto.githubUrl` en
+Son **dos**: **Conoce mis proyectos** (baja a `#proyectos`) y **Descargar CV**.
+GitHub y Contacto se eliminaron de aquí (D25) porque ambos caminos ya están
+cubiertos: GitHub está en el header, en la sección Contacto y en los botones
+redes bajo la foto; Contacto es una sección entera, `#contacto`, enlazada desde
+el nav. El enlace de GitHub sale de `datosContacto.githubUrl` en
 `src/data/perfil.ts`.
+
+Los dos comparten `.btn` del bloque 3. El primario va relleno en `--accent`; el
+secundario solo con borde y con un **barrido de relleno** en `--accent-2` que
+entra desde la izquierda al pasar por encima. El barrido va dentro de
+`@media (hover: hover)` para que en táctil no quede un estado pegado después de
+tocar. El primario no barre —ya está lleno—: sube a `--accent-2` y gana una
+sombra. La flecha se separa del texto (`btn__label` / `btn__arrow`) para que al
+desplazarse no empuje el texto ni ensanche el botón.
+
+### Los botones del header
+
+Los enlaces de sección llevan un **subrayado de 2 px que crece desde la
+izquierda** al pasar por encima, pintado con un `::after` para que no desplace
+el texto. El botón «Hoja de vida» (`.nav-cv`) tiene el mismo barrido de relleno
+que `.btn`, pero en `--accent` con el texto en `--ink-black`: al ser más pequeño
+se lee mejor el ámbar que el rojo.
+
+**El `:not(.nav-cv)` de `.nav-links a` no es cosmético.** El botón de «Hoja de
+vida» también es un `<a>` dentro de `.nav-links`, así que sin el filtro heredaría
+el subrayado y el `padding-block`, y este último le ganaría por especificidad al
+`padding` de `.nav-cv`, dejándolo a 6 px de alto. La regla de los 11 px en el
+corte de 700 px repite el mismo `:not()` por lo mismo.
 
 ### «Sobre mí»: seis preguntas que se despliegan hacia la derecha
 
@@ -189,11 +225,18 @@ sale instantáneo.
 ### Botones de redes sociales del hero
 
 Debajo de la foto de portada hay botones circulares con los logos de WhatsApp,
-Instagram, LinkedIn, Discord y Gmail. Los botones externos abren en una pestaña
-nueva; Gmail abre el cliente de correo. El hero busca LinkedIn y Correo dentro de
-`contacto` por su `label` y toma su `href`, así que el enlace sale de
-`datosContacto`. Para cambiar WhatsApp, Instagram o Discord (o reordenar los
-botones), edita la constante `redes` de `src/components/Hero.astro`.
+Instagram, LinkedIn, GitHub, Discord y Gmail. Los botones externos abren en una
+pestaña nueva; Gmail abre el cliente de correo. El hero busca LinkedIn, GitHub y
+Correo dentro de `contacto` por su `label` y toma su `href`, así que esos tres
+enlaces salen de `datosContacto` y no hay ninguna URL repetida. Para cambiar
+WhatsApp, Instagram o Discord (o reordenar los botones), edita la constante
+`redes` de `src/components/Hero.astro`.
+
+Los seis caben en una sola fila sin tocar CSS: `.hero-socials` va con
+`flex-wrap: nowrap` y ancho fijo por botón, así que mide 315 px en escritorio
+(6 × 2,7 rem + 5 × 0,7 rem) y 279 px en móvil (2,45 rem y 0,55 rem). La columna
+de la foto más estrecha del diseño —justo por encima del corte de 1050 px— deja
+unos 425 px, así que no hay riesgo de desbordamiento.
 
 ### ⚠ Antes de publicar, revisa esto
 
@@ -201,9 +244,11 @@ botones), edita la constante `redes` de `src/components/Hero.astro`.
    manejes: quien lo ve da por hecho que sí.
 2. Coloca tu hoja de vida en `public/cv.pdf`.
 3. `proyectos[].enlace.url` apunta al perfil de GitHub, no a repositorios. **RESUELTO en D21:** los cuatro proyectos inventados se borraron y ahora los enlaces van a repositorios reales.
-4. Añade `public/img/diploma-tecnico.jpg` y `public/img/entrega-diploma.jpg`
-   para llenar los dos huecos de la galería, y borra `public/img/foto.jpg`
-   cuando ya no la uses.
+4. **Sin confirmar, marcado con `TODO` en `perfil.ts`:** el torneo de Brasil
+   (falta cuál y en qué año), los canales del documental, la URL de Instagram,
+   el nombre de RAF VESTIGIA y un segundo correo. No se inventó ninguno.
+5. **Dos fotos grandes sin optimizar:** `mexico 1.jpeg` (803 KB) y
+   `foto competencia.png` (399 KB). La galería pesa unos 2,2 MB.
 
 ### Los botones de contacto
 
@@ -215,11 +260,27 @@ Los cuatro medios de contacto se generan desde el array `contacto` en
 `src/data/perfil.ts`. Cada tarjeta es un `<a>` completo (`.contact-card`), con
 plataforma, valor, descripción corta y flecha:
 
-1. **Correo** — destacado, con borde ámbar y degradado `--accent` → `--accent-2`.
+1. **Correo** — destacado (D26): lleva filete ámbar, un velo de fondo
+   `--accent` 9% → `--accent-2` 5%, el icono con el degradado de la paleta y el
+   valor un cuerpo mayor (`1.18rem`, `1.02rem` en ≤700 px). En reposo ya se ve
+   cuál es la vía principal, sin depender del hover.
 2. **GitHub** — valor desde `datosContacto.githubUrl`.
 3. **LinkedIn** — valor desde `datosContacto.linkedinUrl`.
 4. **WhatsApp** — número desde `datosContacto.whatsappNumber`; la tarjeta se
    oculta (`aria-disabled`) si el número está vacío.
+
+Todas las tarjetas son enlaces enteros (`.contact-card__link` es el `<a>`), así
+que hay **una sola parada de tabulación** por medio y el objetivo táctil es toda
+la tarjeta. Al pasar por encima crece un filete de acento de 3 px a la izquierda,
+de abajo a arriba: el mismo motivo que el antetítulo `.eyebrow` y que el
+corchete de `.photo-frame`. Se eligió el filete y no el relleno de `.btn` de D25
+porque la tarjeta tiene tres líneas de texto y llenarla de ámbar obligaría a
+voltear las tres a `--ink-black`. El filete se recorta con `overflow: hidden`
+contra el radio de 4 px del propio enlace.
+
+La tarjeta marcada `--hero` lleva el velo en el `<a>` y no en el `<li>` a
+propósito: el radio está en el enlace, y un degradado en el `<li>` saldría por
+debajo con las esquinas rectas.
 
 Los tres datos editables viven en el bloque `datosContacto` del mismo archivo:
 
@@ -300,6 +361,39 @@ Fundación Biosbot Robótica. Confirma el nombre o bórralo.
 ahora mismo hay **3 confirmados**. La estructura ya aguanta los 8: se añaden al
 array y aparecen solas, sin tocar los componentes.
 
+### La sección Robótica
+
+Es la sección que hace que el sitio no se lea como "un portafolio de páginas web"
+(D28). Antes su contenido estaba repartido en tres sitios: la línea de tiempo, un
+toggle escondido con los torneos y fotos que nunca se rellenaron.
+
+`src/components/Robotica.astro` **no copia nada**: lee lo que ya había en
+`perfil.ts`. La trayectoria de Fundación Biosbot se sigue viendo en la línea de
+tiempo, pero ya solo como una línea; el detalle largo está aquí.
+
+De arriba abajo:
+
+1. **Cifras de cabecera** (D29) — torneos, podios, primeros puestos, países y
+   años. **Ninguna está escrita a mano**: se cuentan desde `competencias` y
+   `robotica`. Añadir un torneo sube el número solo, así que el rótulo no puede
+   quedar diciendo una cosa y el dato otra. El podio cuenta sobre `puesto` (el
+   número), no sobre `resultado` (el texto libre).
+2. **Trayectoria de Fundación Biosbot**, leída de `experiencia` por su
+   `detalleEn: 'robotica'`.
+3. **Dos reconocimientos** en destacado.
+4. **La cinta de 9 torneos** (ver más abajo, D30).
+5. **La galería** de 4 casillas con 7 fotos (ver «Imágenes»).
+6. **Medios**: tres tarjetas estáticas.
+7. **Habilidades y RAF VESTIGIA** (D28.3: RAF VESTIGIA es de robótica, no un
+   proyecto web, así que dejó de ser destacado).
+
+El logo de la Fundación se optimizó en vez de quitarse: sigue siendo una
+afirmación de que se estuvo ahí, pero ocupa 36 KB en lugar de 587 KB. El
+original quedó en `logot.jpg` como fuente sin usar.
+
+El botón «Ver experiencia» sigue ocultando lo largo, y **las cifras van fuera del
+panel a propósito**: lo que dice esta sección hay que verlo sin pulsar nada.
+
 ### La marquesina de logos
 
 Un logo se resuelve en este orden, y se para en el primero que exista:
@@ -334,24 +428,39 @@ https://cdn.simpleicons.org/<slug>/ffba08
 
 ## Cómo editar los estilos
 
-**Todo el CSS está en `src/styles/global.css`** (~14 KB). Ningún componente
+**Todo el CSS está en `src/styles/global.css`** (~93 KB). Ningún componente
 `.astro` lleva estilos dentro.
 
-El archivo está dividido en once bloques numerados y comentados:
+El archivo está dividido en **trece bloques numerados** y comentados, y **el orden
+de los bloques es el orden de la página** (D31). Cada bloque dice qué componente
+`.astro` lo usa, y la cabecera del archivo lleva el índice y las reglas de
+edición.
 
 | Bloque | Contenido |
 | --- | --- |
 | 1 | Tokens: paleta, tipografías y medidas |
 | 2 | Base: reset y utilidades |
-| 3 | Componentes compartidos: secciones, tarjetas, botones, etiquetas |
+| 3 | Componentes compartidos: secciones, tarjetas, botones, etiquetas, acordeón |
 | 4 | Header |
 | 5 | Hero |
-| 6 | Trayectoria |
-| 7 | Stack: marquesina infinita de logos |
-| 8 | Sobre mí: preguntas plegables y propuesta de valor |
-| 9 | Proyectos |
-| 10 | Contacto: fondo del hero, marco, tarjetas de contacto y CTA |
-| 11 | Footer |
+| 6 | Stack: la marquesina infinita (cómo se mueve) |
+| 7 | Sobre mí: preguntas plegables y propuesta de valor |
+| 8 | Trayectoria |
+| 9 | Robótica: torneos, galería, Fundación, habilidades, contadores |
+| 10 | Proyectos y destacados: tarjetas de proyecto |
+| 11 | Contacto: fondo del hero, rejilla, tarjetas de contacto y CTA |
+| 12 | Footer |
+| 13 | Ajustes transversales: los `@media` que cruzan secciones |
+
+**Por qué hay un bloque de compartidos y uno de transversales.** Lo que usa más
+de un componente va en el 3, no en la sección que lo usa primero: si estuviera en
+dos sitios, cambiar uno y olvidar el otro daría dos estilos para lo mismo. Los
+`@media` transversales van al final porque, dentro de un `@media`, gana la regla
+que está más abajo.
+
+**Regla práctica:** si añades una clase nueva, va en el bloque de la sección que
+la usa; si la usan dos, va en el 3. Si añades una sección, va en su sitio en el
+orden de la página.
 
 ### Cambiar los colores de todo el sitio
 
@@ -368,11 +477,11 @@ cálido. Para cambiar la marca global lo normal es ajustar los tres acentos:
 
 Dos, y coinciden en casi todos los bloques: **1050 px** y **700 px**.
 
-Excepción conocida, sin arreglar: el bloque 11 (Footer, `800px` y `520px`) usa
+Excepción conocida, sin arreglar: el bloque 12 (Footer, `800px` y `520px`) usa
 cortes propios. Se nota entre 700 y 800 px, donde el resto ya va en layout móvil y
 ese bloque todavía va a dos columnas.
 
-El bloque 10 (Contacto) sí usa los cortes globales, más un tercero a **420 px**
+El bloque 11 (Contacto) sí usa los cortes globales, más un tercero a **420 px**
 para móvil pequeño.
 
 ### Accesibilidad
@@ -389,40 +498,90 @@ para móvil pequeño.
 | Archivo | Uso | Tamaño real |
 | --- | --- | --- |
 | `public/img/logo.png` | Header y favicon | 992×1061 px |
+| `public/img/logo-fundacion.jpg` | Logo de Fundación Biosbot, bloque 9 | 36 KB |
 | `public/img/foto1.jpeg` | Foto 1 del hero (la precargada) | 960×1280 px, 177 KB |
 | `public/img/foto2.jpeg` | Foto 2 del hero | 899×1599 px, 159 KB |
 | `public/img/foto3.png` | Foto 3 del hero | 463×937 px, 634 KB |
-| `public/img/foto.jpg` | Sin uso, quedó de la versión anterior | 992×1061 px, 255 KB |
 
 Las fotos del hero están en `src/components/Hero.astro` (`const fotos`). El
 carrusel rota cada 15 s y se apaga solo si el sistema pide menos movimiento
 (`prefers-reduced-motion`). Cada foto tiene su propio encuadre en
 `.photo--1`, `.photo--2` y `.photo--3` mediante `object-position`.
 
-La galería de credenciales (`src/components/Trayectoria.astro`) usa por ahora
-**marcadores**, no imágenes: dos huecos con icono SVG que indican dónde irá
+### La galería de Robótica ya tiene fotos
+
+`src/components/Robotica.astro` monta una rejilla de 2×2 (**4 casillas**) y cada
+casilla rota su propio grupo de capas cada **5 s**, sin bordes ni botones. Con
+`prefers-reduced-motion` se quedan en la primera combinación y no arrancan.
+
+Las 7 fotos van en `galeria` de `src/data/perfil.ts`, en este orden:
+
+```
+documental.jpg → foto competencia.png → fotoig.jpg → mexico 1.jpeg
+→ mexico 2.jpg → wro.jpg → wro1.jpg
+```
+
+Se reparten entre las 4 casillas por el índice (`TILES = [0, 1, 2, 3]`), así que
+**no importa cuántas haya**: se reparte el resto. Los textos alternativos van en
+`galeriaAlt`, en el mismo orden. Si una foto no tiene descripción, **no se
+inventa una**: el campo es opcional.
+
+**Dónde tocar cada cosa** (está anotado en el bloque 9 del CSS):
+
+| Qué cambiar | Dónde |
+| --- | --- |
+| Proporción de las casillas | `.rob-collage` (`--collage-ratio`) |
+| Número de fotos por casilla | `TILES` en `Robotica.astro` |
+| Cada foto | `galeria` y `galeriaAlt` en `perfil.ts` |
+| Encuadre de cada foto | `.photo-layer--N`, con `object-position` |
+| Velocidad de rotación | el `5000` de `public/js/main.js` |
+| Pasadas y tamaño | `@media` del bloque 9 |
+
+La galería de credenciales (`src/components/Trayectoria.astro`) es otra cosa: sigue
+usando **marcadores** con icono SVG donde irá
 `public/img/diploma-tecnico.jpg` y `public/img/entrega-diploma.jpg`. Al añadir
-esas fotos hay que cambiar el `<div class="credential-slot">` por un `<img>`.
+esas fotos hay que cambiar el `<div class="credential-slot">` por un `<img>`. No
+se rellenó con fotos de otra cosa para no sustituir contenido real por iconos.
 
-El collage de robótica (mismo archivo) también usa marcadores, en una rejilla de
-2×2: cada casilla espera una de las seis fotos `public/img/robotica-1.jpg` …
-`robotica-6.jpg`. Los nombres salen de `galeria` en `src/data/perfil.ts`; si un
-bloque de experiencia no tiene ese campo, no se pinta collage. Al añadir las
-fotos, cambia el `<div class="rob-slot">` de esa capa por un `<img>`.
+### Seis imágenes sin usar
 
-Las dos galerías cambian solas cada 5 s, sin bordes ni botones: si el sistema
-pide menos movimiento (`prefers-reduced-motion`), se quedan en la primera
-combinación y no arrancan.
+Estas están en `public/img/` pero **ningún componente las referencia**; solo
+aparecen citadas en comentarios:
 
-**Competencias y torneos.** Dentro del bloque de Robótica hay un botón *Ver
-experiencia en competencias* que despliega la lista de
-`competencias` (`src/data/perfil.ts`), de más reciente a más antigua. Cada
-entrada lleva `titulo`, `periodo` y, si los tienes, `evento`, `resultado` y
-`lugar`; los que faltan se pueden omitir y la tarjeta simplemente no los muestra.
+| Archivo | Por qué sigue ahí |
+| --- | --- |
+| `logot.jpg` (587 KB) | Es el **original** del logo de la Fundación, antes de optimizarlo a `logo-fundacion.jpg` |
+| `foto.jpg` (249 KB) | Quedó de la versión anterior del hero |
+| `logo.jpg` (103 KB) | Versión anterior del logo |
+| `logo jr.png` (57 KB) | Sin referencias |
+| `Logo_Biosbot-01.avif` (15 KB) | Sin referencias |
+| `robotica-1.jpg` (55 KB) | Cuando la galería usaba marcadores |
 
-Los 8 torneo llevan puesto y ciudad: los regionales y nacionales fueron en
-Bogotá, salvo *Submerged* (Cartagena); el internacional en Guadalajara, México;
-y el *Asia Pacific Open Championship* en Sydney, Australia.
+**No se han borrado.** `logot.jpg` es el original del logo, y OneDrive ya ha
+revertido archivos eliminados antes; mejor decidirlo con calma. Todas están **sin
+rastrear en git**, así que no se publican y no entran en el repositorio.
+
+### Los torneos y los medios de Robótica
+
+Los **9 torneos** salen de `competencias` en `src/data/perfil.ts`, ordenados por
+el año del `periodo` (no por el orden de escritura). Cada uno lleva `titulo` y
+`periodo`; `evento`, `resultado` y `puesto` son opcionales y, si faltan, no se
+pintan. Los que tienen puesto llevan además su ciudad.
+
+Se muestran en una **cinta horizontal** (`D30`): dos copias del mismo grupo para
+que el bucle no se note, 18 elementos en total, sin logos y sin botón de pausa. Se
+para sola al pasar por encima o al llegar con el teclado, porque el `track` es
+`tabindex="0"`. Si el sistema pide menos movimiento, no se mueve.
+
+El motor es el mismo `.marquee` de Stack, no un segundo carrusel: el bloque 6
+define *cómo* se mueve y el bloque 9 solo añade *cómo se ve* cada torneo
+(`.marquee--torneos`, `.marquee__periodo`, `.marquee__titulo`,
+`.marquee__detalle`).
+
+Los **medios** (documental, redes) son tres tarjetas **estáticas** en rejilla. Se
+movían antes, pero una cinta de tres elementos es ruido y obligaba a un botón que
+ya no hace falta. Los enlaces abren en pestaña nueva y llevan texto solo para
+lectores de pantalla, porque el icono de flecha no lo dice.
 
 Para reemplazar una imagen, mantén el mismo nombre de archivo. Para cambiar el
 marco de la foto, ajusta `aspect-ratio` en `.photo-frame`.
@@ -496,7 +655,7 @@ Las anclas (`#proyectos`) y las URLs externas no llevan el prefijo.
 
 `plans/` sigue el modelo MIDEGS.
 
-- `plans/plan_midegs_completo.md` — fuente de verdad: decisiones (D1…D15) y las
+- `plans/plan_midegs_completo.md` — fuente de verdad: decisiones (D1…D31) y las
   10 fases con sus criterios de aceptación.
 - `plans/historial/` — los planes de las fases 1 a 4 tal como se escribieron
   entonces: dirección y viabilidad, requisitos, arquitectura y planificación.

@@ -1,8 +1,5 @@
 ---
-import { competencias, experiencia } from '../data/perfil';
-
-/** Casillas del collage. Cada una va mostrando una foto distinta del grupo. */
-const TILES = [0, 1, 2, 3];
+import { experiencia } from '../data/perfil';
 ---
 
 <section class="section" id="trayectoria">
@@ -25,7 +22,11 @@ const TILES = [0, 1, 2, 3];
               {
                 'exp-item--technician':
                   item.puesto === 'Técnico en Desarrollo de Software',
-                'exp-item--collage': Boolean(item.galeria?.length),
+                // El collage se mudó a la sección de Robótica en D28, junto con
+                // los torneos que colgaban de él.
+                'exp-item--collage': Boolean(
+                  item.galeria?.length && !item.detalleEn,
+                ),
               },
             ]}
           >
@@ -33,17 +34,32 @@ const TILES = [0, 1, 2, 3];
             <div class="exp-detail">
               <h3>{item.puesto}</h3>
               <p class="exp-company">{item.empresa}</p>
-              <p class="exp-summary">{item.resumen}</p>
-              <ul class="exp-achievements">
-                {item.logros.map((logro) => (
-                  <li>{logro}</li>
-                ))}
-              </ul>
-              <ul class="tag-list">
-                {item.stack.map((tech) => (
-                  <li class="tag">{tech}</li>
-                ))}
-              </ul>
+
+              {item.detalleEn ? (
+                /* Bloque con detalle propio: aquí queda la línea y un enlace a
+                   la sección que lo desarrolla. Los logros, el stack, la
+                   galería y los torneos los lee esa sección desde los mismos
+                   datos, así que no se repite nada. */
+                <p class="exp-summary">{item.linea ?? item.resumen}</p>
+                <a class="exp-detail__more" href={`#${item.detalleEn}`}>
+                  Ver la sección de Robótica
+                  <span class="exp-detail__arrow" aria-hidden="true">→</span>
+                </a>
+              ) : (
+                <>
+                  <p class="exp-summary">{item.resumen}</p>
+                  <ul class="exp-achievements">
+                    {item.logros.map((logro) => (
+                      <li>{logro}</li>
+                    ))}
+                  </ul>
+                  <ul class="tag-list">
+                    {item.stack.map((tech) => (
+                      <li class="tag">{tech}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
               {item.puesto === 'Técnico en Desarrollo de Software' && (
                 <aside class="exp-project" aria-label="Proyecto final del SENA">
                   <span class="exp-project__label">Proyecto final · SENA</span>
@@ -154,133 +170,6 @@ const TILES = [0, 1, 2, 3];
                 </div>
               </div>
             )}
-
-            {item.galeria?.length ? (
-              <div class="rob-collage" data-rob-collage>
-                <div
-                  class="rob-collage__grid"
-                  role="img"
-                  aria-label="Collage de fotos del trabajo en robótica"
-                >
-                  {TILES.map((tile) => (
-                    <div class="rob-collage__tile">
-                      {(item.galeria ?? []).map((foto, indice) => (
-                        <div
-                          class:list={[
-                            'rob-collage__layer',
-                            { 'is-active': indice === tile },
-                          ]}
-                        >
-                          <div class="rob-slot">
-                            <span class="rob-slot__index">
-                              {String(indice + 1).padStart(2, '0')}
-                            </span>
-                            <svg
-                              class="rob-slot__icon"
-                              viewBox="0 0 48 48"
-                              fill="none"
-                              aria-hidden="true"
-                            >
-                              <rect
-                                x="6"
-                                y="12"
-                                width="36"
-                                height="24"
-                                rx="2"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                              />
-                              <circle
-                                cx="17"
-                                cy="21"
-                                r="3.5"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                              />
-                              <path
-                                d="M11 33l8-7 6 5 5-4 7 6"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              />
-                            </svg>
-                            <code class="rob-slot__path">public/img/{foto}</code>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div class="exp-extra">
-                <button
-                  class="exp-toggle"
-                  type="button"
-                  data-exp-toggle
-                  aria-expanded="false"
-                  aria-controls={`panel-competencias-${indice}`}
-                >
-                  <span data-exp-toggle-label>
-                    Ver experiencia en competencias
-                  </span>
-                  <svg
-                    class="exp-toggle__icon"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M4 6l4 4 4-4"
-                      stroke="currentColor"
-                      stroke-width="1.6"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </button>
-
-                <div
-                  class="exp-extra__panel"
-                  id={`panel-competencias-${indice}`}
-                  hidden
-                >
-                  {
-                    /* Todas las tarjetas llevan las mismas cuatro líneas, así
-                       que se avisa de lo que falte en vez de partirla. */
-                    competencias.length ? (
-                      <ul class="comp-list">
-                        {competencias.map((comp) => (
-                          <li class="comp-item">
-                            <p class="comp-item__periodo">{comp.periodo}</p>
-                            <div class="comp-item__body">
-                              <h3>{comp.titulo}</h3>
-                              <p class="comp-item__evento">
-                                {comp.evento ?? 'Torneo'}
-                              </p>
-                              <p class="comp-item__resultado">
-                                {comp.resultado ?? 'Puesto por confirmar'}
-                              </p>
-                              <p class="comp-item__lugar">
-                                {comp.lugar ?? 'Ciudad por confirmar'}
-                              </p>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p class="exp-extra__vacio">
-                        Falta esta información. Agrégala en{' '}
-                        <code>src/data/perfil.ts</code>, en la lista{' '}
-                        <code>competencias</code>, y saldría aquí
-                        automáticamente.
-                      </p>
-                    )
-                  }
-                </div>
-              </div>
-            ) : null}
           </li>
         ))
       }

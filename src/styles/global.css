@@ -6,23 +6,29 @@
    .astro lleva estilos dentro: todo vive aquí.
 
    CÓMO EDITAR
-     · Para cambiar colores, tipografías o medidas: sección 1.
-     · Para cambiar el aspecto de una sección concreta: ve a su bloque.
-     · Cada bloque indica qué componente .astro lo usa, así sabes dónde
-       tocar si cambiaste una clase.
+     · Para cambiar colores, tipografías o medidas: sección 1 (Tokens).
+     · Para cambiar el aspecto de una sección: ve a su bloque. Cada
+       bloque indica qué componente .astro lo usa.
+     · Para reordenar: los bloques siguen el orden de la página, de
+       arriba abajo. Si añades una sección nueva, ponla en su sitio.
+     · Lo que usa más de un componente (botones, etiquetas, tarjetas,
+       el acordeón) está en "Componentes compartidos", no en la sección
+       que lo usa primero. Así no hay la misma regla repetida.
 
-   ÍNDICE
-     1.  Tokens .............. paleta, tipografía y medidas
-     2.  Base ................ reset, tipografía global y utilidades
-     3.  Componentes ........ secciones, tarjetas, etiquetas, botones
-     4.  Header .............. barra de navegación fija
-     5.  Hero ................ portada con texto, foto y decorados
-     6.  Trayectoria ......... lista de experiencia laboral
-     7.  Stack ............... tarjetas de tecnologías
-     8.  Sobre mí ............ preguntas plegables y propuesta de valor
-     9.  Proyectos ........... tarjetas de proyectos
-     10. Contacto ............ marco, medios de contacto y llamada a la acción
-     11. Footer .............. pie de página
+   ÍNDICE (orden de la página)
+      1.  Tokens .................. paleta, tipografía y medidas
+      2.  Base .................... reset, tipografía global, utilidades
+      3.  Componentes compartidos . botones, etiquetas, tarjetas, acordeón
+      4.  Header .................. barra de navegación fija
+      5.  Hero .................... portada con texto, foto y decorados
+      6.  Stack ................... cinta de tecnologías
+      7.  Sobre mí ................ preguntas plegables y propuesta
+      8.  Trayectoria ............. experiencia, credenciales y roles
+      9.  Robótica ................ torneos, galería, fundación, contadores
+      10. Proyectos y destacados .. tarjetas de proyecto
+      11. Contacto ................. marco, medios y llamada a la acción
+      12. Footer .................. pie de página
+      13. Ajustes transversales .... reglas que cruzan varias secciones
 
    VARIABLES DE ENTORNO
      · Los breakpoints son 1050 px y 700 px. Deben coincidir con los
@@ -31,31 +37,11 @@
 
    ============================================================ */
 
-
 /* ============================================================
    1. TOKENS
    ------------------------------------------------------------
-   Paleta, tipografías y medidas. Son las únicas cosas que deberías
-   tocar para cambiar la identidad visual completa del sitio.
-
-   PALETA (10 colores, de oscuro a cálido)
-     --ink-black ...... #03071e  Fondo principal
-     --night-bordeaux  #370617  Base del header
-     --black-cherry ... #6a040f  Base de las tarjetas
-     --oxblood ....... #9d0208  Bordes de tarjetas y etiquetas
-     --brick-ember ... #d00000  Segunda línea del titular
-     --red-ochre ..... #dc2f02  Reservado
-     --cayenne-red ... #e85d04  Bordes de foto y enlaces
-     --deep-saffron .. #f48c06  Reservado
-     --orange ........ #faa307  Reservado
-     --amber-flame ... #ffba08  Acento principal
-
-   ROLES SEMÁNTICOS
-     En lugar de usar los colores crudos en el resto del archivo se usan
-     estas variables. Así puedes re-tematizar el sitio cambiando solo
-     --accent, --accent-2 y --accent-3.
-
-   USADO POR: todo el archivo.
+   Paleta, tipografías y medidas. Lo que se cambia aquí cambia en
+   toda la página.
    ============================================================ */
 :root {
   /* --- Paleta cruda --- */
@@ -105,32 +91,16 @@
   --maxw: 1595px;
 }
 
-
 /* ============================================================
    2. BASE
    ------------------------------------------------------------
-   Reset, tipografía global y utilidades compartidas por todo el
-   sitio.
-
-   NOTA SOBRE EL RESET
-     El reset es mínimo a propósito. No se usa normalize.css ni una
-     librería: solo se quitan los márgenes por defecto y se define
-     box-sizing.
-
-   ACCESIBILIDAD
-     · :focus-visible dibuja un contorno amarillo en el elemento
-       enfocado. No lo elimines: es la única guía de foco visible.
-     · .skip-link es el enlace "Saltar al contenido". Está fuera de
-       pantalla hasta que recibe el foco.
-     · prefers-reduced-motion desactiva animaciones y transiciones
-       para quien lo tenga activado en su sistema.
-
-   USADO POR: todo el sitio (BaseLayout.astro).
+   Reset, tipografía global y utilidades (skip-link, texto solo para
+   lectores de pantalla).
    ============================================================ */
-
-/* --- Reset --- */
 *,
+
 *::before,
+
 *::after {
   box-sizing: border-box;
   margin: 0;
@@ -172,7 +142,9 @@ img {
 }
 
 h1,
+
 h2,
+
 h3 {
   line-height: 1.05;
   letter-spacing: -0.02em;
@@ -180,6 +152,7 @@ h3 {
 }
 
 /* --- Enlaces --- */
+
 a {
   color: var(--accent-2);
   text-decoration: none;
@@ -196,14 +169,18 @@ a:hover {
 }
 
 /* --- Utilería: contenedor --- */
+
 /* Centra el contenido y le aplica el margen lateral global. */
+
 .container {
   width: min(var(--maxw), calc(100% - (var(--gutter) * 2)));
   margin-inline: auto;
 }
 
 /* --- Utilería: antetítulo --- */
+
 /* La línea naranja de la izquierda la dibuja el pseudoelemento ::before. */
+
 .eyebrow {
   display: flex;
   align-items: center;
@@ -224,6 +201,7 @@ a:hover {
 }
 
 /* --- Utilería: salto al contenido --- */
+
 .skip-link {
   position: absolute;
   left: -9999px;
@@ -240,9 +218,11 @@ a:hover {
 }
 
 /* --- Utilería: revelado al hacer scroll --- */
+
 /* .reveal arranca invisible. public/js/main.js le añade .is-visible
    cuando el bloque entra en pantalla. Si el JavaScript no carga, este
    bloque nunca se ve, por eso el @media de abajo lo neutraliza. */
+
 .reveal {
   opacity: 0;
   transform: translateY(18px);
@@ -261,28 +241,19 @@ a:hover {
   }
 }
 
-
 /* ============================================================
    3. COMPONENTES COMPARTIDOS
    ------------------------------------------------------------
-   Piezas que repiten varias secciones del sitio. Si cambias algo
-   aquí, cambia en todas a la vez.
+   Lo que usa más de un componente: botones, etiquetas, tarjetas de
+   proyecto y el acordeón (.exp-toggle) que comparten Trayectoria y
+   Robótica.
 
-   CLASES
-     .section ............. envoltura con padding y borde superior
-     .section__head ....... bloque de título de cada sección
-     .section__title ...... el H2
-     .section__subtitle ... la descripción bajo el título
-     .card-grid ........... rejilla responsive de tarjetas
-     .card ............... fondo y borde de una tarjeta
-     .tag-list / .tag .... etiquetas de tecnología
-     .btn / .btn--primary  botones con flecha a la derecha
-     .btn__arrow ......... la flecha ↗, con color propio
+   Estas reglas están aquí y no en la sección que las usa primero
+   porque si estuvieran en dos sitios, cambiar una y olvidar la otra
+   daría dos estilos distintos para lo mismo.
 
-   USADO POR: todas las secciones y BaseLayout.astro.
+   USADO POR: varios .astro
    ============================================================ */
-
-/* --- Secciones --- */
 .section {
   padding-block: clamp(4rem, 9vw, 7.5rem);
   border-top: 1px solid var(--line-soft);
@@ -300,6 +271,7 @@ a:hover {
 }
 
 #trayectoria::before,
+
 #trayectoria::after {
   position: absolute;
   z-index: -1;
@@ -386,6 +358,7 @@ a:hover {
 /* --- Rejillas ---
    auto-fit + minmax hace que las tarjetas se reacomoden solas.
    min(100%, 22rem) evita que se desborden en pantallas estrechas. */
+
 .card-grid {
   display: grid;
   gap: 1.5rem;
@@ -393,6 +366,7 @@ a:hover {
 }
 
 /* --- Tarjetas --- */
+
 .card {
   background: var(--bg-raise);
   border: 1px solid var(--line);
@@ -400,6 +374,7 @@ a:hover {
 }
 
 /* --- Etiquetas de tecnología --- */
+
 .tag-list {
   display: flex;
   flex-wrap: wrap;
@@ -433,24 +408,65 @@ a:hover {
 
 /* --- Botones ---
    .btn es el botón secundario. .btn--primary invierte los colores y
-   se usa solo en el CTA principal del hero. */
+   se usa solo en el CTA principal del hero.
+
+   La flecha va en .btn__arrow, separada del texto en .btn__label, para que
+   al crecer la flecha se desplace el texto y no el botón entero. */
+
 .btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
   gap: 30px;
   min-height: 56px;
   padding: 0 20px;
+  overflow: hidden;
   border: 1px solid #5d687b;
+  background: transparent;
   color: var(--white);
   font-weight: 800;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  isolation: isolate;
+  transition: transform 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease, color 0.2s ease;
+}
+
+/* Barrido de relleno: entra desde la izquierda y solo en devices con hover
+   real. En táctil no dejaría un estado pegado después de tocar. */
+
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--accent-2);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn__label {
+  position: relative;
+  z-index: 1;
+}
+
+.btn__arrow {
+  position: relative;
+  z-index: 1;
+  color: var(--accent-2);
+  font-weight: 900;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn:hover {
   transform: translateY(-2px);
   border-color: var(--accent-2);
+  color: var(--white);
   text-decoration: none;
+}
+
+.btn:hover .btn__arrow {
+  transform: translateX(4px);
 }
 
 .btn--primary {
@@ -459,34 +475,344 @@ a:hover {
   color: var(--ink-black);
 }
 
-.btn__arrow {
-  color: var(--accent-2);
-  font-weight: 900;
-}
-
 .btn--primary .btn__arrow {
   color: var(--ink-black);
 }
 
+/* El primario no barre: ya está lleno, así que sube en luminosidad. */
+
+.btn--primary:hover {
+  background: var(--accent-2);
+  border-color: var(--accent-2);
+  box-shadow: 0 8px 24px -10px var(--accent-2);
+}
+
+.btn--primary:hover .btn__arrow {
+  color: var(--white);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* El barrido solo en dispositivos con hover real, para que en táctil no
+   quede un estado pegado después de tocar. */
+
+@media (hover: hover) {
+  .btn:hover::before {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes placard-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes placard-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+
+.exp-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line));
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.22s ease, background-color 0.22s ease;
+}
+
+.exp-toggle:hover {
+  border-color: var(--accent-2);
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+}
+
+.exp-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.exp-toggle__icon {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--accent);
+  transition: transform 0.22s ease;
+}
+
+.exp-toggle[aria-expanded='true'] .exp-toggle__icon {
+  transform: rotate(180deg);
+}
+
+.comp-list {
+  display: grid;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Las ocho tarjetas usan el mismo ritmo y los mismos tipos que el resto de
+   la trayectoria: periodo en mono ámbar, título en la escala de `h3` del
+   bloque, y las dos líneas de apoyo en la misma voz. */
+
+.comp-item {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 0.4rem 1.5rem;
+  padding-left: 1.25rem;
+  border-left: 2px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+}
+
+.comp-item__periodo {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+  padding-top: 0.2rem;
+}
+
+.comp-item__body {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.comp-item__body h3 {
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.comp-item__evento,
+
+.comp-item__resultado,
+
+.comp-item__lugar {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.comp-item__evento {
+  color: var(--muted);
+}
+
+.comp-item__resultado {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.comp-item__lugar {
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+  .comp-item {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+}
+
+.exp-period {
+  position: relative;
+  width: fit-content;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+  padding-top: 0.35rem;
+  transition:
+    color 220ms ease,
+    transform 220ms ease,
+    text-shadow 220ms ease;
+}
+
+.exp-period::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.3rem;
+  left: 0;
+  height: 1px;
+  content: '';
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 220ms ease;
+}
+
+.exp-company {
+  color: var(--accent-2);
+  font-weight: 700;
+  margin-bottom: 0.85rem;
+}
+
+.exp-achievements {
+  margin: 0 0 1.1rem;
+  padding-left: 0;
+  list-style: none;
+  color: var(--muted);
+}
+
+.exp-achievements li {
+  position: relative;
+  padding-left: 1.1rem;
+  margin-bottom: 0.3rem;
+  transition:
+    color 200ms ease,
+    transform 200ms ease;
+}
+
+.exp-achievements li::before {
+  position: absolute;
+  top: 0.7em;
+  left: 0.15rem;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  content: '';
+  background: var(--accent-2);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 35%, transparent);
+  transition:
+    background-color 200ms ease,
+    box-shadow 240ms ease,
+    transform 200ms ease;
+}
+
+@media (hover: hover) {
+  .exp-achievements li:hover {
+    color: var(--white);
+    transform: translateX(4px);
+  }
+
+  .exp-achievements li:hover::before {
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+    transform: scale(1.15);
+  }
+}
+
+@keyframes credential-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes credential-icon-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.78) rotate(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+/* --- El bucle --- */
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes about-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes about-slide-right {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Las etiquetas de "¿Qué me interesa?" sí se resaltan, como en la
+   trayectoria, pero sin el salto: aquí no hay lista de logos. */
+
+@media (hover: hover) {
+  #sobre-mi .tag:hover {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 13%, var(--bg));
+    color: var(--accent);
+  }
+}
+
+@keyframes contact-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+
+  70% {
+    box-shadow: 0 0 0 9px transparent;
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
 
 /* ============================================================
    4. HEADER
    ------------------------------------------------------------
-   Barra de navegación fija arriba.
+   Barra de navegación fija.
 
-   CLASES
-     .site-header .... el <header> completo
-     .nav ............ la barra, usa también .container
-     .brand ......... logotipo + nombre
-     .brand-mark .... el logotipo (public/img/logo.png)
-     .nav-links ..... lista de enlaces, usa <ul>/<li>
-     .nav-cv ........ el botón outlined de "Hoja de vida"
-
-   RESPONSIVE
-     1050 px .... se reduce la separación entre enlaces
-     700 px ..... barra más baja y tipografía menor
-
-   USADO POR: Header.astro.
+   USADO POR: Header.astro
    ============================================================ */
 .site-header {
   background: var(--bg-nav);
@@ -534,34 +860,69 @@ a:hover {
   list-style: none;
 }
 
-.nav-links a {
+.nav-links a:not(.nav-cv) {
+  position: relative;
+  padding-block: 6px;
   color: var(--white);
   font-weight: 700;
   font-size: 14px;
+  transition: color 0.2s ease;
 }
 
-.nav-links a:hover {
+.nav-links a:not(.nav-cv)::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-links a:not(.nav-cv):hover {
   color: var(--accent);
   text-decoration: none;
 }
 
+/* Solo con hover real: en táctil el subrayado se quedaría puesto. */
+
+@media (hover: hover) {
+  .nav-links a:not(.nav-cv):hover::after {
+    transform: scaleX(1);
+  }
+}
+
 /* Boton outlined. Vive en el header ("Hoja de vida") y lo reutiliza tambien
    Contacto.astro (D22), asi que el hover se declara una sola vez aqui para
-   que los dos sean el mismo boton y no dos parecidos. */
+   que los dos sean el mismo boton y no dos parecidos.
+
+   El barrido es el mismo lenguaje que el de `.btn` del bloque 3, pero aqui
+   barre en `--accent` y pone el texto en `--ink-black`, porque el boton del
+   header es mas pequeño y el acento se lee mejor que el rojo como relleno. */
+
 .nav-cv {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   border: 1px solid #647087;
   padding: 17px 20px;
   display: inline-flex;
   align-items: center;
   gap: 18px;
+  transition: transform 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-@media (hover: hover) {
-  .nav-cv:hover {
-    transform: translateY(-2px);
-    border-color: var(--accent-2);
-    text-decoration: none;
-  }
+.nav-cv::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media (max-width: 1050px) {
@@ -580,8 +941,10 @@ a:hover {
     flex-wrap: wrap;
   }
 
-  .nav-links a {
-font-size: 11px;
+/* El `:not()` repite a propósito el del bloque principal: sin él, la regla de
+     arriba (más específica) ganaría y el texto no bajaría a 11 px. */
+  .nav-links a:not(.nav-cv) {
+    font-size: 11px;
   }
 
   .nav-cv {
@@ -590,36 +953,17 @@ font-size: 11px;
   }
 }
 
-
 /* ============================================================
    5. HERO
    ------------------------------------------------------------
-   La portada. Es la parte másTZIdle del diseño, así que conviene
-   entenderla por partes:
+   Portada con texto, foto y decorados.
 
-     · .hero ............ fondo con grilla y dos círculos decorados
-     · .hero-inner ..... la rejilla de dos columnas
-     · .content ........ columna de texto
-     · .hero-name ...... tu nombre; es lo más grande de la página
-     · .hero-tagline ... "Software que resuelve."; el <span> va en rojo
-     · .hero-role ...... carrera (color amarillo)
-     · .hero-subrole ... subcargo (gris)
-     · .hero-techs ..... tecnologías clave, en monoespaciada
-     · .hero-buttons .... los cuatro botones
-     · .hero-meta ...... ciudad y áreas, con punto y separador
-     · .hero-visual .... columna de la foto
-     · .hero-coords .... coordenadas, posicionadas sobre la foto
-     · .photo-frame .... marco naranja con hueco arriba y a la izquierda
-     · .photo .......... la imagen, encaja con object-fit
-     · .photo-caption .... franja de texto al pie de la foto
-     · .hero-badge ...... círculo "Software" superpuesto
-      · .hero-placard .... cartel "Disponible para trabajar", sobre la foto
+   La foto de aquí rota sola cada 15 s. Las fotos van en
+   src/data/perfil.ts (`hero.fotos`); el intervalo, en el `15000` de
+   public/js/main.js. Para ver las otras dos galerías del sitio, mira
+   el bloque 6 (Stack) y el bloque 9 (Robótica).
 
-   RESPONSIVE
-     1050 px .... las dos columnas se apilan
-     700 px ..... titular más pequeño, botones a una columna
-
-   USADO POR: Hero.astro.
+   USADO POR: Hero.astro
    ============================================================ */
 .hero {
   position: relative;
@@ -630,9 +974,8 @@ font-size: 11px;
   background-size: 40px 40px;
 }
 
-/* Los dos círculos decorados que se asoman por abajo.
-   ::before es el exterior, ::after el interior con tinte naranja. */
 .hero::before,
+
 .hero::after {
   content: '';
   position: absolute;
@@ -657,6 +1000,7 @@ font-size: 11px;
 }
 
 /* 56% texto / 44% foto */
+
 .hero-inner {
   position: relative;
   z-index: 2;
@@ -676,6 +1020,7 @@ font-size: 11px;
 
    El nombre es el elemento más grande porque es lo primero que alguien
    necesita saber: quién es. La frase viene después, en segundo plano. */
+
 .hero-kicker {
   display: flex;
   align-items: center;
@@ -685,10 +1030,6 @@ font-size: 11px;
   margin-bottom: 1.5rem;
 }
 
-.hero-kicker .eyebrow {
-  margin-bottom: 0;
-}
-
 .hero-heading {
   position: relative;
   margin-bottom: 18px;
@@ -696,6 +1037,7 @@ font-size: 11px;
 
 /* Entrada del nombre: sube y aparece. Se anula con prefers-reduced-motion
    más abajo, en el bloque del hero. */
+
 .hero-name {
   font-size: clamp(2.6rem, 5.4vw, 5.25rem);
   line-height: 0.98;
@@ -704,18 +1046,8 @@ font-size: 11px;
   animation: hero-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@keyframes hero-rise {
-  from {
-    opacity: 0;
-    transform: translateY(22px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
 /* --- Estado de disponibilidad junto al antetítulo --- */
+
 .hero-placard {
   position: absolute;
   top: -1.8cm;
@@ -730,18 +1062,8 @@ font-size: 11px;
   animation: placard-enter 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both;
 }
 
-@keyframes placard-enter {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* El punto palpitante refuerza el estado sin competir con el titular. */
+
 .hero-placard-dot {
   width: 9px;
   height: 9px;
@@ -750,16 +1072,6 @@ font-size: 11px;
   flex: none;
   box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 70%, transparent);
   animation: placard-pulse 2.4s ease-out infinite;
-}
-
-@keyframes placard-pulse {
-  0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
-  }
-  70%,
-  100% {
-    box-shadow: 0 0 0 6px transparent;
-  }
 }
 
 .hero-placard-text {
@@ -801,6 +1113,7 @@ font-size: 11px;
 /* La línea de tecnologías clave va en monoespaciada, como el resto de
    etiquetas del sitio, para que se lea como dato y no compita con el
    titular. El separador "·" ya viene en el texto, no se pone con CSS. */
+
 .hero-techs {
   color: var(--dim);
   font-family: var(--mono);
@@ -816,6 +1129,7 @@ font-size: 11px;
   gap: 14px;
   margin-bottom: 42px;
   flex-wrap: wrap;
+  max-width: 420px;
 }
 
 .hero-meta {
@@ -829,6 +1143,7 @@ font-size: 11px;
 }
 
 /* Punto naranja que precede a la ciudad */
+
 .hero-meta-dot {
   width: 9px;
   height: 9px;
@@ -837,11 +1152,13 @@ font-size: 11px;
 }
 
 /* La barra "/" entre ciudad y áreas */
+
 .hero-meta-divider {
   color: var(--accent);
 }
 
 /* --- Lado visual --- */
+
 .hero-visual {
   position: relative;
   display: flex;
@@ -930,6 +1247,14 @@ font-size: 11px;
   stroke: none;
 }
 
+/* GitHub es una marca rellena, como LinkedIn y Discord, así que necesita su
+   propio modificador: por defecto el icono es de trazo. */
+
+.hero-social__icon--github {
+  fill: currentColor;
+  stroke: none;
+}
+
 .hero-social:hover .hero-social__mark {
   color: var(--ink-black);
 }
@@ -945,6 +1270,7 @@ font-size: 11px;
 }
 
 /* Coordenadas: absolute para flotar sobre la esquina de la foto */
+
 .hero-coords {
   position: absolute;
   top: calc(4px - 1cm);
@@ -956,12 +1282,14 @@ font-size: 11px;
   font-size: 12px;
   line-height: 1.15;
 }
+
 .hero-coords span {
   display: block;
 }
 
 /* El marco naranja: el padding descentrado crea el hueco
    arriba y a la izquierda, y el caption ocupa la franja inferior. */
+
 .photo-frame {
   position: relative;
   width: min(100%, 530px);
@@ -982,10 +1310,6 @@ font-size: 11px;
   filter: saturate(0.88);
   opacity: 0;
   transition: opacity 1s ease-in-out;
-}
-
-.photo.is-active {
-  opacity: 1;
 }
 
 .photo--1 {
@@ -1082,6 +1406,7 @@ font-size: 11px;
 }
 
 /* --- Responsive --- */
+
 @media (max-width: 1050px) {
   .hero-inner {
     grid-template-columns: 1fr;
@@ -1154,27 +1479,532 @@ font-size: 11px;
 
 }
 
+/* ============================================================
+   6. STACK / MARQUESINA INFINITA
+   ------------------------------------------------------------
+   La cinta de tecnologías.
+
+   Aquí vive la cinta en sí: las clases .marquee* y su animación
+   .marquee-track. Robótica reutiliza esta misma cinta para mostrar
+   los torneos, y por eso sus modificadores (`.marquee--torneos`,
+   `.marquee__periodo`...) están en el bloque 9 y no aquí: esta sección
+   define cómo se mueve, la otra cómo se ve cada torneo.
+
+   USADO POR: Stack.astro, y el motor de la cinta que comparte con
+   Robotica.astro
+   ============================================================ */
+/* ---------------------------------------------------------------------------
+   Marquee de torneos (D30)
+   ---------------------------------------------------------------------------
+   Reutiliza la cinta de STACK: mismas clases, mismo desplazamiento. Solo se
+   añade lo que cambia, que es que aquí no hay logos.
+
+   `.marquee__item:not(:has(.marquee__logo))::before` dibuja un hueco punteado
+   para que los nombres queden alineados cuando una tecnología no trae icono.
+   Ese hueco es justo lo que no queremos, así que `.marquee__item--torneo` lo
+   anula. */
+
+.marquee--torneos {
+  --marquee-duration: 72s;
+  border-radius: 4px;
+}
+
+/* Foco visible: la cinta es enfocable para poder detenerla con el teclado. */
+
+.marquee__track:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
+  outline-offset: -2px;
+}
+
+/* El texto de apoyo va en una línea propia y el conjunto entero se mantiene
+   junto: los `torneos` se leen como una cinta de datos, no como tarjetas. */
+
+.marquee__item--torneo {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  white-space: normal;
+  max-width: 22rem;
+}
+
+.marquee__periodo {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.marquee__titulo {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1.3;
+}
+
+.marquee__detalle {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+/* Sin recuadro punteado: aquí no hay logo que falte.
+
+   El selector base es `.marquee__item:not(:has(.marquee__logo))::before`, que
+   pesa dos clases (`.marquee__item` más el `:not(:has())`). Un selector de una
+   sola clase NO lo gana por orden de escritura, aunque vaya después: gana la
+   especificidad. Hay que repetir la misma forma para empatar y ganar aquí. */
+
+.marquee--torneos .marquee__item:not(:has(.marquee__logo))::before {
+  content: none;
+}
+
+.marquee__item--torneo:hover .marquee__titulo {
+  color: var(--white);
+}
+
+.marquee__item--torneo:hover .marquee__titulo {
+  color: var(--accent-flame, var(--accent));
+}
+
+.stack__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem 2rem;
+  flex-wrap: wrap;
+}
+
+.stack {
+  padding-block-start: calc(clamp(4rem, 9vw, 7.5rem) - 29px - 0.7cm);
+  padding-block-end: calc(clamp(4rem, 9vw, 7.5rem) - 9px - 0.7cm);
+}
+
+.marquee {
+  --marquee-duration: 42s;
+  overflow: hidden;
+  border-block: 1px solid var(--line-soft);
+  padding-block: 1.75rem;
+  /* Desvanece los extremos para que la cinta no se corte en seco */
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll var(--marquee-duration) linear infinite;
+}
+
+.marquee__group {
+  display: flex;
+  align-items: center;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  padding-right: clamp(2rem, 4vw, 3.5rem);
+  list-style: none;
+  margin: 0;
+}
+
+.marquee__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.marquee__logo {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  padding: 5px;
+  border: 1px solid var(--line);
+  background: var(--bg-raise);
+  object-fit: contain;
+  opacity: 0.62;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.marquee__item:hover .marquee__logo {
+  opacity: 1;
+  transform: scale(1.12);
+}
+
+/* Elementos sin logo (VS Code, Word, Excel, OpenCode…): se les dibuja un
+   hueco con el mismo tamaño que un logo, para que la fila mantenga el
+   ritmo y los nombres queden alineados. */
+
+.marquee__item:not(:has(.marquee__logo))::before {
+  content: '';
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border: 1px dashed var(--line);
+}
+
+.marquee__name {
+  font-family: var(--mono);
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  color: var(--muted);
+  transition: color 0.25s ease;
+}
+
+.marquee__item:hover .marquee__name {
+  color: var(--white);
+}
+
+/* --- Pausa: al pasar el cursor, al enfocar, o con el botón --- */
+
+.marquee:hover .marquee__track,
+
+.marquee:focus-within .marquee__track,
+
+.marquee.is-paused .marquee__track {
+  animation-play-state: paused;
+}
+
+/* --- Botón de pausa --- */
+
+.marquee-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.marquee-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent-2);
+}
+
+.marquee-toggle__icon {
+  color: var(--accent-2);
+  font-size: 9px;
+  letter-spacing: 0;
+}
+
+/* --- Sin movimiento: fila estática y desplazable --- */
+
+@media (prefers-reduced-motion: reduce) {
+  #trayectoria::before {
+    animation: none;
+    opacity: 0.24;
+  }
+
+  #trayectoria::after {
+    display: none;
+    animation: none;
+  }
+
+  .marquee {
+    overflow-x: auto;
+    mask-image: none;
+    scrollbar-width: thin;
+  }
+
+  .marquee__track {
+    animation: none;
+  }
+
+  .photo {
+    transition: none;
+  }
+}
 
 /* ============================================================
-   6. TRAYECTORIA / EXPERIENCIA
+   7. SOBRE MÍ
    ------------------------------------------------------------
-   Lista cronológica de los puestos.
+   Preguntas plegables y propuesta de valor.
 
-   CLASES
-     .exp-list .......... envoltura <ol>
-     .exp-item .......... un puesto: periodo a la izquierda, detalle a la derecha
-     .exp-period ........ periodo, en monoespaciada
-     .exp-detail ........ columna de texto
-     .exp-company ....... nombre de la empresa, en naranja
-     .exp-summary ....... descripción del puesto
-     .exp-achievements . logros, con viñeta
+   USADO POR: SobreMi.astro
+   ============================================================ */
+.about-list {
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+  /* 54 rem = 864 px. Es el mando del ancho: antes era 74ch, que con la
+     fuente cargada daba entre 590 y 710 px según el navegador. */
+  max-width: 54rem;
+}
 
-   El borde izquierdo de .exp-item es la línea vertical de tiempo.
+.about-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 0fr;
+  border: 1px solid var(--line);
+  /* El que se pinta al abrirse. transparente = mismo grosor siempre. */
+  border-left: 2px solid transparent;
+  background: color-mix(in srgb, var(--bg-raise) 50%, transparent);
+  /* `grid-template-columns` es LA transición que hace el efecto lateral: sin
+     esta línea la columna salta de 0fr a 1.05fr de golpe y la respuesta
+     aparece entera en vez de crecer hacia la derecha de la pregunta.
+     Es interpolable porque ambas pistas son `<flex>`. */
+  transition:
+    grid-template-columns 0.5s cubic-bezier(0.33, 1, 0.68, 1),
+    border-color 0.22s ease,
+    background-color 0.22s ease;
+}
 
-   RESPONSIVE
-     700 px ..... periodo y detalle se apilan en una columna
+.about-item:has(.about-toggle[aria-expanded='true']) {
+  /* 1.07fr sobre 1fr = 51,7 % para la respuesta. Con 1.05fr eran 51 % y el
+     texto se quedaba corto; el reparto es el mando del ancho. */
+  grid-template-columns: minmax(0, 1fr) 1.07fr;
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
+  border-left-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
 
-   USADO POR: Trayectoria.astro.
+/* La pregunta es el único elemento siempre visible de cada fila. */
+
+.about-item__head {
+  margin: 0;
+  align-self: center;
+  font-size: 1rem;
+}
+
+.about-toggle {
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  padding: 1.15rem 1.4rem;
+  border: 0;
+  background: none;
+  color: var(--white);
+  font-family: var(--sans);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-align: left;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .about-toggle:hover {
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+  }
+}
+
+.about-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* El número va en monoespaciada, como los periodos de la trayectoria. */
+
+.about-toggle__index {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  transition:
+    color 0.22s ease,
+    transform 0.22s ease;
+}
+
+.about-toggle__icon {
+  display: flex;
+  color: var(--accent);
+  transition: transform 0.22s ease;
+}
+
+.about-toggle__icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.about-toggle[aria-expanded='true'] .about-toggle__index {
+  color: var(--white);
+}
+
+.about-toggle[aria-expanded='true'] .about-toggle__icon {
+  transform: rotate(180deg);
+}
+
+@media (hover: hover) {
+  .about-toggle:hover .about-toggle__index {
+    color: var(--white);
+    transform: translateX(3px);
+  }
+}
+
+/* LA RESPUESTA. Grid de una fila que colapsa: `0fr` cerrado, `1fr`
+   abierto. La transición va también en el estado abierto, porque
+   si no el navegador solo animaría al cerrar. */
+
+.about-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.5s cubic-bezier(0.33, 1, 0.68, 1),
+    opacity 0.4s ease,
+    visibility 0s linear 0.5s;
+}
+
+/* El envoltorio que recorta. Sin `min-height: 0` el contenido
+   seguiría marcando el alto y la fila no se plegaría. */
+
+.about-panel__inner {
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 1.4rem;
+  transition: padding 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.about-item:has(.about-toggle[aria-expanded='true']) .about-panel {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    grid-template-rows 0.5s cubic-bezier(0.33, 1, 0.68, 1),
+    opacity 0.4s ease 0.08s,
+    visibility 0s;
+}
+
+.about-item:has(.about-toggle[aria-expanded='true']) .about-panel__inner {
+  padding: 0.2rem 1.4rem 1.5rem;
+}
+
+/* Sin JavaScript el panel trae `hidden` y gana a este bloque. */
+
+.about-panel[hidden] {
+  display: none;
+}
+
+.about-panel__text {
+  /* Sin `max-width`: el ancho lo manda la columna, que es justo lo que se
+     está animando. Con un tope de 46ch el texto se cortaba antes de
+     aprovechar el espacio nuevo. A 0.98 rem sale a ~66 caracteres por línea,
+     que es lo justo para leer. */
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.8;
+  /* Entra desde la derecha, el mismo sentido en que crece la columna. Si el
+     texto apareciera quieto mientras la caja se abre, se leería como un
+     parpadeo en mitad del despliegue. */
+  animation: about-slide-right 0.5s cubic-bezier(0.33, 1, 0.68, 1) 0.08s both;
+}
+
+/* La propuesta de valor va siempre desplegada y con más presencia: es el
+   cierre de la sección y lo que el usuario quiere leer sí o sí. */
+
+.about-value {
+  margin-top: 2.75rem;
+  padding: 1.85rem 2rem;
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.about-value__label {
+  margin-bottom: 0.8rem;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.about-value__text {
+  max-width: 60ch;
+  color: var(--white);
+  font-size: 1.08rem;
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+/* Si el sistema pide menos movimiento, el despliegue es instantáneo:
+   el contenido es el mismo, solo sin la transición. */
+
+@media (prefers-reduced-motion: reduce) {
+  .about-item,
+  .about-panel,
+  .about-panel__inner {
+    transition: none;
+  }
+
+  .about-panel__text,
+  .about-panel .tag-list,
+  .about-panel .tag {
+    animation: none;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Aquí no cabe de lado: una sola columna y la respuesta debajo.
+     Solo queda por animar el alto.
+
+     El selector del estado abierto tiene que repetirse aquí porque, con
+     menos especificidad que `.about-item:has(...)`, no lo ganaría: sin esto
+     el móvil seguiría partiéndose en dos columnas. */
+  .about-item,
+  .about-item:has(.about-toggle[aria-expanded='true']) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .about-item__head {
+    grid-area: 1 / 1;
+  }
+
+  .about-panel {
+    grid-area: 2 / 1;
+  }
+
+  .about-toggle {
+    grid-template-columns: 1.9rem minmax(0, 1fr) auto;
+    gap: 0.85rem;
+    padding: 1rem 1.1rem;
+    font-size: 0.98rem;
+  }
+
+  .about-panel__inner {
+    padding: 0 1.1rem;
+  }
+
+  .about-item:has(.about-toggle[aria-expanded='true']) .about-panel__inner {
+    padding: 0.15rem 1.1rem 1.35rem;
+  }
+
+  .about-panel__text {
+    font-size: 0.94rem;
+  }
+
+  .about-value {
+    padding: 1.45rem 1.35rem;
+  }
+
+  .about-value__text {
+    font-size: 1rem;
+  }
+}
+
+/* ============================================================
+   8. TRAYECTORIA / EXPERIENCIA
+   ------------------------------------------------------------
+   Experiencia laboral, credenciales y roles.
+
+   El acordeón (.exp-toggle) NO está aquí aunque se use en esta
+   sección: es compartido con Robótica y vive en el bloque 3.
+
+   USADO POR: Trayectoria.astro
    ============================================================ */
 .exp-list {
   position: relative;
@@ -1184,49 +2014,10 @@ font-size: 11px;
   gap: 3rem;
 }
 
-/* Botón que despliega un bloque. El texto alterna entre "Ver" y "Ocultar";
-   la flecha gira para señalar el estado. */
-.exp-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-  padding: 0.45rem 0.85rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line));
-  background: color-mix(in srgb, var(--accent) 6%, transparent);
-  color: var(--white);
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: border-color 0.22s ease, background-color 0.22s ease;
-}
-
-.exp-toggle:hover {
-  border-color: var(--accent-2);
-  background: color-mix(in srgb, var(--accent) 13%, transparent);
-}
-
-.exp-toggle:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
-
-.exp-toggle__icon {
-  width: 0.9rem;
-  height: 0.9rem;
-  color: var(--accent);
-  transition: transform 0.22s ease;
-}
-
-.exp-toggle[aria-expanded='true'] .exp-toggle__icon {
-  transform: rotate(180deg);
-}
-
 /* Bloque plegable de competencias y torneos. Sale cerrado; `hidden` basta
    porque el panel no lleva `display` propio. Va dentro del item de robótica,
    que es una rejilla de tres columnas: ocupa la fila entera. */
+
 .exp-extra {
   grid-column: 1 / -1;
   margin-top: 2rem;
@@ -1253,80 +2044,8 @@ font-size: 11px;
   font-size: 0.82em;
 }
 
-.comp-list {
-  display: grid;
-  gap: 1.5rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-/* Las ocho tarjetas usan el mismo ritmo y los mismos tipos que el resto de
-   la trayectoria: periodo en mono ámbar, título en la escala de `h3` del
-   bloque, y las dos líneas de apoyo en la misma voz. */
-.comp-item {
-  display: grid;
-  grid-template-columns: 8rem minmax(0, 1fr);
-  gap: 0.4rem 1.5rem;
-  padding-left: 1.25rem;
-  border-left: 2px solid color-mix(in srgb, var(--accent) 28%, var(--line));
-}
-
-.comp-item__periodo {
-  color: var(--accent);
-  font-family: var(--mono);
-  font-size: 12px;
-  line-height: 1.5;
-  letter-spacing: 0.5px;
-  padding-top: 0.2rem;
-}
-
-.comp-item__body {
-  display: grid;
-  gap: 0.15rem;
-  min-width: 0;
-}
-
-.comp-item__body h3 {
-  font-size: 1.05rem;
-  line-height: 1.25;
-}
-
-.comp-item__evento,
-.comp-item__resultado,
-.comp-item__lugar {
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
-.comp-item__evento {
-  color: var(--muted);
-}
-
-.comp-item__resultado {
-  color: var(--accent);
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-}
-
-.comp-item__lugar {
-  color: var(--dim);
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-}
-
-@media (max-width: 700px) {
-  .comp-item {
-    grid-template-columns: 1fr;
-    gap: 0.35rem;
-  }
-}
-
 .exp-list::before,
+
 .exp-list::after {
   position: absolute;
   top: 0;
@@ -1361,54 +2080,9 @@ font-size: 11px;
   align-items: start;
 }
 
-.exp-period {
-  position: relative;
-  width: fit-content;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--accent);
-  letter-spacing: 0.5px;
-  padding-top: 0.35rem;
-  transition:
-    color 220ms ease,
-    transform 220ms ease,
-    text-shadow 220ms ease;
-}
-
-.exp-period::after {
-  position: absolute;
-  right: 0;
-  bottom: -0.3rem;
-  left: 0;
-  height: 1px;
-  content: '';
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 220ms ease;
-}
-
-@media (hover: hover) {
-  .exp-item:hover .exp-period {
-    color: var(--white);
-    transform: translateX(4px);
-    text-shadow: 0 0 12px color-mix(in srgb, var(--accent) 45%, transparent);
-  }
-
-  .exp-item:hover .exp-period::after {
-    transform: scaleX(1);
-  }
-}
-
 .exp-detail h3 {
   font-size: 1.35rem;
   margin-bottom: 0.15rem;
-}
-
-.exp-company {
-  color: var(--accent-2);
-  font-weight: 700;
-  margin-bottom: 0.85rem;
 }
 
 .exp-summary {
@@ -1459,53 +2133,9 @@ font-size: 11px;
   }
 }
 
-.exp-achievements {
-  margin: 0 0 1.1rem;
-  padding-left: 0;
-  list-style: none;
-  color: var(--muted);
-}
-
-.exp-achievements li {
-  position: relative;
-  padding-left: 1.1rem;
-  margin-bottom: 0.3rem;
-  transition:
-    color 200ms ease,
-    transform 200ms ease;
-}
-
-.exp-achievements li::before {
-  position: absolute;
-  top: 0.7em;
-  left: 0.15rem;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  content: '';
-  background: var(--accent-2);
-  box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 35%, transparent);
-  transition:
-    background-color 200ms ease,
-    box-shadow 240ms ease,
-    transform 200ms ease;
-}
-
-@media (hover: hover) {
-  .exp-achievements li:hover {
-    color: var(--white);
-    transform: translateX(4px);
-  }
-
-  .exp-achievements li:hover::before {
-    background: var(--accent);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
-    transform: scale(1.15);
-  }
-}
-
 /* Marco con borde para las fotos del diploma y el momento de la entrega.
    La línea de arriba es la barra de progreso: va sola, sin botones. */
+
 .credential-gallery {
   position: relative;
   min-width: 0;
@@ -1526,16 +2156,6 @@ font-size: 11px;
   box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 48%, transparent);
   transform-origin: left;
   animation: credential-progress 5s linear infinite;
-}
-
-@keyframes credential-progress {
-  from {
-    transform: scaleX(0);
-  }
-
-  to {
-    transform: scaleX(1);
-  }
 }
 
 .credential-gallery__slides {
@@ -1561,24 +2181,8 @@ font-size: 11px;
   pointer-events: none;
 }
 
-.credential-slide.is-active {
-  opacity: 1;
-  transform: translateX(0);
-}
-
 .credential-slide.is-active .credential-slot__icon {
   animation: credential-icon-enter 500ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
-@keyframes credential-icon-enter {
-  from {
-    opacity: 0;
-    transform: scale(0.78) rotate(-8deg);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) rotate(0);
-  }
 }
 
 .credential-slot {
@@ -1646,128 +2250,60 @@ font-size: 11px;
 }
 
 /* ============================================================
-   COLLAGE DE ROBÓTICA
+   COLLAGE DE ROBÓTICA — la galería de fotos de la sección de robótica
    ------------------------------------------------------------
-   Cuatro casillas enrejan las fotos del bloque de robótica. En cada
-   turno todas las casillas avanzan una posición, así que las
-   combinaciones que salen son distintas sin repetir fotos.
+   Es la rejilla de fotos de ROBÓTICA: 2×2 casillas. Cada casilla tiene
+   las 7 fotos superpuestas y solo se ve una; el JS pasa todas a la vez
+   una posición cada 5 s, así que las combinaciones nunca se repiten.
 
    Sin borde y sin botones, igual que la galería de credenciales: el
-   cambio de fotos es automático y sin controles. Las casillas van pegadas,
-   sin líneas que las separen: se leen como una sola imagen.
+   cambio de fotos es automático y sin controles.
 
-   Son marcadores: cada casilla dice qué archivo espera. Al añadir la
-   foto real, cambia el `.rob-slot` por un `<img>` (ver README).
+   Ya no hay marcadores de "foto pendiente": las siete son archivos
+   reales en `public/img` y cada casilla pinta un `<img>`.
+
+   DÓNDE AJUSTAR CADA COSA
+     Cambiar la proporción de cada casilla ....... .rob-collage__tile
+                                                   (aspect-ratio)
+     Cambiar cuántas casillas hay y su forma ...... .rob-collage__grid
+                                                   (grid-template-columns:
+                                                   2 columnas = 2×2;
+                                                   3 = tira de 3;
+                                                   4 = 2×2 otra vez)
+     Cambiar el salto entre fotos y el recorte ..... .rob-collage__img
+                                                   (object-fit y
+                                                   object-position; con
+                                                   `cover` recorta, con
+                                                   `contain` se ve entera
+                                                   con bandas)
+     Cambiar la suavidad del fundido .............. .rob-collage__layer
+                                                   (transition)
+     Quitar el movimiento ........................ este bloque, dentro de
+                                                   `prefers-reduced-motion`
+                                                   (transition: none)
+     Cambiar cada cuánto avanza ................. NO está aquí: es el
+                                                   `5000` de
+                                                   public/js/main.js
+     Cambiar el ancho en móvil ................... los dos `@media` del
+                                                   final de este bloque
+     Cambiar las fotos o el orden ................ src/data/perfil.ts
+                                                   (`robotica.galeria` y
+                                                   `galeriaAlt`) y, si
+                                                   cambia el número de
+                                                   casillas, el `TILES` de
+                                                   src/components/Robotica.astro
 
    CLASES
      .rob-collage .......... el marco (solo la rejilla)
      .rob-collage__grid .... la rejilla; role="img", no se lee por partes
      .rob-collage__tile .... una casilla
      .rob-collage__layer ... una foto dentro de la casilla
-     .rob-slot ............. el marcador mientras falte la foto
+     .rob-collage__img ..... el `<img>` que llena la casilla
    ------------------------------------------------------------ */
+
 .exp-item--collage {
   grid-template-columns: 10rem minmax(0, 1fr) minmax(15rem, 0.9fr);
   align-items: start;
-}
-
-.rob-collage {
-  position: relative;
-  min-width: 0;
-  overflow: hidden;
-  background: var(--bg-raise);
-}
-
-.rob-collage__grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0;
-}
-
-.rob-collage__tile {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  background: var(--bg);
-}
-
-.rob-collage__layer {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 0.55rem;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-
-.rob-collage__layer.is-active {
-  opacity: 1;
-}
-
-.rob-slot {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.3rem;
-  width: 100%;
-  text-align: center;
-}
-
-.rob-slot__index {
-  color: var(--dim);
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.5px;
-}
-
-.rob-slot__icon {
-  width: 34px;
-  height: 34px;
-  padding: 7px;
-  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
-  border-radius: 8px;
-  color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 5%, var(--bg));
-}
-
-.rob-slot__path {
-  max-width: 100%;
-  color: var(--dim);
-  font-family: var(--mono);
-  font-size: 9px;
-  overflow-wrap: anywhere;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .exp-list::after {
-    opacity: 0.5;
-    transform: scaleY(1);
-    transition: none;
-  }
-
-  #trayectoria .tag,
-  .exp-period,
-  .exp-period::after,
-  .exp-achievements li,
-  .exp-achievements li::before,
-  .credential-slide,
-  .credential-slide .credential-slot__icon {
-    animation: none;
-    transition: none;
-  }
-
-  .credential-gallery::after {
-    display: none;
-  }
-
-  .credential-slide,
-  .rob-collage__layer,
-  .exp-toggle,
-  .exp-toggle__icon {
-    transition: none;
-  }
 }
 
 @media (max-width: 780px) {
@@ -1798,633 +2334,667 @@ font-size: 11px;
   }
 }
 
+/* --- El enlace de la línea de tiempo a esta sección ---
+   Nace en D28: la línea de tiempo dejó de duplicar el detalle, así que necesita
+   una salida visible hacia donde ese detalle vive ahora. */
 
-/* ============================================================
-   7. STACK / MARQUESINA INFINITA
-   ------------------------------------------------------------
-   Los logos de las tecnologías en una cinta que se desplaza sin fin.
-
-   CLASES
-     .stack ............. la <section>
-     .stack__head ....... cabecera con el botón de pausa
-     .marquee ........... el viewport que recorta la cinta
-     .marquee__track .... la cinta móvil (contiene 2 copias)
-     .marquee__group .... una copia completa de la lista
-     .marquee__item ..... un logo + su nombre
-     .marquee__logo ..... el icono (SVG de Simple Icons)
-     .marquee__name ..... el texto, siempre presente
-     .marquee-toggle .... botón pausar / reproducir
-
-   POR QUÉ FUNCIONA EL BUCLE
-     La pista contiene la lista dos veces seguidas y la animación la
-     desplaza -50%. Cuando llega al final, la segunda copia ocupa
-     exactamente el lugar de la primera y el salto es invisible.
-
-   ACCESIBILIDAD (WCAG 2.2.2 — contenido en movimiento)
-     · Botón para pausar. El movimiento no puede ser el único modo.
-     · También se pausa al pasar el cursor o al enfocar la cinta.
-     · Con prefers-reduced-motion la cinta no se mueve y se vuelve
-       una fila desplazable con la barra de scroll.
-     · La segunda copia va con aria-hidden para que un lector de
-       pantalla no lea los nombres dos veces.
-
-   USADO POR: Stack.astro. El botón lo controla public/js/main.js.
-   ============================================================ */
-.stack__head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1.5rem 2rem;
-  flex-wrap: wrap;
-}
-
-.stack {
-  padding-block-start: calc(clamp(4rem, 9vw, 7.5rem) - 29px - 0.7cm);
-  padding-block-end: calc(clamp(4rem, 9vw, 7.5rem) - 9px - 0.7cm);
-}
-
-.stack__head .eyebrow {
-  margin-bottom: 1.25rem;
-}
-
-.marquee {
-  --marquee-duration: 42s;
-  overflow: hidden;
-  border-block: 1px solid var(--line-soft);
-  padding-block: 1.75rem;
-  /* Desvanece los extremos para que la cinta no se corte en seco */
-  mask-image: linear-gradient(
-    90deg,
-    transparent,
-    #000 8%,
-    #000 92%,
-    transparent
-  );
-}
-
-.marquee__track {
-  display: flex;
-  width: max-content;
-  animation: marquee-scroll var(--marquee-duration) linear infinite;
-}
-
-.marquee__group {
-  display: flex;
-  align-items: center;
-  gap: clamp(2rem, 4vw, 3.5rem);
-  padding-right: clamp(2rem, 4vw, 3.5rem);
-  list-style: none;
-  margin: 0;
-}
-
-.marquee__item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  white-space: nowrap;
-}
-
-/* El marco y el fondo hacen que, si un logo falla al descargarse, quede
-   un hueco limpio en lugar de un icono roto. El nombre sigue al lado,
-   así que la tecnología siempre queda identificada. */
-.marquee__logo {
-  width: 30px;
-  height: 30px;
-  flex: none;
-  padding: 5px;
-  border: 1px solid var(--line);
-  background: var(--bg-raise);
-  object-fit: contain;
-  opacity: 0.62;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-.marquee__item:hover .marquee__logo {
-  opacity: 1;
-  transform: scale(1.12);
-}
-
-/* Elementos sin logo (VS Code, Word, Excel, OpenCode…): se les dibuja un
-   hueco con el mismo tamaño que un logo, para que la fila mantenga el
-   ritmo y los nombres queden alineados. */
-.marquee__item:not(:has(.marquee__logo))::before {
-  content: '';
-  width: 30px;
-  height: 30px;
-  flex: none;
-  border: 1px dashed var(--line);
-}
-
-.marquee__name {
-  font-family: var(--mono);
-  font-size: 15px;
-  letter-spacing: 0.3px;
-  color: var(--muted);
-  transition: color 0.25s ease;
-}
-
-.marquee__item:hover .marquee__name {
-  color: var(--white);
-}
-
-/* --- El bucle --- */
-@keyframes marquee-scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-/* --- Pausa: al pasar el cursor, al enfocar, o con el botón --- */
-.marquee:hover .marquee__track,
-.marquee:focus-within .marquee__track,
-.marquee.is-paused .marquee__track {
-  animation-play-state: paused;
-}
-
-/* --- Botón de pausa --- */
-.marquee-toggle {
+.exp-detail__more {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 0.7rem 1.1rem;
-  border: 1px solid var(--line);
-  background: transparent;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: color 0.2s ease, border-color 0.2s ease;
-}
-
-.marquee-toggle:hover {
-  color: var(--accent);
-  border-color: var(--accent-2);
-}
-
-.marquee-toggle__icon {
+  gap: 0.45rem;
+  margin-top: 1rem;
   color: var(--accent-2);
-  font-size: 9px;
-  letter-spacing: 0;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 180ms ease;
 }
 
-/* --- Sin movimiento: fila estática y desplazable --- */
+.exp-detail__more:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.exp-detail__arrow {
+  transition: transform 200ms ease;
+}
+
+.exp-detail__more:hover .exp-detail__arrow {
+  transform: translateX(3px);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  #trayectoria::before {
-    animation: none;
-    opacity: 0.24;
-  }
-
-  #trayectoria::after {
-    display: none;
-    animation: none;
-  }
-
-  .marquee {
-    overflow-x: auto;
-    mask-image: none;
-    scrollbar-width: thin;
-  }
-
-  .marquee__track {
-    animation: none;
-  }
-
-  .photo {
+  .exp-detail__arrow {
     transition: none;
   }
-}
 
-/* ============================================================
-   8. SOBRE MÍ
-   ------------------------------------------------------------
-   Seis preguntas plegables. La respuesta NO cae hacia abajo:
-   se despliega HACIA LA DERECHA, en dos columnas —la pregunta
-   a la izquierda, la respuesta a la derecha— y al abrirse una,
-   la pregunta se encoge. Debajo de 700 px no cabe de lado y
-   vuelve a caer hacia abajo, que es lo único que cambia.
-
-   CÓMO SE LOGRA, Y POR QUÉ ES EL CAMBIO MÁS DELICADO DEL SITIO:
-
-   1. Cada fila es un grid de dos columnas. La segunda pista va de
-      `0fr` a `1.07fr` (51,7 % del ancho de una fila de 864 px, unos
-      447 px de columna). `fr` sí se puede interpolar, así que la
-      columna crece en horizontal en lugar de saltar de golpe, y la
-      pregunta se encoge a la vez.
-
-   2. El alto se colapsa aparte, en el propio panel, con su propio
-      grid de una fila que va de `0fr` a `1fr`. Hace falta un
-      envoltorio intermedio (`.about-panel__inner`) porque es el
-      que lleva `overflow: hidden`: sin él, el contenido seguiría
-      marcando el alto y las seis filas quedarían altas siempre.
-
-   3. `visibility` sustituye a `hidden` para cerrar. Con
-      `display: none` no hay nada que transicionar; con
-      `visibility: hidden` el panel sale igual del tabulado y de
-      los lectores de pantalla, pero se puede animar. El atributo
-      `hidden` se queda en el HTML para quien llegue sin JavaScript
-      y el script lo quita en cuanto arranca — es lo que hace
-      `data-exp-css` en main.js.
-
-   El borde izquierdo lo lleva ahora la fila entera y no el botón:
-   así la línea ámbar es continua por los dos lados en vez de
-   tener que fingir que el panel lo continúa.
-
-   CLASES
-     .about-list ........ el <ul> de las seis filas
-     .about-item ........ UNA FILA = pregunta + respuesta
-     .about-item__head .. el <h3> que envuelve al botón
-     .about-toggle ..... el botón: número, pregunta y flecha
-     .about-toggle__index el número 01-06, en monoespaciada
-     .about-toggle__icon la flecha; gira 180° al abrirse
-     .about-panel ...... la respuesta; colapsa en alto y ancho
-     .about-panel__inner el envoltorio que recorta el alto
-     .about-panel__text la respuesta escrita
-     .about-value ...... la propuesta de valor, siempre visible
-
-   EN MÓVIL (700 px) el segundo ejemplo vale: la respuesta se
-   apila debajo, en una sola columna, y solo se anima el alto.
-
-   USADO POR: SobreMi.astro.
-   ============================================================ */
-.about-list {
-  list-style: none;
-  display: grid;
-  gap: 0.6rem;
-  /* 54 rem = 864 px. Es el mando del ancho: antes era 74ch, que con la
-     fuente cargada daba entre 590 y 710 px según el navegador. */
-  max-width: 54rem;
-}
-
-/* UNA FILA. El grid de dos columnas es lo que hace el despliegue
-   lateral; `:has()` lee el estado desde el botón para no depender
-   de una clase extra en el HTML. */
-.about-item {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 0fr;
-  border: 1px solid var(--line);
-  /* El que se pinta al abrirse. transparente = mismo grosor siempre. */
-  border-left: 2px solid transparent;
-  background: color-mix(in srgb, var(--bg-raise) 50%, transparent);
-  /* `grid-template-columns` es LA transición que hace el efecto lateral: sin
-     esta línea la columna salta de 0fr a 1.05fr de golpe y la respuesta
-     aparece entera en vez de crecer hacia la derecha de la pregunta.
-     Es interpolable porque ambas pistas son `<flex>`. */
-  transition:
-    grid-template-columns 0.5s cubic-bezier(0.33, 1, 0.68, 1),
-    border-color 0.22s ease,
-    background-color 0.22s ease;
-}
-
-.about-item:has(.about-toggle[aria-expanded='true']) {
-  /* 1.07fr sobre 1fr = 51,7 % para la respuesta. Con 1.05fr eran 51 % y el
-     texto se quedaba corto; el reparto es el mando del ancho. */
-  grid-template-columns: minmax(0, 1fr) 1.07fr;
-  border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
-  border-left-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 6%, transparent);
-}
-
-/* La pregunta es el único elemento siempre visible de cada fila. */
-.about-item__head {
-  margin: 0;
-  align-self: center;
-  font-size: 1rem;
-}
-
-.about-toggle {
-  display: grid;
-  grid-template-columns: 2.4rem minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 1.25rem;
-  width: 100%;
-  padding: 1.15rem 1.4rem;
-  border: 0;
-  background: none;
-  color: var(--white);
-  font-family: var(--sans);
-  font-size: 1.05rem;
-  font-weight: 700;
-  line-height: 1.4;
-  letter-spacing: -0.01em;
-  text-align: left;
-  cursor: pointer;
-}
-
-@media (hover: hover) {
-  .about-toggle:hover {
-    background: color-mix(in srgb, var(--accent) 5%, transparent);
-  }
-}
-
-.about-toggle:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
-
-/* El número va en monoespaciada, como los periodos de la trayectoria. */
-.about-toggle__index {
-  color: var(--accent);
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 1px;
-  transition:
-    color 0.22s ease,
-    transform 0.22s ease;
-}
-
-.about-toggle__icon {
-  display: flex;
-  color: var(--accent);
-  transition: transform 0.22s ease;
-}
-
-.about-toggle__icon svg {
-  width: 1rem;
-  height: 1rem;
-}
-
-.about-toggle[aria-expanded='true'] .about-toggle__index {
-  color: var(--white);
-}
-
-.about-toggle[aria-expanded='true'] .about-toggle__icon {
-  transform: rotate(180deg);
-}
-
-@media (hover: hover) {
-  .about-toggle:hover .about-toggle__index {
-    color: var(--white);
-    transform: translateX(3px);
-  }
-}
-
-/* LA RESPUESTA. Grid de una fila que colapsa: `0fr` cerrado, `1fr`
-   abierto. La transición va también en el estado abierto, porque
-   si no el navegador solo animaría al cerrar. */
-.about-panel {
-  display: grid;
-  grid-template-rows: 0fr;
-  overflow: hidden;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    grid-template-rows 0.5s cubic-bezier(0.33, 1, 0.68, 1),
-    opacity 0.4s ease,
-    visibility 0s linear 0.5s;
-}
-
-/* El envoltorio que recorta. Sin `min-height: 0` el contenido
-   seguiría marcando el alto y la fila no se plegaría. */
-.about-panel__inner {
-  min-height: 0;
-  overflow: hidden;
-  padding: 0 1.4rem;
-  transition: padding 0.5s cubic-bezier(0.33, 1, 0.68, 1);
-}
-
-.about-item:has(.about-toggle[aria-expanded='true']) .about-panel {
-  grid-template-rows: 1fr;
-  opacity: 1;
-  visibility: visible;
-  transition:
-    grid-template-rows 0.5s cubic-bezier(0.33, 1, 0.68, 1),
-    opacity 0.4s ease 0.08s,
-    visibility 0s;
-}
-
-.about-item:has(.about-toggle[aria-expanded='true']) .about-panel__inner {
-  padding: 0.2rem 1.4rem 1.5rem;
-}
-
-/* Sin JavaScript el panel trae `hidden` y gana a este bloque. */
-.about-panel[hidden] {
-  display: none;
-}
-
-.about-panel__text {
-  /* Sin `max-width`: el ancho lo manda la columna, que es justo lo que se
-     está animando. Con un tope de 46ch el texto se cortaba antes de
-     aprovechar el espacio nuevo. A 0.98 rem sale a ~66 caracteres por línea,
-     que es lo justo para leer. */
-  color: var(--muted);
-  font-size: 0.98rem;
-  line-height: 1.8;
-  /* Entra desde la derecha, el mismo sentido en que crece la columna. Si el
-     texto apareciera quieto mientras la caja se abre, se leería como un
-     parpadeo en mitad del despliegue. */
-  animation: about-slide-right 0.5s cubic-bezier(0.33, 1, 0.68, 1) 0.08s both;
-}
-
-/* --- La apertura de las etiquetas --- */
-/* Las etiquetas de "¿Qué me interesa?" se abren como una cortina de
-   izquierda a derecha y luego entran una detrás de otra. Los retardos
-   arrancan antes que en la versión vertical: la caja ya está creciendo
-   hacia la derecha y las etiquetas tienen que ir llegando mientras crece,
-   no aparecer cuando ya ha terminado. */
-.about-panel .tag-list {
-  margin-top: 1.35rem;
-  animation: about-wipe 0.6s cubic-bezier(0.33, 1, 0.68, 1) 0.1s both;
-}
-
-.about-panel .tag {
-  animation: about-slide-right 0.42s cubic-bezier(0.33, 1, 0.68, 1) both;
-}
-
-/* Escalonado: cada etiqueta espera a la anterior. 60 ms es suficiente
-   para que se lea el orden y no tanto que se haga lento. */
-.about-panel .tag:nth-child(1) { animation-delay: 140ms; }
-.about-panel .tag:nth-child(2) { animation-delay: 200ms; }
-.about-panel .tag:nth-child(3) { animation-delay: 260ms; }
-.about-panel .tag:nth-child(4) { animation-delay: 320ms; }
-.about-panel .tag:nth-child(5) { animation-delay: 380ms; }
-.about-panel .tag:nth-child(6) { animation-delay: 440ms; }
-.about-panel .tag:nth-child(7) { animation-delay: 500ms; }
-.about-panel .tag:nth-child(8) { animation-delay: 560ms; }
-
-@keyframes about-wipe {
-  from {
-    clip-path: inset(0 100% 0 0);
-  }
-
-  to {
-    clip-path: inset(0 0 0 0);
-  }
-}
-
-@keyframes about-slide-right {
-  from {
-    opacity: 0;
-    transform: translateX(12px);
-  }
-
-  to {
-    opacity: 1;
+  .exp-detail__more:hover .exp-detail__arrow {
     transform: none;
   }
 }
 
-/* Las etiquetas de "¿Qué me interesa?" sí se resaltan, como en la
-   trayectoria, pero sin el salto: aquí no hay lista de logos. */
-@media (hover: hover) {
-  #sobre-mi .tag:hover {
-    border-color: var(--accent);
-    background: color-mix(in srgb, var(--accent) 13%, var(--bg));
-    color: var(--accent);
-  }
+/* ============================================================
+   9. ROBÓTICA
+   ------------------------------------------------------------
+   USADO POR: Robotica.astro
+
+   Incluye la galería de fotos (.rob-collage*), las tarjetas de medios
+   (.rob-medio*) y los modificadores de la cinta de torneos
+   (.marquee--torneos y los .marquee__periodo / __titulo / __detalle).
+   La cinta en sí está en el bloque 6.
+   ============================================================ */
+/* ---------------------------------------------------------------------------
+   Medios (D31)
+   ---------------------------------------------------------------------------
+   No es una cinta: son pocas piezas y cada una se lee por separado. Tarjetas
+   grandes, con el enlace siempre visible y no escondido en un "Ver" suelto.
+
+   `auto-fit` + `minmax` hace el trabajo del responsive sin media queries: si en
+   una fila caben tres, salen tres; si en móvil solo cabe una, sale una. */
+
+.rob-medios {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-/* La propuesta de valor va siempre desplegada y con más presencia: es el
-   cierre de la sección y lo que el usuario quiere leer sí o sí. */
-.about-value {
-  margin-top: 2.75rem;
-  padding: 1.85rem 2rem;
-  border-left: 3px solid var(--accent);
-  background: color-mix(in srgb, var(--accent) 6%, transparent);
+.rob-medio {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.4rem 1.3rem 1.2rem;
+  border: 1px solid var(--line-soft);
+  border-top: 2px solid color-mix(in srgb, var(--accent) 55%, var(--line));
+  background: var(--bg-raise);
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease;
 }
 
-.about-value__label {
-  margin-bottom: 0.8rem;
-  color: var(--accent);
+.rob-medio:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  transform: translateY(-2px);
+}
+
+.rob-medio__periodo {
+  margin: 0;
   font-family: var(--mono);
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
+  color: var(--accent);
 }
 
-.about-value__text {
-  max-width: 60ch;
-  color: var(--white);
-  font-size: 1.08rem;
+.rob-medio__titulo {
+  margin: 0;
+  font-size: 1.05rem;
   font-weight: 600;
-  line-height: 1.7;
+  line-height: 1.25;
+  color: var(--white);
 }
 
-/* Si el sistema pide menos movimiento, el despliegue es instantáneo:
-   el contenido es el mismo, solo sin la transición. */
-@media (prefers-reduced-motion: reduce) {
-  .about-item,
-  .about-panel,
-  .about-panel__inner {
-    transition: none;
+.rob-medio__entidad {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+/* El detalle es lo que da contexto, así que se empuja hacia abajo para que el
+   enlace quede siempre en la misma línea de base entre tarjetas, sin importar
+   cuántas líneas de texto tenha cada una. */
+
+.rob-medio__detalle {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--dim);
+}
+
+.rob-medio__link {
+  margin-top: auto;
+  padding-top: 0.85rem;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--accent);
+}
+
+.rob-medio__link:hover,
+
+.rob-medio__link:focus-visible {
+  text-decoration: underline;
+}
+
+.rob-collage {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--bg-raise);
+}
+
+.rob-collage__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+}
+
+.rob-collage__tile {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.rob-collage__layer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+/*
+ * La foto llena la casilla entera y se recorta sola.
+ *
+ * Se quito el `padding` que traia la capa: con la imagen al 100% un margen
+ * interior solo dejaria un borde de fondo alrededor de cada foto.
+ */
+
+.rob-collage__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.rob-toggle {
+  margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+}
+
+/* --- Las cinco cifras de cabecera (D29) ---
+   Van FUERA del panel plegable: la sección tiene que decir algo sin que nadie
+   pulse nada. El botón sigue ocultando el detalle largo.
+
+   `font-variant-numeric: tabular-nums` es lo que evita que el número "salte"
+   mientras sube. En una cifra que se anima de 0 a 8, un número de ancho
+   variable hace que todo el texto de al lado respire de lado a lado; con
+   cifras de ancho fijo, el texto se queda quieto y solo se mueve el número. */
+
+.rob-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: 1px;
+  margin: clamp(1.75rem, 3.5vw, 2.5rem) 0 0;
+  padding: 0;
+  list-style: none;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.rob-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: clamp(1.15rem, 2.5vw, 1.6rem);
+  background: var(--bg-raise);
+}
+
+.rob-stat__valor {
+  font-family: var(--mono);
+  font-size: clamp(1.9rem, 4.5vw, 2.9rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+
+.rob-stat__etiqueta {
+  font-size: 0.78rem;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  text-wrap: balance;
+}
+
+/* --- La fundación ---
+   Bloque sobrio, sin tarjeta: son datos de contexto, no un logro. El filete
+   de acento queda para el resumen de trayectoria y para Correo. */
+
+.rob-fundacion {
+  margin-top: clamp(2.25rem, 4.5vw, 3.5rem);
+  padding-top: clamp(1.5rem, 3vw, 2rem);
+  border-top: 1px solid var(--line);
+}
+
+/*
+ * Logo + nombre en una fila.
+ *
+ * El logo (`logot.jpg`) es azul marino sobre fondo blanco, y esta pagina es
+ * oscura. Por eso va sobre una "pastilla" clara: sin ella, el fondo blanco del
+ * logo se veria como un rectangulo suelto.
+ *
+ * El `padding` y el `border-radius` viven en la pastilla, no en la imagen, para
+ * que el logo quede centrado dentro y no se recorte el blanco de sus bordes.
+ */
+
+.rob-fundacion__head {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.9rem, 2vw, 1.4rem);
+  margin-bottom: 1rem;
+}
+
+.rob-fundacion__id {
+  min-width: 0;
+}
+
+.rob-fundacion__logo {
+  flex: 0 0 auto;
+  width: clamp(52px, 6.5vw, 78px);
+  height: auto;
+  aspect-ratio: 320 / 267;
+  object-fit: cover;
+  border-radius: 10px;
+  /* El logo ya trae su propio fondo blanco, asi que no hace falta una pastilla
+     detras: basta con el borde sutil para separarlo del fondo oscuro. */
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 8%);
+  display: block;
+}
+
+/* En pantallas estrechas el logo y el nombre no caben en una fila. */
+
+@media (max-width: 480px) {
+  .rob-fundacion__head {
+    align-items: flex-start;
+  }
+}
+
+.rob-fundacion__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.9rem;
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.rob-fundacion__marca {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--dim);
+}
+
+.rob-fundacion__desc {
+  margin: 0.85rem 0 0;
+  max-width: var(--maxw);
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.rob-fundacion__social {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  margin: 0.85rem 0 0;
+  font-size: 0.88rem;
+}
+
+.rob-fundacion__socialLabel {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+
+.rob-fundacion__social a {
+  color: var(--accent-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 30rem) {
+  /* Con 9.5rem de mínimo no caben dos columnas en un móvil de 320px: el
+     `auto-fit` los deja en una sola, que es lo que se quiere. */
+  .rob-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Los reconocimientos, en destacado (D29) ---
+   Sustituyen a la lista plana que había antes. Un premio internacional no
+   puede verse igual que un cuarto lugar, así que cambian de tratamiento: son
+   solo dos, van grandes, y llevan filete de acento arriba para que el bloque
+   se lea de un vistazo sin tener que contar tarjetas.
+
+   `min()` en el padding lateral deja la tarjeta con aire en escritorio sin
+   dejarla hueca en móvil. */
+
+.rob-spot-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rob-spot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: clamp(1.35rem, 3vw, 1.9rem);
+  padding-inline: clamp(1.25rem, 3.5vw, 2.1rem);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--accent);
+  border-radius: 4px;
+  background: var(--bg-raise);
+}
+
+.rob-spot__periodo {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+
+.rob-spot__entidad {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+}
+
+.rob-spot__name {
+  margin: 0.3rem 0 0;
+  font-size: clamp(1.05rem, 2.2vw, 1.22rem);
+  font-weight: 650;
+  line-height: 1.3;
+  color: var(--white);
+  text-wrap: balance;
+}
+
+.rob-spot__detail {
+  margin: 0.55rem 0 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+/* La atribución va pegada abajo, con `margin-top: auto`, para que quede a la
+   misma altura en las dos tarjetas aunque una tenga el texto más largo. Sin
+   eso, la etiqueta baila de altura y el bloque se ve descuadrado. */
+
+.rob-spot__badge {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 1.1rem 0 0;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  color: var(--dim);
+}
+
+.rob-spot__badgeIcon {
+  flex: 0 0 auto;
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--accent-2);
+}
+
+/* --- La línea de rol: participante → líder → mentor (D29) ---
+   Va fuera del panel plegable, debajo de las cifras. Las cifras dicen cuántas
+   veces compitió; esta dice qué era mientras compilaba.
+
+   El conector se dibuja con un `::before` en cada paso, no como un `<hr>`: así
+   el trazo une los tres puntos de verdad en vez de pasar por debajo, y cada
+   tramo escala desde su propio origen. El primer paso no lo dibuja, porque
+   una línea que empieza antes del primer punto insinuaría un cuarto paso
+   anterior que no existe. */
+
+.rob-arc {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2.5vw, 2rem);
+  margin: clamp(2rem, 4vw, 3rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rob-arc__step {
+  position: relative;
+  padding-top: 1.6rem;
+}
+
+/* El tramo que une este paso con el siguiente. */
+
+.rob-arc__step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: 0.42rem;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--line);
+  transform-origin: left center;
+}
+
+/* El nodo. Encima de la línea, y sólido en el último paso para marcar el
+   punto en el que está hoy. */
+
+.rob-arc__step::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+.rob-arc__step:last-child::after {
+  background: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.rob-arc__periodo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+
+.rob-arc__actual {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+  padding: 0.15rem 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.rob-arc__rol {
+  margin: 0.45rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--white);
+}
+
+.rob-arc__detalle {
+  margin: 0.4rem 0 0;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+/* --- En móvil la línea se pone vertical ---
+   Con tres columnas y 320px de ancho, cada paso queda en 100px y el texto se
+   parte en tres palabras por línea. Girarlo a vertical cuesta más alto pero
+   se lee de un vistazo: el rol se lee de arriba abajo, que es como se sigue
+   una progresión. */
+
+@media (max-width: 44rem) {
+  .rob-arc {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
-  .about-panel__text,
-  .about-panel .tag-list,
-  .about-panel .tag {
-    animation: none;
+  .rob-arc__step {
+    padding-top: 0;
+    padding-left: 1.9rem;
   }
+
+  .rob-arc__step:not(:last-child)::before {
+    top: 0.85rem;
+    left: 0.42rem;
+    width: 1px;
+    height: 100%;
+    transform-origin: center top;
+  }
+
+  .rob-arc__step::after {
+    top: 0.32rem;
+    left: 0;
+  }
+}
+
+/* --- El panel plegable ---
+   `hidden` en el HTML saca el contenido del tabulado y de los lectores de
+   pantalla sin JavaScript. `main.js` lo quita una vez y a partir de ahí manda
+   `aria-expanded`, que es lo que ya hace con el resto de paneles del sitio. */
+
+.rob-panel {
+  margin-top: 0.5rem;
+}
+
+.rob-group {
+  margin-top: clamp(2.25rem, 4.5vw, 3.5rem);
+}
+
+/* --- La trayectoria ---
+   Mismo motivo de filete que `.comp-item` y que la tarjeta de correo de
+   Contacto (D26): una línea de acento a la izquierda que marca el bloque. La
+   diferencia es que aquí la línea es permanente, no un hover. */
+
+.rob-brief {
+  margin-top: clamp(2.25rem, 4.5vw, 3.5rem);
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--accent);
+  border-radius: 4px;
+  background: var(--bg-raise);
+}
+
+.rob-brief__head {
+  margin-bottom: 1.25rem;
+}
+
+.rob-brief__role {
+  margin: 0.15rem 0 0.2rem;
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+  line-height: 1.25;
+}
+
+.rob-brief__resumen {
+  max-width: var(--maxw);
+  color: var(--muted);
+}
+
+/* Los `.exp-achievements` que se reutilizan aquí ya traen su propio estilo, así
+   que no hay que redefinirlos. */
+
+/* --- El proyecto --- */
+
+.rob-project-list {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rob-project {
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg-raise);
+}
+
+.rob-project__name {
+  font-size: clamp(1.05rem, 1.8vw, 1.2rem);
+}
+
+.rob-project__desc {
+  margin-top: 0.6rem;
+  color: var(--muted);
+}
+
+.rob-project__role {
+  margin-top: 0.5rem;
+  color: var(--dim);
+  font-size: 0.9rem;
 }
 
 @media (max-width: 700px) {
-  /* Aquí no cabe de lado: una sola columna y la respuesta debajo.
-     Solo queda por animar el alto.
-
-     El selector del estado abierto tiene que repetirse aquí porque, con
-     menos especificidad que `.about-item:has(...)`, no lo ganaría: sin esto
-     el móvil seguiría partiéndose en dos columnas. */
-  .about-item,
-  .about-item:has(.about-toggle[aria-expanded='true']) {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .about-item__head {
-    grid-area: 1 / 1;
-  }
-
-  .about-panel {
-    grid-area: 2 / 1;
-  }
-
-  .about-toggle {
-    grid-template-columns: 1.9rem minmax(0, 1fr) auto;
-    gap: 0.85rem;
-    padding: 1rem 1.1rem;
-    font-size: 0.98rem;
-  }
-
-  .about-panel__inner {
-    padding: 0 1.1rem;
-  }
-
-  .about-item:has(.about-toggle[aria-expanded='true']) .about-panel__inner {
-    padding: 0.15rem 1.1rem 1.35rem;
-  }
-
-  .about-panel__text {
-    font-size: 0.94rem;
-  }
-
-  .about-value {
-    padding: 1.45rem 1.35rem;
-  }
-
-  .about-value__text {
-    font-size: 1rem;
+  .rob-brief,
+  .rob-project {
+    padding: 1.15rem 1.05rem;
   }
 }
 
 /* ============================================================
-   9. PROYECTOS
+   10. PROYECTOS Y DESTACADOS
    ------------------------------------------------------------
-   Dos secciones independientes que comparten tarjeta:
+   USADO POR: Proyectos.astro, Destacados.astro y ProyectoCard.astro
 
-   - "Proyectos destacados" (Destacados.astro): los 3 mejores, en
-     tarjetas anchas de una columna.
-   - "Proyectos" (Proyectos.astro): la lista completa, en la
-     rejilla .card-grid.
-
-   El hueco de la imagen se reserva SIEMPRE con aspect-ratio, haya
-   foto o no, para que la tarjeta no cambie de altura cuando se
-   añada la captura.
-
-   Los botones son propios (.project-card__btn) en vez de reutilizar
-   .btn porque los del hero miden 56px con hueco de 30px, y aquí
-   hacen falta dos en paralelo y mas pequenos. Mismo lenguaje visual:
-   primario = relleno accent, secundario = solo borde.
-
-   CLASES
-     .destacados__grid .... columna de tarjetas anchas
-     .project-card ......... tarjeta; anula el padding de .card
-     .project-card--wide .... variante ancha, 2 columnas
-     .project-card__media ... hueco de la imagen
-     .project-card__img ..... la captura
-     .project-card__slot .... hueco vacio, misma medida que la foto
-     .project-card__slot-mark / __slot-text
-     .project-card__body .... contenido con su padding
-     .project-card__head .... titulo + estado
-     .project-card__title ... nombre del proyecto
-     .project-card__estado .. etiqueta de estado
-     .project-card__desc .... descripcion
-     .project-card__block ... grupo etiqueta + contenido
-     .project-card__label ... micro-etiqueta monoespaciada
-     .project-card__text .... problema o participacion
-     .project-card__features  lista de funcionalidades
-     .project-card__actions . contenedor de los botones
-     .project-card__btn .... un boton
-     .project-card__btn--primary
-     .project-card__btn-arrow
-     .project-card__hint .... nota de captura pendiente
-
-   Reutiliza .card, .card-grid, .tag-list y .tag de la seccion 3.
-
-   USADO POR: Destacados.astro, Proyectos.astro y ProyectoCard.astro.
+   Los tres pintan las mismas tarjetas, por eso comparten bloque:
+   separarlos obligaría a partir reglas que hoy sirven a los tres. Si
+   quieres distinguirlos, empieza por .destacados__grid.
    ============================================================ */
-
 .destacados__grid {
   display: grid;
   gap: 2rem;
 }
 
-/* --- Tarjeta ---
-   .card trae padding de 1.75rem; aqui se anula porque la imagen
-   va a sangre contra el borde de la tarjeta. El padding lo pone
-   .project-card__body. */
 .project-card {
   padding: 0;
   overflow: hidden;
@@ -2435,6 +3005,7 @@ font-size: 11px;
 /* --- Hueco de la imagen ---
    aspect-ratio fija la altura aunque no haya foto, y el marco
    vacio mide exactamente lo mismo que la foto. */
+
 .project-card__media {
   position: relative;
   aspect-ratio: 16 / 10;
@@ -2453,6 +3024,7 @@ font-size: 11px;
 /* Hueco vacio: se queda en silencio a proposito. Sin rayas ni iconos: solo
    una linea de monoespaciada con dos filetes a los lados, como una linea
    editorial. Un hueco debe leerse como "aun sin captura", no como error. */
+
 .project-card__slot {
   width: 100%;
   height: 100%;
@@ -2475,6 +3047,7 @@ font-size: 11px;
 }
 
 .project-card__slot-text::before,
+
 .project-card__slot-text::after {
   content: '';
   width: 26px;
@@ -2486,6 +3059,7 @@ font-size: 11px;
    La version de rejilla es la compacta: menos aire y una proporcion
    algo mas corta, para que la lista completa lea como un catalogo y
    no como una repeticion de los destacados. */
+
 .project-card__body {
   display: flex;
   flex-direction: column;
@@ -2583,6 +3157,7 @@ font-size: 11px;
    min-height de 44px: objetivo tactil minimo (WCAG 2.2). El
    elevamiento va dentro de @media (hover: hover) para que en
    tactil no quede un estado pegado tras tocar. */
+
 .project-card__actions {
   display: flex;
   flex-wrap: wrap;
@@ -2643,6 +3218,7 @@ font-size: 11px;
    izquierda, el texto a la derecha. Mas aire y mas tamano de
    tipografia: es la escala de "esto es lo mejor". Se apila por
    debajo de 1050px. */
+
 .project-card--wide .project-card__body {
   gap: 1.15rem;
   padding: 2.25rem;
@@ -2680,62 +3256,12 @@ font-size: 11px;
 }
 
 /* ============================================================
-   10. CONTACTO
+   11. CONTACTO
    ------------------------------------------------------------
-   Presentacion a la izquierda, medios a la derecha y llamada a la
-   accion al pie, todo dentro de un marco.
+   Marco, medios de contacto y llamada a la acción.
 
-   REUTILIZA EL LENGUAJE QUE YA TENIA EL SITIO
-     · El fondo es el del Hero: retícula de 40 px y los dos círculos
-       que se asoman por abajo. Se repite aquí para que Contacto cierre
-       el sitio con la misma textura y no parezca un añadido.
-     · El marco es la tecnica de `.photo-frame` del Hero: filete de
-       1 px en `--accent-2` y hueco asimetrico arriba y a la izquierda.
-       Por eso el area de contacto se lee como "un cuadro", igual que
-       las fotos de arriba.
-     · El indicador de disponibilidad es el `.hero-placard` del Hero:
-       mismo borde ambar al 38 %, fondo al 7 % y punto pulsante.
-     · El boton del CTA reutiliza `.btn--primary` del bloque 3.
-     · La flecha es `.contact-card__go`, no `.btn__arrow`, porque aqui
-       es un SVG de Lucide y no un caracter.
-
-   CLASES
-     .contact-frame ... el marco que envuelve todo
-     .contact-grid .. la rejilla de dos columnas
-     .contact-intro . columna de texto
-     .contact-title . el H2 de la seccion
-     .contact-lead .. la descripcion en tres lineas
-     .contact-placard / .contact-placard__dot . el indicador
-     .contact-motto .. el elemento decorativo
-     .contact-list .. <ul> de tarjetas
-     .contact-card / .contact-card--hero / --inactive
-     .contact-cta ... la barra inferior
-
-   NOTAS
-     · El degradado ambar -> naranja sale de los tokens que ya existen
-       (`--accent` y `--accent-2`), asi que no introduce ningun color
-       nuevo a la paleta.
-     · Las tarjetas llevan un radio de 4 px, muy suave, porque el resto
-       del sitio va de esquinas vivas. Si prefieres 0 px como en el
-       resto, cambia `--contact-radius` a 0.
-
-   ACCESIBILIDAD
-     · El foco lo dibuja el `:focus-visible` global del bloque 2.
-     · Los estados de hover van dentro de `hover: hover` para que en un
-       movil no se queden pegados despues de tocar.
-     · prefers-reduced-motion: ademas del neutralize global del
-       bloque 2, aqui se quitan los desplazamientos y el pulso.
-
-   USADO POR: Contacto.astro.
+   USADO POR: Contacto.astro
    ============================================================ */
-
-/* --- El fondo ---
-   Copiado del Hero: la retícula de 40 px y los dos círculos que se asoman
-   por abajo. Es lo que hace que el Hero se lea como un lienzo técnico, y
-   repetirlo aquí hace que Contacto cierre el sitio con el mismo lenguaje
-   en vez de parecer un parche pegado al final.
-
-   El contenido va por encima de los círculos, igual que `.hero-inner`. */
 .contact {
   position: relative;
   overflow: hidden;
@@ -2746,6 +3272,7 @@ font-size: 11px;
 }
 
 .contact::before,
+
 .contact::after {
   content: '';
   position: absolute;
@@ -2770,23 +3297,27 @@ font-size: 11px;
   border: 16px solid var(--ring);
 }
 
-.contact > .container {
-  position: relative;
-  z-index: 1;
-}
-
 /* --- El marco ---
-   Mismo truco que `.photo-frame`: el filete rodea todo y el hueco
-   queda solo arriba y a la izquierda, como un corchete. */
+   Antes llevaba `border: 1px solid var(--accent-2)`, el rectángulo naranja que
+   encerraba la sección entera, y un `padding` asimétrico (solo arriba y a la
+   izquierda) que existía para quedar pegado dentro de ese filete, igual que
+   `.photo-frame`.
+
+   Al quitar el borde hay que quitar también ese padding: sin él, el hueco
+   asimétrico corría el contenido hacia abajo y hacia la derecha y lo dejaba
+   descuadrado respecto al `.container`, mientras el resto de secciones del sitio
+   alinean en su gutter. Sin marco, el envoltorio se limita a agrupar el marcado
+   y el contenido vuelve a alinear con el resto del sitio.
+
+   Se conservan `--contact-radius` (la usan las tarjetas) y `position: relative`. */
+
 .contact-frame {
   --contact-radius: 4px;
-  --contact-borde: var(--line);
   position: relative;
-  padding: clamp(1.5rem, 3vw, 2.75rem) 0 0 clamp(1.5rem, 3vw, 2.75rem);
-  border: 1px solid var(--accent-2);
 }
 
 /* --- Rejilla --- */
+
 .contact-grid {
   display: grid;
   gap: clamp(2rem, 4vw, 3.25rem);
@@ -2803,14 +3334,10 @@ font-size: 11px;
   }
 }
 
-/* --- Columna de presentacion --- */
-.contact-intro .eyebrow {
-  margin-bottom: 1.4rem;
-}
-
 /* "Hablemos" tiene que ganar por peso visual al resto de la seccion, pero
    sin comerse la columna: de ahi el clamp mas alto que el de las demas
    secciones, que llegan hasta 3rem. */
+
 .contact-title {
   margin-bottom: 1.1rem;
   font-size: clamp(2.6rem, 5.4vw, 4.4rem);
@@ -2828,6 +3355,7 @@ font-size: 11px;
 }
 
 /* Indicador de disponibilidad. Copia del `.hero-placard`. */
+
 .contact-placard {
   display: inline-flex;
   align-items: center;
@@ -2851,22 +3379,9 @@ font-size: 11px;
   animation: contact-pulse 2.4s ease-out infinite;
 }
 
-@keyframes contact-pulse {
-  0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
-  }
-
-  70% {
-    box-shadow: 0 0 0 9px transparent;
-  }
-
-  100% {
-    box-shadow: 0 0 0 0 transparent;
-  }
-}
-
 /* Elemento decorativo. Sin sentido propio: es ritmo visual, y por eso el
    punteado y el tono atenuado. */
+
 .contact-motto {
   display: grid;
   gap: 0.15rem;
@@ -2886,6 +3401,7 @@ font-size: 11px;
 }
 
 /* --- Tarjetas --- */
+
 .contact-list {
   list-style: none;
   display: grid;
@@ -2899,13 +3415,16 @@ font-size: 11px;
 
 /* La tarjeta entera es el enlace: asi hay una sola parada de tabulacion
    por medio y el objetivo tactil es toda la tarjeta. */
+
 .contact-card__link {
+  position: relative;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 1.15rem;
   min-height: 96px;
   padding: 1.15rem 1.3rem;
+  overflow: hidden;
   border: 1px solid var(--contact-borde);
   border-radius: var(--contact-radius);
   background: var(--bg-raise);
@@ -2916,6 +3435,26 @@ font-size: 11px;
     border-color 250ms ease,
     background-color 250ms ease,
     box-shadow 250ms ease;
+}
+
+/* Filete de acento a la izquierda, que crece de abajo a arriba al pasar por
+   encima. Es el mismo motivo que el antetitulo (`.eyebrow`) y que el corchete
+   de `.photo-frame`: una linea naranja que marca el elemento.
+
+   Se eligio el filete y no el relleno completo de `.btn` a proposito: la tarjeta
+   tiene tres lineas de texto y al llenarse de ambar habria que voltear las tres
+   a negro, lo que mete contraste nuevo en el bloque con mas texto de la
+   seccion. Asi el acento marca sin competir con la lectura. */
+
+.contact-card__link::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--accent-2);
+  transform: scaleY(0);
+  transform-origin: bottom center;
+  transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .contact-card__icon {
@@ -2936,6 +3475,7 @@ font-size: 11px;
 
 /* El glifo de WhatsApp viene del Hero y es un SVG dibujado a mano, asi que
    necesita los mismos trazos que Lucide para que no cante. */
+
 .contact-card__glyph {
   width: 22px;
   height: 22px;
@@ -2955,6 +3495,7 @@ font-size: 11px;
 /* Etiqueta de la plataforma. Bajada a 10 px y con el tracking muy corto
    (0.4 px): es lo que la hace más angosta, porque el interletraje se
    lleva la mitad del ancho. */
+
 .contact-card__platform {
   font-family: var(--mono);
   font-size: 10px;
@@ -2985,10 +3526,40 @@ font-size: 11px;
     color 250ms ease;
 }
 
-/* La tarjeta de correo es la via principal: por eso lleva filete de acento
-   y el icono con el degradado de la paleta. */
+/* La tarjeta de correo es la via principal: por eso lleva filete de acento,
+   un velo ambar de fondo y el icono con el degradado de la paleta.
+
+   Antes solo se distinguia por el color del borde, y a 52% de opacidad el
+   cambio no se leia en reposo: las cuatro tarjetas parecia la misma con un
+   filete distinto. El velo y el valor mas grande hacen que la via principal se
+   vea sin pasar por encima.
+
+   El velo va en el enlace y no en el <li> a proposito: el radio de 4 px esta en
+   el <a>, y un degradado en el <li> saldria por debajo con las esquinas rectas. */
+
 .contact-card--hero {
   --contact-borde: color-mix(in srgb, var(--accent) 52%, transparent);
+}
+
+.contact-card--hero .contact-card__link {
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--accent) 9%, var(--bg-raise)),
+    color-mix(in srgb, var(--accent-2) 5%, var(--bg-raise))
+  );
+}
+
+.contact-card--hero .contact-card__link::before {
+  background: var(--accent);
+}
+
+/* El valor de la tarjeta destacada crece un cuerpo: es el dato que la gente
+   viene a copiar. Las demas se quedan en 1.05rem y el salto marca la
+   jerarquia sin tocar el tamano de los iconos ni la altura de la fila. */
+
+.contact-card--hero .contact-card__value {
+  font-size: 1.18rem;
+  letter-spacing: -0.01em;
 }
 
 .contact-card--hero .contact-card__icon {
@@ -3003,6 +3574,7 @@ font-size: 11px;
 
 /* Sin numero de WhatsApp: la tarjeta sigue viendose, pero deja de ser
    enlace y se apaga, para no prometer un `wa.me/` que no lleva a nada. */
+
 .contact-card--inactive .contact-card__link {
   cursor: not-allowed;
   opacity: 0.55;
@@ -3015,6 +3587,7 @@ font-size: 11px;
 /* El hover va dentro de `hover: hover` para que en movil no se quede pegado.
    Ademas `a:hover` del bloque 2 anade subrayado, que en una tarjeta grande
    queda mal: se anula aqui. El glow es muy tenue a proposito. */
+
 @media (hover: hover) {
   .contact-card__link:hover {
     transform: translateY(-3px);
@@ -3022,6 +3595,10 @@ font-size: 11px;
     background: color-mix(in srgb, var(--black-cherry) 28%, var(--ink-black));
     box-shadow: 0 6px 22px -12px color-mix(in srgb, var(--accent) 55%, transparent);
     text-decoration: none;
+  }
+
+  .contact-card__link:hover::before {
+    transform: scaleY(1);
   }
 
   .contact-card__link:hover .contact-card__icon {
@@ -3035,13 +3612,17 @@ font-size: 11px;
     color: var(--accent);
   }
 
-  /* La tarjeta principal mantiene su acento en vez de perderlo al pasar. */
+  /* La tarjeta principal mantiene su acento en vez de perderlo al pasar.
+     Misma especificidad que la regla de reposo, pero esta viene despues en el
+     archivo, asi que el hover gana y el velo ambar se sustituye. */
   .contact-card--hero .contact-card__link:hover {
     border-color: var(--accent);
+    background: color-mix(in srgb, var(--black-cherry) 28%, var(--ink-black));
   }
 }
 
 /* --- Llamada a la accion --- */
+
 .contact-cta {
   display: flex;
   flex-wrap: wrap;
@@ -3093,15 +3674,14 @@ font-size: 11px;
 
 /* --- Movil ---
    La rejilla ya es de una columna de serie; aqui solo se reajustan los
-   limites tactiles, se quita el marco para que no coman ancho, y el CTA
-   pasa a apilarse con el boton a lo ancho. */
-@media (max-width: 700px) {
-  .contact-frame {
-    padding: 1.25rem 1.15rem 0;
-    border: 0;
-    border-top: 1px solid var(--accent-2);
-  }
+   limites tactiles y el CTA pasa a apilarse con el boton a lo ancho.
 
+   Este bloque ya no toca `.contact-frame`: alli el marco se reducia a una sola
+   linea superior para no quitarle ancho al contenido, y al desaparecer el
+   marco de escritorio se va con el. El separador entre secciones lo sigue
+   aportando `.section { border-top: 1px solid var(--line-soft) }`. */
+
+@media (max-width: 700px) {
   .contact-title {
     font-size: clamp(2.35rem, 11vw, 3rem);
   }
@@ -3129,6 +3709,12 @@ font-size: 11px;
     font-size: 0.97rem;
   }
 
+  /* El correo se mantiene por encima, pero con un salto menor: a 1.18rem el
+     correo de 28 caracteres se parte en dos lineas en pantallas de 320 px. */
+  .contact-card--hero .contact-card__value {
+    font-size: 1.02rem;
+  }
+
   .contact-cta {
     flex-direction: column;
     align-items: flex-start;
@@ -3141,13 +3727,10 @@ font-size: 11px;
   }
 }
 
-/* En pantallas muy estrechas el marco se aprieta: sin padding lateral, o
+/* En pantallas muy estrechas el contenido se aprieta: sin padding lateral, o
    el contenido de dentro se queda sin sitio. */
-@media (max-width: 420px) {
-  .contact-frame {
-    padding-inline: 1rem;
-  }
 
+@media (max-width: 420px) {
   .contact-card__link {
     padding-inline: 0.9rem;
   }
@@ -3157,10 +3740,15 @@ font-size: 11px;
    El bloque 2 ya deja las transiciones en 0.01ms con !important. Aqui se
    quitan ademas los desplazamientos y el pulso, para que no haya ningun
    cambio de posicion al pasar el raton. */
+
 @media (prefers-reduced-motion: reduce) {
   .contact-placard__dot {
     animation: none;
     box-shadow: none;
+  }
+
+  .contact-card__link::before {
+    transition: none;
   }
 
   .contact-card__link:hover,
@@ -3169,18 +3757,13 @@ font-size: 11px;
     transform: none;
   }
 }
+
 /* ============================================================
-   11. FOOTER
+   12. FOOTER
    ------------------------------------------------------------
-   Pie de página con marca, navegación breve y llamada de contacto.
+   Pie de página.
 
-   CLASES
-     .site-footer ........ el <footer>
-     .site-footer__main . identidad, navegación y contacto
-     .site-footer__brand  el nombre del sitio en blanco
-     .site-footer__bottom-inner copyright y enlace de regreso
-
-   USADO POR: Footer.astro.
+   USADO POR: Footer.astro
    ============================================================ */
 .site-footer {
   position: relative;
@@ -3222,6 +3805,7 @@ font-size: 11px;
 }
 
 .site-footer__identity p,
+
 .site-footer__contact p {
   margin-top: 0.85rem;
   color: var(--dim);
@@ -3230,6 +3814,7 @@ font-size: 11px;
 }
 
 .site-footer__nav h2,
+
 .site-footer__contact h2 {
   margin-bottom: 0.9rem;
   color: var(--white);
@@ -3248,6 +3833,7 @@ font-size: 11px;
 }
 
 .site-footer__nav a,
+
 .site-footer__bottom-inner a {
   color: var(--muted);
   font-size: 0.82rem;
@@ -3255,6 +3841,7 @@ font-size: 11px;
 }
 
 .site-footer__nav a:hover,
+
 .site-footer__bottom-inner a:hover {
   color: var(--accent);
   text-decoration: none;
@@ -3332,4 +3919,172 @@ font-size: 11px;
     gap: 0.35rem;
     padding-block: 0.85rem;
   }
+}
+
+/* ============================================================
+   13. AJUSTES TRANSVERSALES
+   ------------------------------------------------------------
+   Reglas que tocan más de una sección, así que no son de ninguna en
+   concreto: los @media de movimiento reducido y los @media que
+   reorganizan varios bloques a la vez.
+
+   Van al final a propósito. Dentro de un @media gana la regla que
+   está más abajo, así que si estos ajustes estuvieran arriba, los
+   bloques siguientes los sobrescribirían y no se aplicarían.
+   ============================================================ */
+/* La flecha tiene color propio, así que el `color` del hover no le llega:
+   hay que cambiarlo también o se quedaría roja sobre el relleno ámbar. */
+
+.nav-cv .btn__arrow {
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.2s ease;
+}
+
+@media (hover: hover) {
+  .nav-cv:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    color: var(--ink-black);
+    box-shadow: 0 8px 24px -12px var(--accent);
+    text-decoration: none;
+  }
+
+  .nav-cv:hover::before {
+    transform: scaleX(1);
+  }
+
+  .nav-cv:hover .btn__arrow {
+    transform: translateX(3px);
+    color: var(--ink-black);
+  }
+}
+
+.hero-kicker .eyebrow {
+  margin-bottom: 0;
+}
+
+.hero-buttons .btn {
+  flex: 1 1 200px;
+}
+
+.photo.is-active {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .exp-item:hover .exp-period {
+    color: var(--white);
+    transform: translateX(4px);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  .exp-item:hover .exp-period::after {
+    transform: scaleX(1);
+  }
+}
+
+.credential-slide.is-active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.rob-collage__layer.is-active {
+  opacity: 1;
+}
+
+/*
+ * FIN DE LA GALERÍA. Debajo empieza el bloque de `prefers-reduced-motion` y
+ * los dos `@media` que la adaptan, que son parte de esta misma sección.
+ *
+ * Aquí ya no queda nada de los antiguos marcadores `.rob-slot`: con las fotos
+ * reales, esos estilos no los usaba nadie y solo estorbaban.
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  .exp-list::after {
+    opacity: 0.5;
+    transform: scaleY(1);
+    transition: none;
+  }
+
+  #trayectoria .tag,
+  .exp-period,
+  .exp-period::after,
+  .exp-achievements li,
+  .exp-achievements li::before,
+  .credential-slide,
+  .credential-slide .credential-slot__icon {
+    animation: none;
+    transition: none;
+  }
+
+  .credential-gallery::after {
+    display: none;
+  }
+
+  .credential-slide,
+  .rob-collage__layer,
+  .exp-toggle,
+  .exp-toggle__icon {
+    transition: none;
+  }
+}
+
+.stack__head .eyebrow {
+  margin-bottom: 1.25rem;
+}
+
+/* --- La apertura de las etiquetas --- */
+
+/* Las etiquetas de "¿Qué me interesa?" se abren como una cortina de
+   izquierda a derecha y luego entran una detrás de otra. Los retardos
+   arrancan antes que en la versión vertical: la caja ya está creciendo
+   hacia la derecha y las etiquetas tienen que ir llegando mientras crece,
+   no aparecer cuando ya ha terminado. */
+
+.about-panel .tag-list {
+  margin-top: 1.35rem;
+  animation: about-wipe 0.6s cubic-bezier(0.33, 1, 0.68, 1) 0.1s both;
+}
+
+.about-panel .tag {
+  animation: about-slide-right 0.42s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+
+/* Escalonado: cada etiqueta espera a la anterior. 60 ms es suficiente
+   para que se lea el orden y no tanto que se haga lento. */
+
+.about-panel .tag:nth-child(1) { animation-delay: 140ms; }
+
+.about-panel .tag:nth-child(2) { animation-delay: 200ms; }
+
+.about-panel .tag:nth-child(3) { animation-delay: 260ms; }
+
+.about-panel .tag:nth-child(4) { animation-delay: 320ms; }
+
+.about-panel .tag:nth-child(5) { animation-delay: 380ms; }
+
+.about-panel .tag:nth-child(6) { animation-delay: 440ms; }
+
+.about-panel .tag:nth-child(7) { animation-delay: 500ms; }
+
+.about-panel .tag:nth-child(8) { animation-delay: 560ms; }
+
+.contact > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Columna de presentacion --- */
+
+.contact-intro .eyebrow {
+  margin-bottom: 1.4rem;
+}
+
+.rob-fundacion > .eyebrow {
+  margin-bottom: 1rem;
+}
+
+.rob-group > .eyebrow {
+  margin-bottom: 1.4rem;
 }

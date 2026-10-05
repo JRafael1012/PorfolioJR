@@ -2,7 +2,8 @@
  * Comportamiento del sitio. Sin dependencias.
  *
  * 1. Revela los bloques con `.reveal` al entrar en pantalla.
- * 2. Compensa el header fijo al saltar desde el menú a una sección.
+ * 2. Cuenta las cifras de `[data-count]` cuando entran en pantalla.
+ * 3. Compensa el header fijo al saltar desde el menú a una sección.
  *
  * Si el usuario prefiere menos movimiento, todo se muestra de inmediato.
  */
@@ -41,15 +42,94 @@
     });
   }
 
-  /* --- 2. Botón de pausa de la marquesina ---
-     El contenido en movimiento necesita una forma de detenerse (WCAG 2.2.2).
-     Este bloque cablea el botón: alterna .is-paused y actualiza la etiqueta. */
-  var toggle = document.querySelector('[data-marquee-toggle]');
-  var marquee = document.querySelector('[data-marquee]');
-  var toggleLabel = document.querySelector('[data-marquee-toggle-label]');
+  /* --- 2. Cifras que cuentan solas ---
+     Los `[data-count]` llevan el NÚMERO FINAL en el HTML, no un cero. Por eso
+     esto es solo decoración: sin JS, sin scroll o con prefers-reduced-motion
+     activado, el número correcto se ve siempre.
 
-  if (toggle && marquee) {
+     `requestAnimationFrame` en vez de `setInterval` para que el número vaya
+     atado al refresco de pantalla, y se corta en cuanto termina: un
+     `setTimeout` suelto seguiría escribiendo en un nodo que ya no importa. */
+  var contadores = document.querySelectorAll('[data-count]');
+
+  function formatear(valor, sufijo) {
+    return String(valor) + (sufijo || '');
+  }
+
+  function animarCifra(el) {
+    var objetivo = Number(el.getAttribute('data-count'));
+    if (!isFinite(objetivo) || objetivo <= 0) return;
+
+    var sufijo = el.getAttribute('data-count-suffix') || '';
+    var DURACION = 1100;
+
+    /* `Math.pow(1 - progreso, 3)` es el "ease out": rápido al principio y
+       frenando al final. Un contador lineal se nota como máquina, y este
+       número es lo primero que ve el lector de esta sección. */
+    var easeOutCubic = function (t) {
+      return 1 - Math.pow(1 - t, 3);
+    };
+
+    var inicio = null;
+
+    function paso(ahora) {
+      if (inicio === null) inicio = ahora;
+
+      var transcurrido = ahora - inicio;
+      var progreso = Math.min(1, transcurrido / DURACION);
+
+      el.textContent = formatear(
+        Math.round(objetivo * easeOutCubic(progreso)),
+        sufijo
+      );
+
+      if (progreso < 1) {
+        requestAnimationFrame(paso);
+      }
+    }
+
+    requestAnimationFrame(paso);
+  }
+
+  if (!contadores.length) {
+    // no hay cifras en esta página
+  } else if (reduceMotion || !('IntersectionObserver' in window)) {
+    /* Sin animación: el HTML ya trae el valor final, no hay nada que hacer. */
+  } else {
+    var observerCifras = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          animarCifra(entry.target);
+          observerCifras.unobserve(entry.target);
+        });
+      },
+      /* rootMargin negativo por arriba: la cifra tiene que entrar de verdad en
+         pantalla, no asomar por el borde. Con el 15% se dispara cuando ya se
+         lee comfortablemente. */
+      { rootMargin: '0px 0px -15% 0px', threshold: 0.15 }
+    );
+
+    contadores.forEach(function (el) {
+      observerCifras.observe(el);
+    });
+  }
+
+  /* --- 3. Botones de pausa de las marquesinas ---
+     El contenido en movimiento necesita una forma de detenerse (WCAG 2.2.2).
+
+     Hay dos cintas: la de STACK y la de TORNEOS. Cada botón lleva su nombre en
+     `data-marquee-toggle`, y el JS empareja uno con otro por ese nombre en vez de
+     buscar "el primero que exista". Con un solo `querySelector` el botón de
+     torneos habría terminado controlando la cinta de STACK. */
+  document.querySelectorAll('[data-marquee-toggle]').forEach(function (toggle) {
+    var clave = toggle.getAttribute('data-marquee-toggle');
+    var marquee = document.querySelector('[data-marquee="' + clave + '"]');
+
+    if (!marquee) return;
+
     var icon = toggle.querySelector('.marquee-toggle__icon');
+    var toggleLabel = document.querySelector('[data-marquee-toggle-label="' + clave + '"]');
 
     toggle.addEventListener('click', function () {
       var paused = marquee.classList.toggle('is-paused');
@@ -58,7 +138,7 @@
       if (toggleLabel) toggleLabel.textContent = paused ? 'Reproducir' : 'Pausar';
       if (icon) icon.textContent = paused ? '▶' : '❚❚';
     });
-  }
+  });
 
   /* --- 3. Cambio automático de fotografías del perfil --- */
   var photoFrame = document.querySelector('[data-photo-frame]');

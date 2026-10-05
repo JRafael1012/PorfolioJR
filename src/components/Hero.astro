@@ -20,6 +20,7 @@ const redes = [
   ...(linkedin
     ? [{ nombre: 'LinkedIn', icono: 'linkedin', href: linkedin.href }]
     : []),
+  ...(github ? [{ nombre: 'GitHub', icono: 'github', href: github.href }] : []),
   {
     nombre: 'Discord',
     icono: 'discord',
@@ -54,24 +55,12 @@ const redes = [
 
       <div class="hero-buttons">
         <a href="#proyectos" class="btn btn--primary">
-          Conoce mis proyectos
-          <span aria-hidden="true">↓</span>
+          <span class="btn__label">Conoce mis proyectos</span>
+          <span class="btn__arrow" aria-hidden="true">↓</span>
         </a>
         <a href={withBase(`/${perfil.cv.href}`)} class="btn">
-          Descargar CV
+          <span class="btn__label">Descargar CV</span>
           <span class="btn__arrow" aria-hidden="true">↗</span>
-        </a>
-        {
-          github && (
-            <a href={github.href} class="btn" target="_blank" rel="noopener noreferrer">
-              GitHub
-              <span class="btn__arrow" aria-hidden="true">↗</span>
-            </a>
-          )
-        }
-        <a href="#contacto" class="btn">
-          Contacto
-          <span aria-hidden="true">↓</span>
         </a>
       </div>
 
@@ -142,6 +131,11 @@ const redes = [
                   {red.icono === 'linkedin' && (
                     <svg class="hero-social__icon hero-social__icon--linkedin" viewBox="0 0 24 24">
                       <path d="M5 8.5H2.5V21H5V8.5ZM3.75 6.8a1.55 1.55 0 1 0 0-3.1 1.55 1.55 0 0 0 0 3.1ZM21.5 13.8c0-3.7-2-5.5-4.7-5.5a4.1 4.1 0 0 0-3.7 2v-1.8h-2.5V21h2.5v-6.2c0-1.7.9-2.8 2.4-2.8s2.3 1 2.3 2.8V21h3.7v-7.2Z" />
+                    </svg>
+                  )}
+                  {red.icono === 'github' && (
+                    <svg class="hero-social__icon hero-social__icon--github" viewBox="0 0 24 24">
+                      <path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.4 4.7 18.4 5 18.4 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3Z" />
                     </svg>
                   )}
                   {red.icono === 'discord' && (

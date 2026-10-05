@@ -543,7 +543,8 @@ mismo que el del Hero**. Sigue sin salir de la sección de contacto.
 - **HTML generado** (`dist/index.html`), comprobado con búsqueda literal:
   `<h1 class="hero-name">Rafael Arlant</h1>` una vez; la línea de tecnologías
   con los 8 términos y sus separadores `·`; los cuatro botones del hero
-  (proyectos, CV, GitHub, contacto); `id="sobre-mi"`; los seis botones con
+  (proyectos, CV, GitHub, contacto) —**superado por D25**, que los deja en
+  dos—; `id="sobre-mi"`; los seis botones con
   `data-exp-toggle`, el primero con `data-exp-open`; los seis paneles
   `panel-sobre-mi-0…5` con `hidden` en el HTML; y el enlace «Sobre mí» en
   `nav`.
@@ -638,6 +639,218 @@ mismo que el del Hero**. Sigue sin salir de la sección de contacto.
   motivo de que el usuario pidiera Ctrl+F5: sin recargar, se está viendo el
   CSS cacheado de la versión anterior.
 
+### Decisión D25 (2026-10-05) — botones del header y del hero
+
+El usuario pide quitar dos botones del hero y mejorar el diseño de los que
+quedan, y hacer lo mismo en el header.
+
+- **El hero pasa de cuatro botones a dos.** Se eliminan **GitHub** y **Contacto**.
+  Los dos caminos siguen disponibles, así que no se pierde nada: GitHub está en
+  la sección Contacto y en los botones redes bajo la foto; Contacto es una
+  sección entera, `#contacto`, enlazada desde el nav. Con cuatro botones el hero
+  competía consigo mismo y con dos la llamada principal pesa.
+- **Se elimina el `const github` de `Hero.astro`.** Ya no se usa: el único
+  `contacto.find(... 'GitHub')` que quedaba era el del botón retirado.
+- **Barrido de relleno en `.btn` (secundario).** Un `::before` con
+  `transform: scaleX(0)` → `scaleX(1)` y `transform-origin: left`, montado con
+  `isolation: isolate` y `z-index: -1` para que no tape el texto. Barre en
+  `--accent-2`.
+- **El primario no barre: sube de color.** `.btn--primary:hover` pasa a
+  `--accent-2` y gana `box-shadow: 0 8px 24px -10px var(--accent-2)`. Ya está
+  lleno, así que barrerse no añadiría nada y le quitaría el ámbar de marca.
+- **`.btn__label` separa el texto de la flecha.** Antes la flecha era un hermano
+  suelto y desplazarla empujaba el texto; con el envoltorio la flecha se mueve
+  4 px y el botón no cambia de ancho ni de alto.
+- **Los hovers con barrido van dentro de `@media (hover: hover)`.** En táctil no
+  hay hover real y el estado se quedaría pegado después de tocar, que es el
+  mismo criterio que ya se usaba en `.project-card__btn`.
+- **Los enlaces del nav llevan subrayado creciente.** `::after` con `scaleX`, en
+  `--accent`, de 2 px, anclado con `position: relative` + `inset: auto 0 0` para
+  que no desplace el texto.
+- **`.nav-links a:not(.nav-cv)`.** El filtro es obligatorio, no cosmético:
+  `.nav-cv` también es un `<a>` dentro de `.nav-links`. Sin `:not()` heredaría el
+  subrayado y el `padding-block`, y este último le **ganaría por
+  especificidad** al `padding` de `.nav-cv`, dejándole el botón a 6 px de alto.
+  La regla de los 11 px en el corte de 700 px repite el mismo `:not()` por la
+  misma razón: si no, la regla base, más específica, la ganaría y el texto del
+  nav no bajaría de tamaño en móvil.
+- **`.nav-cv` barre en `--accent` y pone el texto en `--ink-black`.** Mismo
+  lenguaje que `.btn`, pero el botón del header es más pequeño y ahí el ámbar se
+  lee mejor que el rojo como relleno.
+- **La flecha de `.nav-cv` cambia de color en el hover.** `.btn__arrow` tiene
+  color propio, así que el `color` del enlace no le llega: sin su propia regla
+  se quedaría roja sobre el relleno ámbar.
+- **`.hero-buttons` se limita a `max-width: 420px`** y sus hijos a
+  `flex: 1 1 200px`, para que con dos botones ocupen una sola fila limpia en vez
+  de quedar apretados o desiguales.
+- **`.contact-cta__btn` hereda el hover nuevo** sin tocar su bloque: reutiliza
+  `.btn--primary`, así que el CTA de Contacto cambia de ámbar a `--accent-2` al
+  pasar por encima. Es coherente con el resto y no requería ninguna regla suya.
+- **GitHub vuelve a estar en el hero, pero en la fila circular, no en los
+  botones de texto.** El usuario lo pidió así tras quitarlo: los circulares de
+  bajo la foto quedan **sin tocar** —no se cambia ni uno de los que ya estaban— y
+  GitHub entra como sexto. El orden es WhatsApp, Instagram, LinkedIn, **GitHub**,
+  Discord, Gmail: se coloca junto a LinkedIn, que es donde se agrupan las redes
+  profesionales, y Gmail sigue al final por ser el contacto directo.
+- **La URL sale de `contacto`, no se escribe otra vez.** GitHub se resuelve con
+  `contacto.find(... 'GitHub')` igual que LinkedIn y Correo, así que
+  `datosContacto.githubUrl` sigue siendo el único sitio donde se edita.
+- **Icono propio `.hero-social__icon--github`.** `.hero-social__icon` es de
+  trazo por defecto (`fill: none; stroke: currentColor`), y la marca de GitHub
+  solo funciona rellena. El modificador copia el patrón que ya tenían
+  `--linkedin` y `--discord`: `fill: currentColor; stroke: none`.
+- **No hizo falta tocar el CSS de la fila.** `.hero-socials` va con
+  `flex-wrap: nowrap` y botones de ancho fijo, así que la anchura la fija la
+  suma: 6 × 2,7 rem + 5 × 0,7 rem = **315 px** en escritorio y 6 × 2,45 rem +
+  5 × 0,55 rem = **279 px** en móvil. La columna de la foto más estrecha del
+  diseño —justo por encima del corte de 1050 px— deja unos **425 px**, de modo
+  que ni con seis hay desbordamiento.
+
+### Evidencia (2026-10-05) — D25
+
+- **Build:** `npm run build` con **0 errores, 0 warnings y 0 hints**.
+- **`dist/index.html`:** `hero-buttons` contiene exactamente 2 `<a>`, con 2
+  `btn__label` y 2 `btn__arrow`. Los `>GitHub<` y `>Contacto<` que quedan
+  fuera del hero están en el nav y en la sección Contacto.
+- **`hero-socials` en el HTML generado:** 6 `<a class="hero-social">` y 6
+  `<svg class="hero-social__icon">`, en el orden WhatsApp, Instagram, LinkedIn,
+  GitHub, Discord, Gmail. `href` comprobados uno a uno: `wa.me/573238176273`,
+  `instagram.com/rafaelarlant1012/`,
+  `linkedin.com/in/rafael-arlant-cortes-b735412b3/`,
+  `github.com/JRafael1012`, `discord.com/users/724412152214978644` y
+  `mailto:rafaelarlant1012@gmail.com`. **5** con
+  `target="_blank" rel="noopener noreferrer"` y 1 `mailto:` sin ellos, que es lo
+  correcto.
+- **CSS compilado** (`dist/_astro/index.CQR963lb.css`, 48.1 KB): 5 reglas
+  `.nav-links a:not(.nav-cv)`, 3 `.nav-cv:hover`, 2 `.btn--primary:hover`,
+  **0** reglas `.nav-links a` sueltas, y `hero-social__icon--github` presente
+  con `flex-wrap: nowrap` intacto en `.hero-socials`.
+- **Los circulares que ya existían no se han tocado.** El diff no toca
+  `.hero-social`, `.hero-socials` ni `.hero-social__mark`; solo se añaden el
+  sexto botón y su modificador de icono.
+- **Pendiente de revisión visual:** el barrido, el subrayado del nav y el
+  resultado en móvil están comprobados en el código compilado, **no en un
+  navegador**. Eso corresponde a la Fase 6.
+
+### Decisión D26 (2026-10-05) — jerarquía visual de la sección Contacto
+
+**Problema observado en el código (no requiere navegador):** las cuatro tarjetas
+de `.contact-list` eran visualmente equivalentes en reposo. La de Correo —que
+es la vía principal, la que la gente viene a copiar— solo se distinguía por el
+color del borde a `color-mix(--accent 52%)`, un cambio que al 52% de opacidad no
+se lee hasta pasar por encima. En reposo, la tarjeta principal y las tres
+secundarias parecían la misma.
+
+- **D26.1 — La tarjeta de Correo gana jerarquía en reposo, no solo en hover.**
+  Gana un velo ámbar de fondo (`--accent` 9% → `--accent-2` 5%, degradado a
+  100°), filete de acento y el valor de `1.05rem` a `1.18rem`. El salto de un
+  cuerpo marca la jerarquía sin tocar la altura de la fila ni el tamaño de los
+  iconos, así que las cuatro tarjetas siguen alineando.
+- **D26.2 — Filete de acento que crece, en vez de relleno completo.** Se
+  descartó portar aquí el barrido de `.btn` de D25: la tarjeta tiene tres
+  líneas de texto y un relleno ámbar obligaría a voltear las tres a
+  `--ink-black`, metiendo contraste nuevo en el bloque con más texto de la
+  sección. El filete de 3 px que crece de abajo a arriba reutiliza el motivo que
+  ya tenía `.eyebrow` (línea naranja a la izquierda) y `.photo-frame`
+  (corchete): una línea naranja que marca el elemento, sin competir con la
+  lectura.
+- **D26.3 — El velo va en el `<a>`, no en el `<li>`.** El radio de `4px` está
+  en `.contact-card__link`; un degradado en el `<li>` saldría por debajo con las
+  esquinas rectas. `overflow: hidden` en el enlace recorta el filete contra ese
+  mismo radio.
+- **D26.4 — Móvil explícito.** La regla de `≤700px` baja `.contact-card__value`
+  a `0.97rem`, pero `--hero` tiene más especificidad y se saltaba ese ajuste. Se
+  añade `.contact-card--hero .contact-card__value { 1.02rem }` dentro del bloque
+  móvil para que la jerarquía se mantenga **por decisión**, no por accidente: a
+  `1.18rem` el correo de 28 caracteres se parte en dos líneas a 320 px.
+- **D26.5 — `prefers-reduced-motion` cubre el filete.** Se anula su `transition`
+  y se añade `::before` a la lista. El resto de la sección ya lo tenía.
+- **D26.6 — Hoja muerta eliminada.** `--contact-borde` estaba declarada en
+  `.contact-frame` sin usarse en ninguna regla. Se quita; la variable vive
+  legitimately en `.contact-card`.
+
+**Lo que NO se tocó, a propósito:** el texto de la sección. `.contact-motto`
+("Conversemos sobre / ideas, código y el futuro") repite la idea que ya está en
+`.contact-lead` ("¿Tienes una idea, proyecto u oportunidad?"). Es redundancia
+de contenido, no de diseño, así que se deja para decisión del usuario.
+
+### Evidencia (2026-10-05) — D26
+
+- **Build:** `npm run build` con **0 errores, 0 warnings y 0 hints**.
+- **Contraste calculado con las mezclas reales de `color-mix()`**, no con los
+  hexadecimales de la paleta en bruto. Peor caso = extremo más claro del velo
+  ámbar (`#28171a`):
+
+  | elemento | token | ratio | AA |
+  |---|---|---|---|
+  | valor 1.18rem | `--white` | 15,82:1 | 4,5:1 |
+  | descripción | `--muted` | 9,63:1 | 4,5:1 |
+  | plataforma 10px | `--dim` | 7,02:1 | 4,5:1 |
+  | icono de la tarjeta | `--accent` | 10,00:1 | 3:1 |
+
+  Reposo de la tarjeta normal (`#13071c`): 18,07 / 11,00 / 8,02 / 5,58.
+  Hover (`#20061a`): 10,72 / 7,82. Todos superan AA con holgura.
+- **CSS compilado** (`dist/_astro/index.jVe3qkCY.css`, 48.8 KB): reglas presentes
+  y **en el orden correcto** — `.contact-card--hero .contact-card__link` (velo)
+  antes que `.contact-card--hero .contact-card__link:hover` (fondo de hover),
+  emparejando especificidad y gainando la última. `--contact-borde` declarada
+  exactamente 2 veces (`.contact-card` y `--hero`), 0 en `.contact-frame`.
+- **DOM renderizado en vivo** (`chrome-headless-shell --dump-dom` sobre
+  `localhost:4321`, 160 164 chars): 4 `<li class="contact-card">`, la primera con
+  `contact-card--hero`, los 4 `href` correctos (`mailto:`, GitHub, LinkedIn,
+  WhatsApp), 4 iconos y 4 flechas `go`. La tarjeta de Discord mantiene
+  `contact-card--inactive`.
+- **Límite de esta revisión, dicho con claridad:** la auditoría fue de **código y
+  números**, no visual. El modelo de esta sesión **no acepta imágenes**, así que
+  no se pudieron ver las capturas de Contacto ni hacer la comparación
+  antes/después. La captura existe en
+  `%LOCALAPPDATA%\Temp\opencode\dr\contacto-desktop-1440.png` para revisarla a
+  ojo. Corresponde a la Fase 6.
+
+### Decisión D27 (2026-10-05) — se retira el marco de Contacto
+
+**Petición del usuario:** «quita el cuadrado naranja que encierra todo lo de
+contacto». Era `.contact-frame { border: 1px solid var(--accent-2) }`, el
+rectángulo que rodeaba la sección entera.
+
+- **D27.1 — Se va el filete en los tres puntos donde estaba.** No basta con
+  borrar el de escritorio: el bloque de `≤700px` lo reducía a una sola línea
+  superior (`border: 0` + `border-top`) y el de `≤420px` solo ajustaba el
+  `padding-inline`. Los tres se han ido. Queda **una** regla `.contact-frame` en
+  el CSS compilado, la de la base.
+- **D27.2 — El `padding` asimétrico tenía que irse con el borde.** Era
+  `clamp(1.5rem, 3vw, 2.75rem) 0 0 clamp(...)`: hueco solo arriba y a la
+  izquierda, pensado para quedar pegado dentro del filete, copiando el truco de
+  `.photo-frame`. Sin borde, ese hueco descentraba el contenido hacia abajo y
+  hacia la derecha y lo dejaba descuadrado respecto al `.container`, mientras el
+  resto de secciones alinean en su gutter. Quitar solo el borde habría
+  introducido un descuadre.
+- **D27.3 — El separador entre secciones no se pierde.** Lo aporta
+  `.section { border-top: 1px solid var(--line-soft) }`, así que en móvil la
+  línea superior ámbar era redundante.
+- **D27.4 — `.contact-frame` no se borra del marcado.** Sigue haciendo falta:
+  define `--contact-radius`, que heredan las tarjetas, y `position: relative`.
+  Solo deja de pintar. Borrar el `<div>` habría sido un cambio de estructura sin
+  ganancia.
+
+**Lo que NO cambia:** el filete ámbar de la tarjeta de Correo (D26) y el resto de
+acentos de la sección siguen intactos. Lo que se pidió quitar era el rectángulo
+exterior.
+
+### Evidencia (2026-10-05) — D27
+
+- **Build:** `npm run build` con **0 errores, 0 warnings y 0 hints**.
+- **CSS compilado** (`dist/_astro/index.BU1eXwAn.css`, 48.7 KB): `.contact-frame`
+  compila a exactamente `contact-frame{--contact-radius:4px;position:relative}`.
+  Cero `border`, cero `padding`, y **1 sola** regla `.contact-frame` (antes 3).
+- **DOM renderizado en vivo:** `<div class="contact-frame">` →
+  `<div class="contact-grid">` → `<ul class="contact-list">` con 4
+  `<li class="contact-card">`, la primera con `contact-card--hero`. Marcado
+  íntegro.
+- **Pendiente de revisión visual:** sigue sin poder verse en un navegador desde
+  esta sesión (el modelo no acepta imágenes). El cambio es de una sola propiedad
+  visible, pero corresponde a la Fase 6.
+
 ### Abierto en esta ampliación
 
 - **A1 — Sin causa social nombrada.** El usuario quiere proyectos con impacto
@@ -651,6 +864,150 @@ mismo que el del Hero**. Sigue sin salir de la sección de contacto.
 - **A3 — Breakpoints 10 y 11.** `Contacto` usa `780px` y `Footer` `800px` y
   `520px`, contra la norma de `1050`/`700`. No se ha corregido porque no
   estaba en el alcance pedido; queda anotado en el `README.md`.
+
+---
+
+### Decisión D28 (2026-10-05) — la Robótica pasa a ser una sección propia
+
+El sitio tenía la robótica repartida en tres sitios: la línea de tiempo de
+`Trayectoria`, un toggle escondido con los torneos, y los marcadores de fotos
+que nunca se rellenaron. Eso lo leía como "unStage más de un portafolio web".
+
+- **D28.1 — `Robotica.astro` no copia nada.** Reúne lo que ya existía leyendo
+  `perfil.ts`: la trayectoria de Fundación Biosbot por `detalleEn: 'robotica'`,
+  los torneos de `competencias` y la galería. La línea de tiempo la sigue
+  mostrando, pero ya solo como una línea.
+- **D28.2 — La galería pasa de marcadores a fotos reales.** `TILES = [0,1,2,3]`
+  sobre las 7 fotos de `galeria`. Cada casilla rota sus capas sola cada 5 s. Se
+  fueron los `<div class="rob-slot">` y sus reglas, que ya no pintaban nada.
+- **D28.3 — El logo de la Fundación se optimiza, no se borra.** Sigue siendo una
+  afirmación de que se estuvo ahí. `logo-fundacion.jpg` son 36 KB frente a los
+  587 KB del original `logot.jpg`, que queda como fuente sin usar.
+- **D28.4 — Los alt de las fotos son datos, no texto de la plantilla.**
+  `galeriaAlt?` es opcional y va en el mismo orden que `galeria`: si una foto no
+  tiene descripción, no se inventa una.
+- **D28.5 — RAF VESTIGIA deja de ser un destacado de la web.** Es un proyecto de
+  robótica, así que se mudó a `robotica.proyectos`.follow-up en
+  `experiencia` y a la galería.
+- **D28.6 — Se conservan los dos huecos de credenciales.** El diploma sí se ve;
+  los marcadores de diplomas que nunca llegaron se mantienen porque no hay foto
+  con la que rellenarlos y no se sustituye contenido real por iconos.
+
+### Decisión D29 (2026-10-05) — las cifras se calculan, no se escriben
+
+- **D29.1 — Ninguna cifra de cabecera está escrita a mano.** Torneos, podios,
+  primeros puestos, países y años se cuentan desde `competencias` y
+  `robotica`. Añadir un torneo sube el número solo; no puede quedar el rótulo
+  diciendo una cosa y el dato otra.
+- **D29.2 — El podio cuenta sobre `puesto`, no sobre `resultado`.** "Campeones
+  (1.er lugar)" y "Segundo lugar" son el mismo campo con distinta forma de
+  escribirlo. Parsear el texto daría números distintos según cómo se escribiera
+  cada resultado.
+- **D29.3 — Las cifras van fuera del panel.** La sección existe para decir "esto
+  no es solo web" y eso tiene que verse sin pulsar nada. El botón sigue
+  ocultando lo largo: trayectoria, torneos, habilidades y galería.
+- **D29.4 — Los pocos primero, el resto segundos.** Hay 3 de 9 con `puesto`, así
+  que la lista se parte en dos y cada campo es condicional: si no hay
+  `resultado` o no hay `lugar`, esa línea no sale.
+
+### Decisión D30 (2026-10-05) — torneos en cinta, medios como tarjetas quietas
+
+- **D30.1 — Los torneos son una cinta horizontal, no una lista.** 9 torneos × 2
+  copias = 18 elementos. Es el mismo patrón `.marquee` del Stack, así que el
+  motor de `public/js/main.js` es el que ya existía: no se escribió un segundo
+  carrusel.
+- **D30.2 — Reutiliza la cinta, no la duplica.** El bloque 6 (Stack) define
+  *cómo* se mueve; el bloque 9 (Robótica) solo añade *cómo se ve* cada torneo
+  con `.marquee--torneos` y `.marquee__periodo / __titulo / __detalle`.
+- **D30.3 — Sin logos ni botón en los torneos.** Un recuadro punteado sugería un
+  logo que no existe. Se anula con
+  `.marquee--torneos .marquee__item:not(:has(.marquee__logo))::before`, porque
+  la regla base del hueco gana en especificidad. El botón de pausa también se
+  quitó: en esta cinta no lo hay.
+- **D30.4 — La cinta es accesible sin botón.** El `track` es `role="group"` con
+  `aria-label` y `tabindex="0"`, y se para con `:hover` y `:focus-within`, así
+  que basta con llegar con el teclado. La segunda copia es `aria-hidden`.
+- **D30.5 — Los medios dejan de moverse.** Tres tarjetas estáticas en rejilla.
+  Una cinta de tres elementos que se desplazan es ruido, no información, y
+  obligaba a un botón que ya no hacía falta.
+- **D30.6 — El botón de pausa se queda solo en Stack.** Es el único sitio donde
+  37 logos en movimiento necesitan un freno. `data-marquee-toggle` se empareja
+  con `data-marquee` por clave, así que añadir otra cinta con botón no obliga a
+  tocar `main.js`.
+- **D30.7 — Enlaces de medios con salida anunciada.** Cada tarjeta abre en
+  pestaña nueva y lleva texto solo para lectores de pantalla ("se abre en una
+  pestaña nueva"), porque el icono de flecha no lo dice.
+
+### Decisión D31 (2026-10-05) — `global.css` en el orden de la página
+
+El CSS estaba en once bloques que no seguían el orden de la página, y lo de
+Robótica estaba en el bloque de Trayectoria. Se reorganizó sin cambiar ni una
+sola regla.
+
+- **D31.1 — Los bloques siguen el orden de `index.astro`.** Trece bloques:
+  tokens, base, compartidos, y luego uno por sección en el orden en que se ven.
+  Header, Hero, Stack, Sobre mí, Trayectoria, Robótica, Proyectos y Destacados,
+  Contacto, Footer.
+- **D31.2 — Destacados y Proyectos en un bloque.** Los tres pintan las mismas
+  tarjetas (`ProyectoCard.astro`), así que separarlos obligaría a partir reglas
+  que hoy sirven a los tres.
+- **D31.3 — Lo compartido va en el bloque 3, no en quien lo usa primero.** Botones,
+  etiquetas, `.container`, el acordeón `.exp-toggle` (que usan Trayectoria y
+  Robótica) y las tarjetas. Si estuviera en dos sitios, cambiar una y olvidar la
+  otra daría dos estilos para lo mismo.
+- **D31.4 — Los `@media` transversales van al final.** Dentro de un `@media`
+  gana la regla más abajo: subirlos al principio haría que los bloques
+  siguientes los sobrescribieran.
+- **D31.5 — Cada bloque dice qué `.astro` lo usa.** Para no tener que buscar de
+  dónde viene una clase.
+- **D31.6 — Se documentó cómo editar cada cosa.** La galería y el hero tienen su
+  mapa de ajustes (qué archivo, qué clase, qué intervalo), y se borraron las
+  reglas muertas `.rob-slot*`.
+- **D31.7 — Ninguna regla se perdió.** Reordenar no es reescribir: se comprobó
+  que el conjunto de selectores es idéntico antes y después.
+
+### Evidencia (2026-10-05) — D28 a D31
+
+- **Build:** `npm run build` con **0 errores y 0 warnings**; queda **1 hint**
+  preexistente y ajeno a este trabajo (`TS6133` en `Trayectoria.astro:17`, la
+  variable `indice` sin usar).
+- **Reordenación (D31):** 482 selectores antes y 482 después, **0 perdidos y 0
+  nuevos**; llaves balanceadas 533/533 en ambos. Los únicos tres `@media` de más
+  son las menciones a `@media` en los textos de documentación nuevos.
+- **CSS:** `src/styles/global.css` pasa de 104,9 KB / 4251 líneas a 92,6 KB /
+  4090 líneas. El CSS compilado de `dist/_astro/` mide 56,1 KB.
+- **Torneos (D30):** el HTML generado tiene **18** elementos de cinta
+  (9 × 2), **0 `<img>`**, un solo `data-marquee="torneos"` y **ningún**
+  `data-marquee-toggle="torneos"`. Sí queda el de `stack`.
+- **Medios (D30):** **3** tarjetas `.rob-medio`, sin `data-marquee` y sin
+  botón.
+- **Galería (D28):** 4 casillas sobre 7 fotos, sin una sola regla `.rob-slot*`
+  en el CSS compilado.
+- **Pendiente de revisión visual:** sigue sin poder verse en un navegador desde
+  esta sesión. Corresponde a la Fase 6 y depende de que el usuario mire
+  `http://localhost:4321/PorfolioJR` y la versión publicada.
+
+### Abierto en D28–D31
+
+- **A4 — Seis imágenes en `public/img/` sin usar.** `logot.jpg` (587 KB, el
+  original del logo de la Fundación), `foto.jpg` (249 KB), `logo.jpg`,
+  `logo jr.png`, `Logo_Biosbot-01.avif` y `robotica-1.jpg`. No están
+  referenciadas por ningún componente: solo aparecen citadas en comentarios. **No
+  se han borrado** porque `logot.jpg` es el original del logo y OneDrive ya ha
+  revertido archivos eliminados antes. Todas están sin rastrear en git, así que
+  no se publican.
+- **A5 — Sin confirmar:** el torneo de Brasil (falta cuál y en qué año), los
+  canales del documental, la URL de Instagram, el nombre de RAF VESTIGIA,
+  `public/cv.pdf` y el segundo correo. Marcados con `TODO` en `perfil.ts` y sin
+  inventar el dato.
+- **A6 — Dos fotos grandes sin optimizar:** `mexico 1.jpeg` (803 KB) y
+  `foto competencia.png` (399 KB). La galería pesa unos 2,2 MB. Es el mismo
+  trabajo de D28.2 pero sin comprimir.
+- **A7 — El CSS tiene cuatro clases muertas.** `.comp-list`, `.comp-item`,
+  `.comp-item__periodo`, `.comp-item__body`, `.rec-item` y `.rec-item__link`
+  quedaron sin usar al convertir la lista de competencias y el bloque de
+  reconocimientos. **No se han borrado**: la limpieza va después de la
+  reorganización, para no mezclar dos cambios en el mismo commit.
 
 ---
 
