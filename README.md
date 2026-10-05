@@ -390,8 +390,7 @@ De arriba abajo:
    proyecto web, así que dejó de ser destacado).
 
 El logo de la Fundación se optimizó en vez de quitarse: sigue siendo una
-afirmación de que se estuvo ahí, pero ocupa 36 KB en lugar de 587 KB. El
-original quedó en `logot.jpg` como fuente sin usar.
+afirmación de que se estuvo ahí, pero ocupa 36 KB en lugar de 587 KB.
 
 El botón «Ver experiencia» sigue ocultando lo largo, y **las cifras van fuera del
 panel a propósito**: lo que dice esta sección hay que verlo sin pulsar nada.
@@ -545,23 +544,11 @@ usando **marcadores** con icono SVG donde irá
 esas fotos hay que cambiar el `<div class="credential-slot">` por un `<img>`. No
 se rellenó con fotos de otra cosa para no sustituir contenido real por iconos.
 
-### Seis imágenes sin usar
+### Una imagen sin usar
 
-Estas están en `public/img/` pero **ningún componente las referencia**; solo
-aparecen citadas en comentarios:
-
-| Archivo | Por qué sigue ahí |
-| --- | --- |
-| `logot.jpg` (587 KB) | Es el **original** del logo de la Fundación, antes de optimizarlo a `logo-fundacion.jpg` |
-| `foto.jpg` (249 KB) | Quedó de la versión anterior del hero |
-| `logo.jpg` (103 KB) | Versión anterior del logo |
-| `logo jr.png` (57 KB) | Sin referencias |
-| `Logo_Biosbot-01.avif` (15 KB) | Sin referencias |
-| `robotica-1.jpg` (55 KB) | Cuando la galería usaba marcadores |
-
-**No se han borrado.** `logot.jpg` es el original del logo, y OneDrive ya ha
-revertido archivos eliminados antes; mejor decidirlo con calma. Todas están **sin
-rastrear en git**, así que no se publican y no entran en el repositorio.
+`public/img/foto.jpg` (249 KB) es la versión anterior de una foto del hero. No la
+referencia ningún componente y sigue versionada en git, así que **no se borró**:
+sacarla del repositorio es otra decisión y cambia lo que se publica.
 
 ### Los torneos y los medios de Robótica
 

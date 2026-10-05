@@ -523,8 +523,10 @@ export interface Robotica {
      * Asi el dato no depende de la configuracion de publicacion, y cambiar el
      * `base` de Astro no rompe la referencia.
      *
-     * `logo-fundacion.jpg` es `logot.jpg` reducido a 320 px de ancho (587 KB ->
-     * 36 KB). El original se deja intacto.
+     * `logo-fundacion.jpg` se hizo de `logot.jpg`, reducido a 320 px de ancho
+     * (587 KB -> 36 KB). El original ya no esta en el repo: se borro tras
+     * confirmar que la version comprimida es la que se usa. Si algun dia hace
+     * falta mas resolucion, habra que volver a la foto original.
      *
      * El logo trae fondo blanco y el bloque va sobre fondo oscuro, asi que la
      * hoja lo pone sobre una pastilla clara en CSS. Quitarselo no era opcion:

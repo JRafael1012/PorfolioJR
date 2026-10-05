@@ -989,13 +989,14 @@ sola regla.
 
 ### Abierto en D28–D31
 
-- **A4 — Seis imágenes en `public/img/` sin usar.** `logot.jpg` (587 KB, el
-  original del logo de la Fundación), `foto.jpg` (249 KB), `logo.jpg`,
-  `logo jr.png`, `Logo_Biosbot-01.avif` y `robotica-1.jpg`. No están
-  referenciadas por ningún componente: solo aparecen citadas en comentarios. **No
-  se han borrado** porque `logot.jpg` es el original del logo y OneDrive ya ha
-  revertido archivos eliminados antes. Todas están sin rastrear en git, así que
-  no se publican.
+- **A4 — RESUELTO en D33.** Las cinco imágenes sin usar de `public/img/`
+  (`logot.jpg`, `logo.jpg`, `logo jr.png`, `Logo_Biosbot-01.avif` y
+  `robotica-1.jpg`, 818 KB en total) se borraron. Ninguna la referenciaba ningún
+  componente. **El original del logo de la Fundación sí se perdió**: no estaba
+  versionado, así que git no lo puede devolver. La versión comprimida que sí se
+  usa (`logo-fundacion.jpg`) está en el repo desde D28.
+  Queda `public/img/foto.jpg` (249 KB), que está versionada y por eso su
+  borrado es otra decisión.
 - **A5 — Sin confirmar:** el torneo de Brasil (falta cuál y en qué año), los
   canales del documental, la URL de Instagram, el nombre de RAF VESTIGIA,
   `public/cv.pdf` y el segundo correo. Marcados con `TODO` en `perfil.ts` y sin
@@ -1044,6 +1045,29 @@ mal guardadas; las otras cinco ya estaban bien y **no se tocaron**.
 - **Build:** `npm run build` con 0 errores y 0 warnings (el mismo hint
   preexistente de `Trayectoria.astro:17`).
 - **Alfa verificado:** 0 píxeles no opacos de 191.565, alfa mínimo 255.
+
+### Decisión D33 (2026-10-05) — se borran las imágenes sin usar
+
+A4 llevaba dos avisos desde D28 sin cerrarse. El usuario da el visto bueno.
+
+- **D33.1 — Se borran las cinco.** `logot.jpg`, `logo.jpg`, `logo jr.png`,
+  `Logo_Biosbot-01.avif` y `robotica-1.jpg`: 818 KB que ninguna sección pintaba.
+  Antes de borrar se comprobó una por una que no hubiera ninguna referencia real,
+  solo citas en comentarios.
+- **D33.2 — Se admite lo que no se puede recuperar.** `logot.jpg` era el original
+  del logo de la Fundación y **no estaba versionado**: git no lo devuelve. La
+  versión de 36 KB que sí se usa sí está en el repo. El comentario de
+  `perfil.ts` que decía "el original se deja intacto" se corrigió, para que no
+  prometa un archivo que ya no está.
+- **D33.3 — `foto.jpg` se queda.** Está versionada, así que borrarla es una
+  decisión de repositorio y no una limpieza de archivos sueltos. Se anota sola.
+
+### Evidencia (2026-10-05) — D33
+
+- **818 KB liberados.** `public/img/` queda con 13 archivos.
+- **Build:** `npm run build` con 0 errores y 0 warnings.
+- **Comprobación previa:** 0 referencias reales en `src/` y `public/js/` para
+  las cinco; la única cita de `logot.jpg` era un comentario, ya actualizado.
 
 ---
 

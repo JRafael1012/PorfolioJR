@@ -2583,9 +2583,9 @@ a:hover {
 /*
  * Logo + nombre en una fila.
  *
- * El logo (`logot.jpg`) es azul marino sobre fondo blanco, y esta pagina es
- * oscura. Por eso va sobre una "pastilla" clara: sin ella, el fondo blanco del
- * logo se veria como un rectangulo suelto.
+ * El logo (`logo-fundacion.jpg`) es azul marino sobre fondo blanco, y esta
+ * pagina es oscura. Por eso va sobre una "pastilla" clara: sin ella, el fondo
+ * blanco del logo se veria como un rectangulo suelto.
  *
  * El `padding` y el `border-radius` viven en la pastilla, no en la imagen, para
  * que el logo quede centrado dentro y no se recorte el blanco de sus bordes.
