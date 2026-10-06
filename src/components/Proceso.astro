@@ -1,0 +1,49 @@
+---
+import { proceso } from '../data/perfil';
+
+/**
+ * PROCESO DE TRABAJO (guía 24)
+ * ---------------------------------------------------------------------------
+ * Cómo se desarrolla una solución: siete pasos, del problema al despliegue.
+ *
+ * Los pasos vienen de la guía y de cómo trabaja el sitio (aceptar, investigar,
+ * construir, probar, mejorar, publicar). Son descripciones del proceso, no
+ * logros: nada inventado.
+ *
+ * Sin entrada en el `nav`, igual que Estadísticas: es una sección corta que
+ * vive entre Certificaciones y Contacto, y sumarla al menú lo alargaría.
+ *
+ * Diseño "cinta de pasos" (D42·D43): una lista ordenada (`<ol>`) donde cada
+ * paso es un anillo numerado y una línea los cruza por el centro, como la
+ * línea de la trayectoria. Para que la chispa recorra los anillos uno a uno,
+ * cada paso declara su retardo en `--reveal-delay` y el pulso (10E) lo usa
+ * como `animation-delay`.
+ */
+---
+<section class="section proceso" id="proceso" aria-labelledby="proceso-title">
+  <div class="container">
+    <div class="section__head">
+      <p class="eyebrow">PROCESO</p>
+      <h2 class="section__title" id="proceso-title">Cómo trabajo</h2>
+      <p class="section__subtitle">
+        Del problema a la solución: siete pasos que sigo antes, durante y
+        después del código.
+      </p>
+    </div>
+
+    <ol class="proceso-grid reveal">
+      {
+        proceso.map((paso, indice) => (
+          <li
+            class="proceso-card"
+            style={{ ['--reveal-delay']: `${indice * 0.42}s` }}
+          >
+            <span class="proceso-card__num">{paso.numero}</span>
+            <h3 class="proceso-card__titulo">{paso.titulo}</h3>
+            <p class="proceso-card__detalle">{paso.detalle}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

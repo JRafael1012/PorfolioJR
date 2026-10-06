@@ -1,0 +1,55 @@
+---
+import { servicios } from '../data/perfil';
+import { Code, Database, Globe, ShieldCheck, Wrench, Workflow } from 'lucide-astro';
+
+/**
+ * Sección "Servicios" (D37, ampliada con Ciberseguridad en D44).
+ *
+ * Objetivo del sitio: empleo o prácticas, no clientes. La sección es corta
+ * (seis tarjetas de una línea) y se lee como "qué sé hacer", no como un
+ * catálogo de agencia con presupuestos y CTAs de venta.
+ *
+ * Los iconos vienen de `lucide-astro`, igual que en Contacto. El `icono` de
+ * cada servicio es el nombre de la clave en `ICONOS_LUCIDE`; añadir un icono
+ * nuevo implica mapearlo aquí.
+ */
+
+const ICONOS_LUCIDE = { Code, Database, Globe, ShieldCheck, Wrench, Workflow };
+---
+<section class="section" id="servicios">
+  <div class="container">
+    <div class="section__head">
+      <p class="eyebrow">SERVICIOS</p>
+      <h2 class="section__title">Qué puedo hacer</h2>
+      <p class="section__subtitle">
+        Una carta corta, orientada a empleo y prácticas: lo que ya sé hacer, sin
+        adornos.
+      </p>
+    </div>
+
+    <ul class="servicios-grid">
+      {
+        servicios.map((servicio) => {
+          const Ico = ICONOS_LUCIDE[servicio.icono];
+          return (
+            <li class="card servicio-card">
+              <span class="servicio-card__icon" aria-hidden="true">
+                {Ico && <Ico size={22} stroke-width={1.7} />}
+              </span>
+              <div class="servicio-card__body">
+                <h3 class="servicio-card__titulo">{servicio.titulo}</h3>
+                <p class="servicio-card__desc">{servicio.descripcion}</p>
+              </div>
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    <p class="servicios-nota reveal">
+      <span class="servicios-nota__punto" aria-hidden="true"></span>
+      ¿Te interesa algo de esto? Estoy disponible para
+      <a class="servicios-nota__cta" href="#contacto">empleo y prácticas →</a>
+    </p>
+  </div>
+</section>

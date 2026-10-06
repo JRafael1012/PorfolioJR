@@ -1,5 +1,5 @@
 ---
-import { perfil } from '../data/perfil';
+import { perfil, datosContacto } from '../data/perfil';
 import { withBase } from '../paths';
 
 // Fuentes autoalojadas: sin peticiones a Google ni a terceros.
@@ -10,6 +10,26 @@ import '@fontsource-variable/jetbrains-mono/wght.css';
 import '../styles/global.css';
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
+// Imagen social (Open Graph / Twitter): el logo del sitio, en URL absoluta.
+const imagenSocial = new URL(withBase('/img/logo.png'), Astro.site);
+
+// Datos estructurados (JSON-LD, lista de la guía 18). Solo campos reales:
+// nombre, perfil y redes de `perfil.ts`. Nada inventado, igual que el resto.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: perfil.nombre,
+  url: canonical.href,
+  image: imagenSocial.href,
+  jobTitle: perfil.subtitulo,
+  description: perfil.descripcion,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: perfil.ciudad.split(',')[0].trim(),
+    addressCountry: 'CO',
+  },
+  sameAs: [datosContacto.githubUrl, datosContacto.linkedinUrl],
+};
 ---
 
 <!doctype html>
@@ -28,9 +48,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:title" content={perfil.meta.title} />
     <meta property="og:description" content={perfil.meta.description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imagenSocial.href} />
+    <meta property="og:image:alt" content="Logotipo de Rafael Arlant" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={perfil.meta.title} />
     <meta name="twitter:description" content={perfil.meta.description} />
+    <meta name="twitter:image" content={imagenSocial.href} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
     <link rel="icon" href={withBase('/favicon.png')} type="image/png" sizes="256x256" />
     <link rel="icon" href={withBase('/favicon-32.png')} type="image/png" sizes="32x32" />

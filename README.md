@@ -31,8 +31,11 @@ Sitio estático de una sola página, en español, construido con
 PortafolioAstro/              Página única. Orden de las secciones:
 public/                       Header → Hero → Stack → Sobre mí →
 ├── favicon.png              Trayectoria → Robótica → Destacados →
-├── favicon-32.png           Proyectos → Contacto → Footer
-├── apple-touch-icon.png
+├── favicon-32.png           Proyectos → Servicios → Estadísticas →
+├── apple-touch-icon.png     Certificaciones → Proceso → Idiomas →
+├── robots.txt               Contacto → Footer
+├── robots.txt               SEO: permite indexar y señala el sitemap
+├── sitemap.xml              SEO: la única URL del sitio (D39)
 ├── img/
 │   ├── logo.png             Logotipo (header y favicon)
 │   ├── logo-fundacion.jpg   Logo de Fundación Biosbot, 36 KB
@@ -53,15 +56,16 @@ public/                       Header → Hero → Stack → Sobre mí →
 └── js/
     └── main.js              Revelado al hacer scroll, anclas, carrusel de
                              fotos del hero, galería de credenciales,
-                             collage de robótica, paneles plegables y pausa
-                             del marquee de Stack
+                             collage de robótica y paneles plegables (la
+                             pausa de las marquesinas es por hover/foco, D43)
 src/
 ├── components/              Un componente por sección (solo marcado, sin CSS)
 │   ├── Header.astro         Navegación fija con subrayado que crece
 │   ├── Hero.astro           Carrusel de 3 fotos, cartel de disponibilidad,
 │   │                        línea de tecnologías clave, 2 botones y 6
 │   │                        botones circulares de redes bajo la foto
-│   ├── Stack.astro          Marquesina infinita de logos + botón de pausa
+│   ├── Stack.astro          Marquesina infinita de logos; pausa solo con
+│   │                        hover o foco (botón eliminado, D43)
 │   ├── SobreMi.astro        Seis preguntas plegables y propuesta de valor
 │   ├── Trayectoria.astro    Timeline con línea que avanza al hacer scroll,
 │   │                        galería del diploma del SENA (Finovateh) y
@@ -74,7 +78,12 @@ src/
 │   │                        tarjetas anchas imagen + texto
 │   ├── ProyectoCard.astro   Tarjeta compartida de las dos secciones
 │   ├── Proyectos.astro      Todos los proyectos en la rejilla
-│   ├── Contacto.astro       Cuatro tarjetas de contacto + CTA de correo
+│   ├── Servicios.astro      "Qué sé hacer": 6 tarjetas, rejilla sin huecos (D49)
+│   ├── Estadisticas.astro   Cifras calculadas desde `perfil.ts`, nunca a mano (D38)
+│   ├── Certificaciones.astro Certificados; aviso si `certificaciones` está vacío
+│   ├── Proceso.astro         "Cómo trabajo": 7 pasos de desarrollo (D42)
+│   ├── Idiomas.astro         Idiomas honestos (B1·IFEC) + escala CEFR (D48)
+│   ├── Contacto.astro        Cuatro tarjetas de contacto + CTA de correo
 │   └── Footer.astro
 ├── data/
 │   └── perfil.ts            ← TODO el contenido del sitio
@@ -83,7 +92,7 @@ src/
 ├── pages/
 │   └── index.astro          La página única, y el orden de las secciones
 ├── styles/
-│   └── global.css           ← TODO el CSS, en 13 bloques por orden de página
+│   └── global.css           ← TODO el CSS, en 18 bloques por orden de página
 └── paths.ts                 Helper de rutas con `base`
 plans/                       Planes MIDEGS de las fases 1–4
 .github/workflows/
@@ -146,33 +155,102 @@ los componentes para cambiar textos.
 | Formación y actividades | `experiencia` |
 | Tecnologías del marquee | `stack` |
 | Proyectos | `proyectos` |
+| Servicios (qué sé hacer) | `servicios` |
+| Cifras de Estadísticas | `estadisticas` (se calculan solas) |
+| Certificados (curso, institución, año, PDF o enlace) | `certificaciones` |
 | Correo, GitHub, LinkedIn, WhatsApp (datos editables) | `datosContacto` |
 | Tarjetas de contacto (textos y orden) | `contacto` |
+
+### Servicios y Estadísticas
+
+**«Servicios» es la carta corta de "qué sé hacer" (D37).** El objetivo del sitio
+es empleo o prácticas, no clientes, así que la sección no vende ni invita a
+contratar: son seis tarjetas de una línea (web, software, bases de datos,
+automatización, mantenimiento y ciberseguridad — añadida en D44). Los títulos
+y descripciones se editan en
+`perfil.ts` → `servicios`; el icono de cada una viene de `lucide-astro` y hay
+que mapearlo en `Servicios.astro` antes de usarlo. El nav ya lleva
+«Servicios», entre Proyectos y Certificados.
+
+**La rejilla nunca deja huecos (D49).** Antes usaba `auto-fit` y, en escritorio,
+con seis tarjetas quedaban celdas vacías en la última fila (el «espacio vacío»
+que se veía). Ahora es fija: 3 columnas en escritorio (2 filas × 3 tarjetas,
+== 6), 2 en tabletas y 1 en móvil, así las filas siempre salen completas. Debajo
+de la rejilla hay una **banda honesta** con enlace a Contacto («Estoy disponible
+para empleo y prácticas →»): es el objetivo declarado del sitio, no un CTA de
+venta (D37 se mantiene), y aprovecha el bajo de la sección sin inventar datos.
+
+**Las cifras de Estadísticas se calculan solas (D38).** `estadisticas` en
+`perfil.ts` se deriva de los datos reales del sitio — proyectos +
+`robotica.proyectos`, los años del subtítulo de robótica, los items del stack
+con `categoria` de tecnología o herramienta y `certificaciones.length` — así
+que **ningún número se escribe a mano y ninguno puede mentir**: si cambian los
+datos, cambia la cifra. La regla es que solo se muestra lo justificable: no hay
+"10+ proyectos" si hay 3. La marquesina del Stack muestra 37 items con logo;
+en Estadísticas solo se cuentan las **24 tecnologías y herramientas**
+(13 tecnologías de programación + 9 herramientas de desarrollo + 2 bases de
+datos; quedan fuera las plataformas y los asistentes de IA). Estadísticas no
+tiene entrada en el nav: es una franja corta pegada a Servicios.
+
+**Proceso de trabajo (D42).** Entre Certificaciones y Contacto, una rejilla de
+siete pasos —01 Entender → 07 Publicar— alimentada por `proceso` en
+`perfil.ts`. Son descripciones del proceso, no logros. Sin entrada en el nav,
+como Estadísticas. **Idiomas (D42/D48):** dos filas honestas —Español nativo,
+Inglés **B1 (según IFEC), mejorando**— desde `idiomas`; no se sube el nivel sin
+certificado. En ancho de escritorio las píldoras van a la izquierda y a su lado
+una **escala CEFR A1→C2** marca la posición real (B1, con `aria-current`); solo
+sitúa datos ciertos, sin objetivo ni percentil inventados. El hueco que dejaban
+dos píldoras en sección ancha queda así aprovechado (D48). En «¿Qué me interesa?»
+de Sobre mí se añadió el tag
+**Ciberseguridad**, que ya se sostiene con Kali Linux y dos certificados del
+SENA.
 
 ### Los botones del hero
 
 Son **dos**: **Conoce mis proyectos** (baja a `#proyectos`) y **Descargar CV**.
-GitHub y Contacto se eliminaron de aquí (D25) porque ambos caminos ya están
-cubiertos: GitHub está en el header, en la sección Contacto y en los botones
-redes bajo la foto; Contacto es una sección entera, `#contacto`, enlazada desde
-el nav. El enlace de GitHub sale de `datosContacto.githubUrl` en
-`src/data/perfil.ts`.
-
-Los dos comparten `.btn` del bloque 3. El primario va relleno en `--accent`; el
-secundario solo con borde y con un **barrido de relleno** en `--accent-2` que
-entra desde la izquierda al pasar por encima. El barrido va dentro de
-`@media (hover: hover)` para que en táctil no quede un estado pegado después de
-tocar. El primario no barre —ya está lleno—: sube a `--accent-2` y gana una
-sombra. La flecha se separa del texto (`btn__label` / `btn__arrow`) para que al
-desplazarse no empuje el texto ni ensanche el botón.
+Contacto se eliminó de aquí (D25) porque es una sección entera, `#contacto`,
+enlazada desde el nav. Los dos comparten `.btn` del bloque 3. El primario va
+relleno en `--accent`; el secundario solo con borde y con un **barrido de
+relleno** en `--accent-2` que entra desde la izquierda al pasar por encima. El
+barrido va dentro de `@media (hover: hover)` para que en táctil no quede un
+estado pegado después de tocar. El primario no barre —ya está lleno—: sube a
+`--accent-2` y gana una sombra. La flecha se separa del texto
+(`btn__label` / `btn__arrow`) para que al desplazarse no empuje el texto ni
+ensanche el botón.
 
 ### Los botones del header
 
 Los enlaces de sección llevan un **subrayado de 2 px que crece desde la
 izquierda** al pasar por encima, pintado con un `::after` para que no desplace
-el texto. El botón «Hoja de vida» (`.nav-cv`) tiene el mismo barrido de relleno
-que `.btn`, pero en `--accent` con el texto en `--ink-black`: al ser más pequeño
-se lee mejor el ámbar que el rojo.
+el texto. A la derecha hay **dos** botones con el mismo barrido de relleno que
+`.btn`, pero en `--accent` con el texto en `--ink-black` (D22/D25/D40): **GitHub
+↗** (sale de `datosContacto.githubUrl`, `target="_blank"`) y **Hoja de vida ↗**
+(`.nav-cv`, al ser más pequeño se lee mejor el ámbar que el rojo). En móvil
+(<700 px) los enlaces se envuelven en varias filas, sin ☰.
+
+**El header tiene estado al hacer scroll (D45).** Vive en `main.js` (bloque 9),
+un solo rAF por vuelta calcula dos cosas:
+
+1. **Encogido y cristal** — con desplazamiento el header añade `.is-scrolled`:
+   la barra pasa a una opacidad del 97% con `backdrop-filter: blur(10px)`
+   (cristal cuando el contenido pasa por debajo, opaca a 86% en reposo; sin
+   soporte de desenfoque se queda en `var(--bg-nav)` sólida), el alto del nav
+   baja (84 → 72 px, 76 → 64 px en móvil), el logo encoge a 36 px y aparece
+   una sombra suave. El micro-interacción del logo (giro y aumento al pasar el
+   cursor) funciona siempre.
+2. **Sección activa** — la última cuyo borde superior superó el 35% del alto
+   de ventana marca su enlace con `.is-current` y `aria-current="true"`:
+   texto en ámbar y subrayado puesto sin esperar al hover. Solo cuentan los
+   enlaces internos (`a[href^="#"]`), así que GitHub y Hoja de vida nunca se
+   marcan.
+
+**Todo comparte la misma línea (D46/D47).** Marca y enlaces usan una altura de
+fila de 44 px; los **botones** son **compactos** (34 px, 32 px en móvil) y se
+centran en esa misma línea, así su centro queda a ras con el texto de la marca
+("rafael.dev") y no hay desniveles entre texto, logo y botones. La altura de
+`.nav-cv` sale de `min-height` (no de `padding`), de modo que aunque cambie el
+texto o la fuente la fila no se desalinea. El header base bajó a 84 px para que
+los botones no quedaran huérfanos dentro de una barra muy alta.
 
 **El `:not(.nav-cv)` de `.nav-links a` no es cosmético.** El botón de «Hoja de
 vida» también es un `<a>` dentro de `.nav-links`, así que sin el filtro heredaría
@@ -251,6 +329,11 @@ unos 425 px, así que no hay riesgo de desbordamiento.
    total, frente a 2,22 MB. Ojo a `foto competencia.jpg`: son 473×405 px, más
    pequeñas que la casilla donde sale. No se ve mal, pero si tienes el original
    en mayor resolución, cambiarlo es una mejora gratis.
+6. **Certificados:** **13 tarjetas cargadas** desde los datos de los propios
+   PDF (no escritos a mano): 11 de **SENA** (curso, ciudad y año leídos de la
+   fecha de registro) y 2 de **Coursera** (UCI y Google). Queda **sin cargar**
+   `certificado-jonatan-rafael-arlant-cortes.pdf`: es una imagen sin texto, y
+   falta nombre, institución y año. El nav ya incluye «Certificados». Ver D36.
 
 ### Los botones de contacto
 
@@ -432,7 +515,7 @@ https://cdn.simpleicons.org/<slug>/ffba08
 **Todo el CSS está en `src/styles/global.css`** (~93 KB). Ningún componente
 `.astro` lleva estilos dentro.
 
-El archivo está dividido en **trece bloques numerados** y comentados, y **el orden
+El archivo está dividido en **dieciséis bloques numerados** y comentados, y **el orden
 de los bloques es el orden de la página** (D31). Cada bloque dice qué componente
 `.astro` lo usa, y la cabecera del archivo lleva el índice y las reglas de
 edición.
@@ -449,6 +532,9 @@ edición.
 | 8 | Trayectoria |
 | 9 | Robótica: torneos, galería, Fundación, habilidades, contadores |
 | 10 | Proyectos y destacados: tarjetas de proyecto |
+| 10B | Certificaciones: tarjetas de certificado (sección vacía hasta que haya datos) |
+| 10C | Servicios: tarjetas de "qué sé hacer", modo reducido (D37) |
+| 10D | Estadísticas: cuatro cifras justificables (D38) |
 | 11 | Contacto: fondo del hero, rejilla, tarjetas de contacto y CTA |
 | 12 | Footer |
 | 13 | Ajustes transversales: los `@media` que cruzan secciones |
@@ -527,14 +613,22 @@ Se reparten entre las 4 casillas por el índice (`TILES = [0, 1, 2, 3]`), así q
 `galeriaAlt`, en el mismo orden. Si una foto no tiene descripción, **no se
 inventa una**: el campo es opcional.
 
+**Por qué las casillas son cuadradas (D34).** Eran `4/3`, y con
+`object-fit: cover` eso recortaba el alto: `documental.jpg` (720×1599) solo
+enseñaba un tercio de su imagen y se comía la cara. Con `1/1` cada foto
+vertical muestra bastante más, y encima cada una puede anclarse arriba o
+abajo con `galeriaPos`, un array opcional del mismo largo que `galeria`. La
+CSS solo lee `var(--img-pos, center)`: sin valor, la foto se queda centrada,
+así que basta con tocar la posición que quieras cambiar.
+
 **Dónde tocar cada cosa** (está anotado en el bloque 9 del CSS):
 
 | Qué cambiar | Dónde |
 | --- | --- |
-| Proporción de las casillas | `.rob-collage` (`--collage-ratio`) |
+| Proporción de las casillas | `.rob-collage__tile` (`aspect-ratio`, **1/1** desde D34) |
+| Subir o bajar el encuadre de UNA foto | `galeriaPos` en `perfil.ts` (`'center 16%'`: más bajo = más arriba) |
 | Número de fotos por casilla | `TILES` en `Robotica.astro` |
 | Cada foto | `galeria` y `galeriaAlt` en `perfil.ts` |
-| Encuadre de cada foto | `.photo-layer--N`, con `object-position` |
 | Velocidad de rotación | el `5000` de `public/js/main.js` |
 | Pasadas y tamaño | `@media` del bloque 9 |
 
@@ -637,6 +731,9 @@ Las anclas (`#proyectos`) y las URLs externas no llevan el prefijo.
 - **JavaScript mínimo**: sin framework. Solo dos comportamientos, y ambos se
   desactivan si el usuario pidió menos movimiento.
 - **Contenido tipado** en un solo archivo, separado de la presentación.
+- **Cifras calculadas, nunca escritas**: las estadísticas se derivan de los
+  datos de `perfil.ts`; si un número no se puede justificar, no se muestra
+  (D38).
 
 ---
 
@@ -644,7 +741,7 @@ Las anclas (`#proyectos`) y las URLs externas no llevan el prefijo.
 
 `plans/` sigue el modelo MIDEGS.
 
-- `plans/plan_midegs_completo.md` — fuente de verdad: decisiones (D1…D31) y las
+- `plans/plan_midegs_completo.md` — fuente de verdad: decisiones (D1…D38) y las
   10 fases con sus criterios de aceptación.
 - `plans/historial/` — los planes de las fases 1 a 4 tal como se escribieron
   entonces: dirección y viabilidad, requisitos, arquitectura y planificación.

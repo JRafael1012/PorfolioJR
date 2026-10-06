@@ -1069,6 +1069,409 @@ A4 llevaba dos avisos desde D28 sin cerrarse. El usuario da el visto bueno.
 - **Comprobación previa:** 0 referencias reales en `src/` y `public/js/` para
   las cinco; la única cita de `logot.jpg` era un comentario, ya actualizado.
 
+### Decisión D34 (2026-10-06) — la galería deja de cortar las caras
+
+El usuario pide subir las fotos porque recortan la cabeza.
+
+- **D34.1 — La casilla pasa de `4/3` a `1/1`.** Con `cover`, `4/3` mostraba
+  solo el 34 % del alto de `documental.jpg` (720×1599) y el 42 % de `wro.jpg`.
+  El cuadrado recorta bastante menos y no cambia el peso de la página.
+- **D34.2 — Anclaje por foto, no en disco.** `Experiencia.galeriaPos?: string[]`
+  (opcional, mismo orden que `galeria`), que `Robotica.astro` pasa al `<img>`
+  como `--img-pos` y la CSS lee con `var(--img-pos, center)`. Sin entrada, la
+  foto queda centrada como antes. **No se recorta ningún archivo**: la nota del
+  componente recuerda que OneDrive revierte escrituras recientes en `public/`.
+- **D34.3 — Anclajes pedidos y ajustados a ojo por el usuario:**
+  `documental.jpg` `center 16%`, `wro.jpg` `center 11%` (dos subidas: 15 px y
+  10 px), `wro1.jpg` `center 25%`. El resto, `center 50%`.
+- **D34.4 — El README ya no prometía `--collage-ratio`:** esa clase no existía;
+  la fila de la tabla apunta ahora a `.rob-collage__tile` y a `galeriaPos`.
+
+### Decisión D35 (2026-10-06) — el IED Los Naranjos entra en Trayectoria
+
+- **D35.1 — Entrada nueva al final del array `experiencia`:** «Bachillerato
+  (Grado 11)», `IED Los Naranjos`, periodo `2026`. Tanto el colegio como el año
+  los dio el usuario; no se dedujo ninguno.
+- **D35.2 — `logros` y `stack` pasan a ser opcionales** en `Experiencia`. Una
+  ficha sin logros no los inventa: `Trayectoria.astro` y `Robotica.astro` no
+  pintan la `<ul>` si el campo falta o viene vacío. Antes un `logros: []`
+  habría dejado el margen de 1,1 rem de `.exp-achievements` sin contenido.
+- **D35.3 — La formación complementaria no entra.** El usuario la descartó en
+  esta ronda; queda fuera del alcance.
+
+### Decisión D36 (2026-10-06) — sección Certificaciones
+
+- **D36.1 — Componente nuevo `Certificaciones.astro`**, entre Proyectos y
+  Contacto (antes de `Contacto.astro` en `index.astro`). CSS en un bloque nuevo
+  **10B**, escrito físicamente entre el 10 y el 11 para respetar el orden de
+  página sin renumerar los bloques existentes. Reutiliza `.card-grid` y `.card`
+  del bloque 3.
+- **D36.2 — `certificaciones: Certificacion[] = []` con `TODO`.** El comportamiento
+  fue cambiando con el usuario: primero la sección **no se pintaba** con el array
+  vacío, para no publicar un hueco roto; luego el usuario pidió **dejar el
+  espacio** en la página y rellenarlo después. **Así queda:** la sección se pinta
+  siempre y, sin entradas, muestra el aviso `.cert-vacio` («Espacio reservado:
+  aquí irán los certificados») en vez de la rejilla. Con los dos primeros
+  certificados (2026-10-06) se añadió la entrada «Certificados» al `nav`
+  (antes quedaba fuera a propósito).
+- **D36.3 — El enlace distingue URL externa (`https://…`, pestaña nueva con
+  `rel="noopener noreferrer"`) de archivo en `public/` (antepone `withBase()`,
+  que es lo que evita el 404 de la base `/PorfolioJR`).**
+- **D36.4 — Los datos los aporta el usuario.** Pendiente: nombre, institución,
+  año y certificado de cada uno.
+
+### Evidencia (2026-10-06) — D34, D35 y D36
+
+- **`npm run build`:** `astro check` 0 errores, 0 warnings (el hint de
+  `Trayectoria.astro:17` es preexistente) y `astro build` genera 1 página.
+- **`dist/index.html` contiene:** «IED Los Naranjos», «Bachillerato (Grado 11)»,
+  `--img-pos: center 16%` y `--img-pos: center 11%`.
+- **CSS minificado:** `.rob-collage__tile{aspect-ratio:1;…}` y
+  `object-position:var(--img-pos,center)` presentes en `dist/_astro/*.css`.
+- **`id="certificaciones"` presente en `dist/index.html` y en el dev server**,
+  junto con el aviso «Espacio reservado»: la sección queda visible con el array
+  vacío (comportamiento pedido por el usuario en D36.2).
+- **Dev server comprobado en `http://localhost:4321/PorfolioJR`** (HTTP 200,
+  291 KB): contiene «IED Los Naranjos» dentro de la Trayectoria.
+- **Certificados cargados y verificados el 2026-10-06:** **13 tarjetas**
+  (`cert-card__titulo` ×13 en `dist/index.html`) con datos extraídos del propio
+  PDF (no escritos a mano): 11 de SENA (curso + ciudad + fecha de registro) y 2
+  de Coursera. Los 13 PDFs se sirven con HTTP 200 desde el dev server. El caso
+  del primer PDF: antes **8,6 MB → 846 KB** (imagen 2000×1545 re-comprimida a
+  JPEG q80, backup en temporal). Queda pendiente 1 ficha: `certificado-jonatan-
+  rafael-arlant-cortes.pdf` es imagen sin texto y faltan sus datos reales.
+- **Pendiente de verificación visual:** el encuadre final de las tres fotos lo
+  ajusta el usuario a ojo; no hay forma automática de comprobar dónde cae la
+  cara.
+
+### Decisión D37 (2026-10-06) — sección Servicios, en modo reducido
+
+El usuario comparte la guía de portafolio que trae las secciones 9 y 10. Al
+preguntarle el objetivo, elige **empleo/prácticas**, y esa es la opción en la
+que la propia guía dice que Servicios "puede ser más pequeña".
+
+- **D37.1 — Cinco tarjetas de una línea.** Las cinco descripciones son las que
+  traía la guía y el usuario las asume para sí (desarrollo web, software, bases
+  de datos, automatización, mantenimiento). Sin precios ni CTAs de venta: la
+  sección se lee como "qué sé hacer", no como un catálogo.
+- **D37.2 — Alimentada por `servicios` en `perfil.ts`.** Interface `Servicio`
+  con `titulo`, `descripcion` e `icono` (lucide-astro). Los iconos se mapean
+  en `Servicios.astro`; un icono nuevo sin mapear no pinta.
+- **D37.3 — Entre Proyectos y Certificaciones**, con entrada en el nav
+  («Servicios»). Estadísticas (D38) no lleva entrada: es una franja corta
+  pegada a Servicios y alargaría el menú sin ganar navegación.
+
+### Decisión D38 (2026-10-06) — sección Estadísticas
+
+La guía proponía "10+ proyectos / 5+ años en robótica / 10+ tecnologías / X
+certificaciones". La regla del sitio, que el usuario confirma al responder la
+pregunta de la cifra de proyectos: **solo números que se puedan justificar**.
+
+- **D38.1 — Cifras calculadas, no escritas.** `estadisticas` en `perfil.ts`
+  se deriva de los datos reales: proyectos = `proyectos.length`
+  + `robotica.proyectos.length` (**3**), añosRobotica = **6** (los del
+  subtítulo de `robotica`), tecnologias = `stack.length` (**37**),
+  certificaciones = `certificaciones.length` (**13**).
+- **D38.2 — Nada de "10+ proyectos".** El usuario elige "contar solo los
+  reales": hay 3 proyectos confirmados y **3** es lo que se muestra.
+- **D38.3 — Rejilla de 4 números**, en mono y ámbar (`--accent`), con dos
+  cortes: 1050 px → 2 columnas, 700 px → 1.
+
+### Evidencia (2026-10-06) — D37 y D38
+
+- **`npm run build`:** 0 errores y 0 warnings (mismo hint preexistente).
+  `astro check`: 0 errores, 0 warnings.
+- **`dist/index.html` contiene:** `id="servicios"`, `id="estadisticas"`, los
+  cinco títulos de servicio y los cuatro valores renderizados (`3 / 6 / 37 /
+  13`) dentro de `.stat-card__valor`.
+- **CSS servido:** `.servicio-card`, `.stat-card` y
+  `grid-template-columns:repeat(4,1fr)` presentes en el CSS minificado de
+  `dist/_astro/`.
+- **Las cifras son derivadas:** `stack.length` (37) coincide con el recuento de
+  logos que ya afirmaba el README («las 37 tecnologías tienen logo»), lo que
+  confirma que el número viene de los datos y no de un dato escrito a mano.
+
+### Decisión D39 (2026-10-06) — SEO transversal (guía 18, completar lo que falta)
+
+La sección 18 de la guía pide canonical, meta, OG, favicon, robots y sitemap.
+El sitio ya tenía canonical, `<title>`, `description`, OG básico, twitter:card
+y favicon en `BaseLayout.astro`, y `SITE`/`base` en `astro.config.mjs`
+(astro:site). Faltaba el SEO "de riqueza":
+
+- **D39.1 — `og:image` y `twitter:image` en URL absoluta** (`base + /img/logo.png`
+  resuelto contra `SITE`), con `og:image:alt` ("Logotipo de Rafael Arlant").
+  Sin ellas, los enlaces compartidos salen sin miniatura.
+- **D39.2 — `robots.txt` y `sitemap.xml` estáticos** en `public/`. El sitio es
+  una sola página bajo `/PorfolioJR/` (`trailingSlash: 'never'`), así que el
+  sitemap tiene una única `<loc>` y apunta a `https://jrafael1012.github.io/
+  PorfolioJR/` (misma URL que `SITE` en `astro.config.mjs`; quedan enlazados por
+  comentario). Ambos se copian a `dist/` en el build.
+- **D39.3 — JSON-LD `Person`** en `BaseLayout.astro` con **solo datos reales**
+  de `perfil.ts` y `datosContacto` (nombre, url, image, `jobTitle` =
+  `perfil.subtitulo` "Técnico en Desarrollo de Software", descripción, Bogotá,
+  CO, `sameAs`: GitHub + LinkedIn). Nada inventado, igual que el resto del sitio.
+
+### Decisión D40 (2026-10-06) — GitHub vuelve al header (guía 22)
+
+La base de navegación de la guía pide, a la derecha, **GitHub + CV**. El `nav-cv`
+("Hoja de vida") ya estaba; el botón de GitHub **no** (D25 lo había dejado solo
+en Hero, Contacto y repos). A petición del usuario ("haz todo lo que falta") se
+reintroduce **GitHub ↗ a la derecha, antes de "Hoja de vida"** en `Header.astro`,
+idéntico estilo `.nav-cv` y `target="_blank"` + `rel="noopener noreferrer"`
+apuntando a `datosContacto.githubUrl`. Así el README que decía "GitHub está en el
+header" vuelve a ser cierto. En móvil (<700 px) **no** se añade ☰: los enlaces
+se envuelven (adaptación real sin JS), comportamiento documentado que se
+conserva.
+
+### Evidencia (2026-10-06) — D39 y D40
+
+- **`npm run build`:** 0 errores y 0 warnings (mismo hint preexistente en
+  Trayectoria). `astro check`: 0 errores, 0 warnings.
+- **`dist/` contiene** `robots.txt` y `sitemap.xml` (copiados del build), y en
+  `dist/index.html`: `og:image` y `twitter:image` con la URL absoluta
+  `https://jrafael1012.github.io/PorfolioJR/img/logo.png`, el bloque
+  `application/ld+json` con `"@type":"Person"` y `sameAs` [GitHub,
+  LinkedIn], y el enlace del header `<link> `>GitHub`` apuntando a
+  `https://github.com/JRafael1012`.
+- **JSON-LD validado con datos reales**: `name` "Jonatan Rafael Arlant Cortes",
+  `jobTitle` "Técnico en Desarrollo de Software", `addressLocality` "Bogotá"
+  (de `perfil.ciudad.split(',')[0]`), `sameAs` con las dos redes de
+  `datosContacto`. UTF-8 correcto (sin mojibake).
+
+### Decisión D41 (2026-10-06) — el stack diferencia tecnologías de herramientas
+
+El usuario señala que el stack mezcla tecnologías, herramientas y plataformas,
+así que "37 tecnologías" (D38) es impreciso. Se audita el array: 13 lenguajes y
+frameworks, 2 bases de datos, 9 herramientas, 7 plataformas y 6 asistentes de
+IA (13+2+9+7+6 = 37). Al preguntarle cómo corregirlo, elige **"tecnologías y
+herramientas en estadísticas"**:
+
+- **D41.1 — `categoria` en la interface `Tecnologia`** y en los 37 items
+  (`'tecnologia' | 'base-de-datos' | 'herramienta' | 'plataforma' | 'ia'`).
+  La marquesina del Stack **no cambia**: sigue mostrando los 37 con su logo.
+- **D41.2 — `estadisticas.tecnologias` se convierte en
+  `tecnologiasYHerramientas`**: cuenta `categoria` 'tecnologia',
+  'herramienta' **o** 'base-de-datos' = **24** (13 + 9 + 2). La etiqueta de la
+  tarjeta pasa de "Tecnologías en el stack" a **"Tecnologías y herramientas"**.
+  El usuario no sabía cuál de las cifras era lo más recomendado y se le
+  recomienda incluir MySQL y SQLite: un SGBD se lista como "tecnología" en
+  cualquier CV y encaja bajo la etiqueta; quedó decidido así.
+- **D41.3 — Quedan fuera** de la cifra las plataformas (GitHub, Windows,
+  Linux, Canva, Notion, Scratch, Kali) y los asistentes de IA (6): son 13 que
+  sí se ven en la marquesina pero no son "tecnología de programación ni
+  herramienta de desarrollo" en sentido estricto. Las categorías quedan
+  documentadas en el propio `perfil.ts`.
+
+### Evidencia (2026-10-06) — D41
+
+- **`npm run build`:** 0 errores y 0 warnings (mismo hint preexistente).
+  `astro check`: 0 errores, 0 warnings.
+- **`dist/index.html` renderiza** las cuatro tarjetas: `3 Proyectos`,
+  `6 Años en robótica`, `24 Tecnologías y herramientas` y `13 Certificaciones`
+  (regex sobre `stat-card__valor`/`stat-card__etiqueta`).
+- **La marquesina conserva los 37 items** (2 copias para el bucle infinito en
+  el DOM), sin ninguno borrado: solo cambió el número de Estadísticas.
+
+### Decisión D42 (2026-10-06) — Proceso de trabajo, Idiomas y Seguridad
+
+De la lista completa de la guía (28 secciones), el usuario pide que se
+implemente lo que se recomienda: **Proceso de trabajo (24)**, **Idiomas (27)**
+y la mención de **Seguridad (26)**. El CV (12) se pospone a propósito ("lo voy
+a hacer bien formado, sin prisa") y los Proyectos (4/5) quedan pendientes hasta
+que el usuario termine sus dos proyectos.
+
+- **D42.1 — Sección «Proceso de trabajo».** `Proceso.astro` + `proceso` en
+  `perfil.ts`: siete pasos (Entender → Investigar → Diseñar → Desarrollar →
+  Probar → Mejorar → Publicar), cada uno con una frase que describe el paso,
+  no un logro. `<ol>` semántico; números en mono y ámbar (mismo acento que
+  10D). Sin entrada en el nav, igual que Estadísticas. CSS: sub-bloque **10E**.
+- **D42.2 — Sección «Idiomas».** `Idiomas.astro` + `idiomas` en `perfil.ts`:
+  Español nativo / Inglés **B1, según IFEC, mejorando** (nivel que confirma el
+  usuario; no se sube sin certificado). CSS: sub-bloque **10F**.
+- **D42.3 — Ciberseguridad como interés.** Se añade el tag «Ciberseguridad» a
+  `sobreMi.intereses` (pregunta «¿Qué me interesa?»). Es un interés con
+  evidencia: Kali Linux en el stack y dos certificados SENA (apropiación de
+  conceptos de ciberseguridad y controles de seguridad informática). No se
+  presenta como experto, solo como interés.
+- **Pendiente del usuario:** CV (`cv.pdf` en `public/`) y rellenar `proyectos`
+  (descripción, problema, stack, funcionalidades, participación, repos,
+  capturas).
+
+### Evidencia (2026-10-06) — D42
+
+- **`npm run build`:** 0 errores y 0 warnings (mismo hint preexistente).
+  `astro check`: 0 errores, 0 warnings.
+- **`dist/index.html` contiene:** `id="proceso"`, `id="idiomas"`, los números
+  `01`…`07`, los títulos Entender→Publicar, «Español/Nativo»,
+  «Inglés/B1 · IFEC, mejorando» y el tag «Ciberseguridad». Orden en la página:
+  certificaciones → proceso → idiomas → contacto (verificado por posición de
+  los ids).
+- **CSS servido:** `.proceso-grid` con `repeat(4,1fr)` y `.idiomas-card` en el
+  CSS minificado de `dist/_astro/`; cortes 1050 px (2 cols) y 700 px (1 col).
+
+### Decisión D43 (2026-10-06) — Diseño nuevo, animaciones y sin botón de pausa
+
+Petición del usuario: las secciones nuevas "se ven genéricas" y se pidió
+"pon animaciones". De paso, se retira el botón de pausa de la cinta de
+Herramientas (Stack). D30.6 los había dejado (histórico, no se borra).
+
+- **D43.1 — Proceso como "cinta de pasos".** Se descarta la rejilla de
+  tarjetas (igual a Servicios/Estadísticas) y los siete pasos se dibujan como
+  anillos numerados cruzados por una línea horizontal (`::before`), el mismo
+  lenguaje de la línea de la trayectoria. Una chispa (`node-flujo`, halo ámbar)
+  recorre los anillos uno a uno vía `animation-delay` escalonado
+  (`--reveal-delay` en línea, 0.42 s de paso). Al pasar el cursor el anillo se
+  llena de ámbar y la cifra se vuelve del color del fondo. ≤1050 px: 4 columnas
+  y línea oculta; ≤700 px: una columna con la línea a la izquierda.
+- **D43.2 — Idiomas como píldoras.** Las dos tarjetas planas pasan a ser dos
+  píldoras redondeadas con punto ámbar que late (`punto-latido`), idioma en
+  blanco y nivel en mono ámbar; al pasar el cursor se elevan y cambian de borde.
+  Mismo lenguaje visual de las etiquetas de Sobre mí.
+- **D43.3 — Sin botón de pausa en Stack.** Se elimina el `<button
+  data-marquee-toggle="stack">`, su CSS (`.marquee-toggle`, `.is-paused`), el
+  bloque de JS que lo emparejaba y los atributos `data-marquee`/`data-marquee-track`
+  de Stack (no quedaba ninguna cinta con botón). La cinta de Robótica (torneos)
+  nunca tuvo botón. La pausa queda por **hover y foco** (WCAG 2.2.2) y con
+  `prefers-reduced-motion` no se mueve; el comentario de `main.js` lo registra.
+- **D43.4 — Accesibilidad.** Tanto `node-flujo` como `punto-latido` se apagan
+  con `@media (prefers-reduced-motion: reduce)`. El revelado de entrada usa el
+  `.reveal` existente (IntersectionObserver + fallback sin JS).
+
+### Evidencia (2026-10-06) — D43
+
+- **Build:** `astro check` 0 errores / 0 warnings (hint preexistente de
+  Trayectoria `indice` sin uso); `astro build` 1 página, ✓ 924 ms.
+- **`dist/index.html`:** `<ol class="proceso-grid reveal">` con 7 anillos y
+  `--reveal-delay` escalonado (0 … 2.52 s); `<ul class="idiomas-list reveal">`
+  con 2 `idiomas-pill`; nada de `marquee-toggle` / `data-marquee=` en Stack ni
+  de las clases `idiomas-card` viejas.
+- **CSS minificado de `dist/_astro/`:** `node-flujo`, `punto-latido`,
+  `.proceso-grid` con `repeat(7,1fr)`, `reveal-delay` y el pausado por hover
+  de la marquesina.
+- **`public/js/main.js`:** eliminado el bloque que escuchaba
+  `[data-marquee-toggle]`; cabecera actualizada (pausa por hover/foco).
+
+### Decisión D44 (2026-10-06) — Servicio "Ciberseguridad"
+
+Tras confirmarlo con el usuario (se descarta interpretar "adware" como
+hardware), se añade una sexta tarjeta a `servicios`:
+
+- **D44.1 — Tarjeta nueva.** `{ titulo: 'Ciberseguridad', descripcion:
+  'Respaldo, actualizaciones, contraseñas y buenas prácticas.', icono:
+  'ShieldCheck' }`. Es "cositas" de ciberseguridad, no un puesto de experto:
+  el texto va acorde con los certificados SENA (apropiación de los conceptos
+  de ciberseguridad; controles y seguridad informática).
+- **D44.2 — Icono y mapeado.** Se añade `ShieldCheck` de `lucide-astro` al
+  import y a `ICONOS_LUCIDE` de `Servicios.astro`, y a la unión `icono` de
+  `Servicio` en `perfil.ts` (seis iconos mapeados). Comentarios y README
+  pasan de "cinco" a "seis" tarjetas (se incluye ciberseguridad).
+
+### Evidencia (2026-10-06) — D44
+
+- **Build:** `astro check` 0 errores / 0 warnings; `astro build` ✓.
+- **`dist/index.html`:** tarjeta `<li class="card servicio-card">` con
+  «Ciberseguridad», el texto de respaldo y el SVG de `ShieldCheck` (icono
+  lucide inline). Seis `servicio-card` en total.
+
+### Decisión D46 (2026-10-06) — Header alineado
+
+El usuario pide que «todo esté alineado: los botones y todo». Causa: los
+enlaces de texto (padding vertical, ~33 px) y los botones `.nav-cv`
+(padding 17 px, ~56 px) no compartían fila, y la marca tampoco.
+
+- **D46.1 — Una sola altura de fila (44 px).** Marca (`.brand`, `height: 44px`
+  con `inline-flex` centrado), enlaces `.nav-links a:not(.nav-cv)`
+  (`height: 44px`, se sustituye el `padding-block: 6px`) y botones `.nav-cv`
+  (`min-height: 44px; padding: 0 20px; display: inline-flex; align-items:
+  center`). La altura del botón sale del `min-height` y no del `padding`, así
+  que cambiar texto o fuente no desalinea. En móvil (<700 px) los botones
+  bajan a 40 px (min-height en vez del padding 12 px).
+- **D46.2 — Sin cambios de color ni layout.** Se mantienen el wrap sin ☰, el
+  cristal y el encogido de D45, y el acento. Solo se normaliza la línea.
+
+### Evidencia (2026-10-06) — D46
+
+- **Build:** `astro check` 0 errores / 0 warnings; `astro build` ✓ (1 página,
+  ~1 s).
+- **CSS servido de `dist/_astro/`:** `.brand{…height:44px}`,
+  `.nav-links a:not(.nav-cv){…height:44px}` y `.nav-cv{…min-height:44px;
+  padding:0 20px}`; ya no existe `padding:17px 20px`.
+
+### Decisión D47 (2026-10-06) — Botones del header más compactos
+
+El usuario pide: «haz más chiquitos los botones y súbelo a ras como está mi
+nombre rafael.dev». El nombre de marca es `perfil.marca` ↦ «rafael.dev».
+
+- **D47.1 — Botones compactos.** `.nav-cv` baja de 44 a **34 px** de altura
+  (`min-height`), padding `0 14px`, `gap: 8px`, `font-size: 12.5px` con
+  `letter-spacing: 0.4px`. En móvil (<700 px): 32 px, `padding: 0 12px`,
+  `gap: 6px`. Se mantienen borde, barrido ámbar y hover de D22.
+- **D47.2 — La fila a ras con la marca.** Marca y enlaces conservan 44 px;
+  los botones, más bajos, se centran en esa misma fila, de modo que su centro
+  queda a la altura del texto «rafael.dev». El header base baja de 98 a
+  **84 px** para que los botones no queden sueltos en una barra alta; el
+  encogido de D45 (72 px) se mantiene.
+
+### Evidencia (2026-10-06) — D47
+
+- **Build:** `astro check` 0 errores / 0 warnings; `astro build` ✓ (1 página).
+- **CSS servido de `dist/_astro/`:** `.nav-cv{…min-height:34px;padding:0 14px;
+  gap:8px;font-size:12.5px}` y el corte de 700 px con `min-height:32px`;
+  `.nav{min-height:84px}`.
+
+### Decisión D48 (2026-10-06) — Llenar el hueco junto a Idiomas
+
+El usuario nota que «al lado de idiomas está vacío» y pide una idea
+«intégrala». El hueco existe porque la sección es ancha y solo tiene dos
+píldoras.
+
+- **D48.1 — Cuadrícula de dos columnas.** `.idiomas-grid`: píldoras a la
+  izquierda (apiladas y centradas), y a su lado una tarjeta `idiomas-escala`
+  con la **escala CEFR A1→C2** y la posición real marcada: B1 (`is-actual`)
+  con `aria-current="true"`, como requiere la sección activa del header.
+- **D48.2 — Solo datos ciertos.** La nota dice que está en B1 «según el examen
+  IFEC», «mejorando», y que se actualizará con el certificado. **No** se
+  declara nivel objetivo (p. ej. C1) ni percentil: eso sería inventar. El
+  acento solo resalta la posición presente.
+- **D48.3 — Responsive.** ≤700 px: una columna, píldoras en fila centrada y la
+  escala debajo. Sin animación nueva: con `prefers-reduced-motion` no late el
+  punto (regla 10F ya existente).
+
+### Evidencia (2026-10-06) — D48
+
+- **Build:** `astro check` 0 errores / 0 warnings; `astro build` ✓ (1 página).
+- **`dist/index.html`:** tarjeta con el título «Inglés · posición según el
+  examen IFEC», los seis niveles A1–C2, `li.is-actual` con `aria-current="true"`
+  y la nota «Estoy en B1 · mejorando…».
+- **CSS servido:** `.idiomas-grid{grid-template-columns:1fr 1.35fr}`,
+  `.idiomas-escala__nivel.is-actual` y el corte de 700 px a una columna.
+
+### Decisión D49 (2026-10-06) — Llenar el hueco en Servicios
+
+El usuario nota que «en servicios hay un buen de espacio vacío» y pregunta qué
+agregar para ocuparlo.
+
+- **D49.1 — Rejilla fija sin agujeros.** La causa del hueco: con seis tarjetas
+  el `auto-fit (minmax 14rem)` sacaba 4 columnas en escritorio y dejaba la
+  última fila con dos celdas vacías. Ahora `.servicios-grid` es fija: 3
+  columnas (2×3 en escritorio), 2 en tabletas (≤1050 px), 1 en móvil
+  (≤700 px). Las filas salen siempre completas.
+- **D49.2 — Banda de cierre honesta.** Debajo de la rejilla, `servicios-nota`:
+  «¿Te interesa algo de esto? Estoy disponible para empleo y prácticas →»
+  (enlace a `#contacto`). Es el objetivo declarado del sitio, no un CTA de
+  venta: D37 se mantiene. Punto ámbar con `punto-latido`, apagado con
+  `prefers-reduced-motion`.
+- **D49.3 — Sin datos inventados.** Nada nuevo en `perfil.ts`; solo layout y
+  una nota sobre el propósito real del sitio.
+
+### Evidencia (2026-10-06) — D49
+
+- **Build:** `astro check` 0 errores / 0 warnings; `astro build` ✓ (1 página).
+- **`dist/index.html`:** banda `servicios-nota` con «¿Te interesa algo de
+  esto?…» y el enlace a `#contacto`, tras las seis `card servicio-card`.
+- **CSS servido:** `.servicios-grid{…grid-template-columns:repeat(3,1fr)}`,
+  cortes a 2 y 1 columnas, y `.servicios-nota` (borde punteado).
+
 ---
 
 ## Fase 06 — Verificación y validación

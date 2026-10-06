@@ -35,21 +35,11 @@ const fila = (repetir: number) =>
           Con lo que trabajo según el tipo de problema.
         </p>
       </div>
-
-      <button
-        class="marquee-toggle"
-        type="button"
-        data-marquee-toggle="stack"
-        aria-pressed="false"
-      >
-        <span class="marquee-toggle__icon" aria-hidden="true">❚❚</span>
-        <span data-marquee-toggle-label="stack">Pausar</span>
-      </button>
     </div>
   </div>
 
-  <div class="marquee" data-marquee="stack">
-    <div class="marquee__track" data-marquee-track>
+  <div class="marquee">
+    <div class="marquee__track">
       {
         fila(2).map((copia, indice) => (
           <ul

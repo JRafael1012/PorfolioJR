@@ -3,9 +3,14 @@
  *
  * 1. Revela los bloques con `.reveal` al entrar en pantalla.
  * 2. Cuenta las cifras de `[data-count]` cuando entran en pantalla.
- * 3. Compensa el header fijo al saltar desde el menú a una sección.
+ * 3. Avanza fotos y collage, y dibuja la línea de la trayectoria.
+ * 4. Despliega los paneles de competencias y torneos.
+ * 5. Salta desde el menú a una sección compensando el header fijo.
+ * 6. Encoge y oscurece el header al hacer scroll, y marca la sección activa.
  *
- * Si el usuario prefiere menos movimiento, todo se muestra de inmediato.
+ * La pausa de las marquesinas ya no tiene botón (D43): la cinta de STACK corta
+ * al pasar el puntero o al recibir foco, y con `prefers-reduced-motion` no se
+ * mueve. Si el usuario prefiere menos movimiento, todo se muestra de inmediato.
  */
 (function () {
   'use strict';
@@ -114,31 +119,6 @@
       observerCifras.observe(el);
     });
   }
-
-  /* --- 3. Botones de pausa de las marquesinas ---
-     El contenido en movimiento necesita una forma de detenerse (WCAG 2.2.2).
-
-     Hay dos cintas: la de STACK y la de TORNEOS. Cada botón lleva su nombre en
-     `data-marquee-toggle`, y el JS empareja uno con otro por ese nombre en vez de
-     buscar "el primero que exista". Con un solo `querySelector` el botón de
-     torneos habría terminado controlando la cinta de STACK. */
-  document.querySelectorAll('[data-marquee-toggle]').forEach(function (toggle) {
-    var clave = toggle.getAttribute('data-marquee-toggle');
-    var marquee = document.querySelector('[data-marquee="' + clave + '"]');
-
-    if (!marquee) return;
-
-    var icon = toggle.querySelector('.marquee-toggle__icon');
-    var toggleLabel = document.querySelector('[data-marquee-toggle-label="' + clave + '"]');
-
-    toggle.addEventListener('click', function () {
-      var paused = marquee.classList.toggle('is-paused');
-      toggle.setAttribute('aria-pressed', paused ? 'true' : 'false');
-
-      if (toggleLabel) toggleLabel.textContent = paused ? 'Reproducir' : 'Pausar';
-      if (icon) icon.textContent = paused ? '▶' : '❚❚';
-    });
-  });
 
   /* --- 3. Cambio automático de fotografías del perfil --- */
   var photoFrame = document.querySelector('[data-photo-frame]');
@@ -338,6 +318,63 @@
       }
     });
   });
+
+  /* --- 9. Header al hacer scroll y sección activa del menú --- */
+  /* Dos cosas que se calculan en el mismo pase de rAF para no pedirle al
+     navegador dos veces el layout: el header se encoge y se vuelve opaco
+     cuando hay desplazamiento (`.is-scrolled`), y el enlace del menú marca
+     la sección que está leyendo el lector (`is-current` + `aria-current`).
+
+     La "sección activa" es la última cuyo borde superior ya pasó el 35% de la
+     altura de la ventana: al descolgar el 35% de un bloque, se asume que es
+     el que se lee. Solo cuentan los enlaces internos (`a[href^="#"]`), así que
+     GitHub y Hoja de vida (externos/archivo) nunca se marcan. */
+  var header = document.querySelector('.site-header');
+
+  var navAnclas = [];
+  document.querySelectorAll('.nav-links a[href^="#"]').forEach(function (link) {
+    var objetivo = document.querySelector(link.getAttribute('href'));
+    if (objetivo) navAnclas.push({ link: link, section: objetivo });
+  });
+
+  var headerFrame = 0;
+
+  var updateHeaderState = function () {
+    headerFrame = 0;
+
+    var desplazado = window.scrollY > 8;
+    if (header) header.classList.toggle('is-scrolled', desplazado);
+
+    if (navAnclas.length) {
+      var referencia = window.scrollY + window.innerHeight * 0.35;
+      var activo = null;
+
+      for (var i = 0; i < navAnclas.length; i += 1) {
+        if (navAnclas[i].section.getBoundingClientRect().top <= referencia) {
+          activo = navAnclas[i];
+        }
+      }
+
+      navAnclas.forEach(function (par) {
+        var actual = par === activo;
+        par.link.classList.toggle('is-current', actual);
+        if (actual) {
+          par.link.setAttribute('aria-current', 'true');
+        } else {
+          par.link.removeAttribute('aria-current');
+        }
+      });
+    }
+  };
+
+  var requestHeaderState = function () {
+    if (headerFrame) return;
+    headerFrame = window.requestAnimationFrame(updateHeaderState);
+  };
+
+  window.addEventListener('scroll', requestHeaderState, { passive: true });
+  window.addEventListener('resize', requestHeaderState);
+  requestHeaderState();
 
   if (!header) return;
 })();

@@ -26,6 +26,11 @@
       8.  Trayectoria ............. experiencia, credenciales y roles
       9.  Robótica ................ torneos, galería, fundación, contadores
       10. Proyectos y destacados .. tarjetas de proyecto
+      10B. Certificaciones ........ tarjetas de certificado
+      10C. Servicios .............. "qué sé hacer", modo reducido (D37)
+      10D. Estadísticas ........... cifras calculadas de perfil.ts (D38)
+      10E. Proceso de trabajo ..... siete pasos de desarrollo (D42)
+      10F. Idiomas ................ idiomas con nivel honesto (D42)
       11. Contacto ................. marco, medios y llamada a la acción
       12. Footer .................. pie de página
       13. Ajustes transversales .... reglas que cruzan varias secciones
@@ -815,27 +820,53 @@ a:hover {
    USADO POR: Header.astro
    ============================================================ */
 .site-header {
-  background: var(--bg-nav);
+  /* Cristal: translúcido y con desenfoque, para que el contenido no choque
+     con la barra al pasar por debajo (D45). El color es el mismo `bg-nav`,
+     solo bajado de opacidad; sin ese apoyo `backdrop-filter` no haría nada. */
+  background-color: color-mix(in srgb, var(--bg-nav) 86%, transparent);
+  -webkit-backdrop-filter: blur(10px) saturate(1.15);
+  backdrop-filter: blur(10px) saturate(1.15);
   border-bottom: 1px solid var(--line-soft);
   position: sticky;
   top: 0;
   z-index: 20;
+  /* El encogido y la sombra llegan con `.is-scrolled` (main.js, bloque 9). */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Sin soporte de desenfoque: barra opaca, la de siempre. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header {
+    background-color: var(--bg-nav);
+  }
+}
+
+.site-header.is-scrolled {
+  background-color: color-mix(in srgb, var(--bg-nav) 97%, transparent);
+  box-shadow: 0 10px 30px -22px rgba(3, 7, 30, 0.9);
 }
 
 .nav {
-  min-height: 98px;
+  min-height: 84px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem 2rem;
   flex-wrap: wrap;
   padding-block: 0.75rem;
+  transition: min-height 0.25s ease, padding-block 0.25s ease;
+}
+
+.site-header.is-scrolled .nav {
+  min-height: 72px;
+  padding-block: 0.45rem;
 }
 
 .brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 12px;
+  height: 44px;
   color: var(--white);
   font-weight: 800;
   font-size: 18px;
@@ -845,12 +876,22 @@ a:hover {
   text-decoration: none;
 }
 
+.brand:hover .brand-mark {
+  transform: rotate(-6deg) scale(1.06);
+}
+
 .brand-mark {
   position: relative;
   width: 43px;
   height: 43px;
   object-fit: contain;
   object-position: center;
+  transition: transform 0.25s ease, width 0.25s ease, height 0.25s ease;
+}
+
+.site-header.is-scrolled .brand-mark {
+  width: 36px;
+  height: 36px;
 }
 
 .nav-links {
@@ -862,7 +903,9 @@ a:hover {
 
 .nav-links a:not(.nav-cv) {
   position: relative;
-  padding-block: 6px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
   color: var(--white);
   font-weight: 700;
   font-size: 14px;
@@ -885,6 +928,16 @@ a:hover {
   text-decoration: none;
 }
 
+/* Sección activa (scroll-spy, D45): el subrayado queda puesto y el texto en
+   acento, sin esperar al hover. `aria-current` acompaña para lectores. */
+.nav-links a:not(.nav-cv).is-current {
+  color: var(--accent);
+}
+
+.nav-links a:not(.nav-cv).is-current::after {
+  transform: scaleX(1);
+}
+
 /* Solo con hover real: en táctil el subrayado se quedaría puesto. */
 
 @media (hover: hover) {
@@ -901,15 +954,23 @@ a:hover {
    barre en `--accent` y pone el texto en `--ink-black`, porque el boton del
    header es mas pequeño y el acento se lee mejor que el rojo como relleno. */
 
+/* Botones compactos (D47): más pequeños que marca y enlaces (34 px frente a
+   44 px) y centrados en la misma línea, para que su centro quede a ras con el
+   texto de la marca ("rafael.dev"). La altura sale de `min-height`, no del
+   padding, así que la fila se mantiene aunque cambie el texto o la fuente. */
+
 .nav-cv {
   position: relative;
   overflow: hidden;
   isolation: isolate;
   border: 1px solid #647087;
-  padding: 17px 20px;
+  min-height: 34px;
+  padding: 0 14px;
   display: inline-flex;
   align-items: center;
-  gap: 18px;
+  gap: 8px;
+  font-size: 12.5px;
+  letter-spacing: 0.4px;
   transition: transform 0.2s ease, border-color 0.2s ease,
     box-shadow 0.2s ease;
 }
@@ -936,6 +997,10 @@ a:hover {
     min-height: 76px;
   }
 
+  .site-header.is-scrolled .nav {
+    min-height: 64px;
+  }
+
   .nav-links {
     gap: 0.9rem 1.1rem;
     flex-wrap: wrap;
@@ -948,8 +1013,9 @@ a:hover {
   }
 
   .nav-cv {
-    padding: 12px 14px;
-    gap: 10px;
+    min-height: 32px;
+    padding: 0 12px;
+    gap: 6px;
   }
 }
 
@@ -1658,43 +1724,12 @@ a:hover {
   color: var(--white);
 }
 
-/* --- Pausa: al pasar el cursor, al enfocar, o con el botón --- */
+/* --- Pausa: al pasar el cursor o al recibir foco (D43, sin botón) --- */
 
 .marquee:hover .marquee__track,
 
-.marquee:focus-within .marquee__track,
-
-.marquee.is-paused .marquee__track {
+.marquee:focus-within .marquee__track {
   animation-play-state: paused;
-}
-
-/* --- Botón de pausa --- */
-
-.marquee-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0.7rem 1.1rem;
-  border: 1px solid var(--line);
-  background: transparent;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: color 0.2s ease, border-color 0.2s ease;
-}
-
-.marquee-toggle:hover {
-  color: var(--accent);
-  border-color: var(--accent-2);
-}
-
-.marquee-toggle__icon {
-  color: var(--accent-2);
-  font-size: 9px;
-  letter-spacing: 0;
 }
 
 /* --- Sin movimiento: fila estática y desplazable --- */
@@ -2264,7 +2299,9 @@ a:hover {
 
    DÓNDE AJUSTAR CADA COSA
      Cambiar la proporción de cada casilla ....... .rob-collage__tile
-                                                   (aspect-ratio)
+                                                   (aspect-ratio; ahora 1/1,
+                                                   era 4/3 y cortaba las
+                                                   fotos verticales)
      Cambiar cuántas casillas hay y su forma ...... .rob-collage__grid
                                                    (grid-template-columns:
                                                    2 columnas = 2×2;
@@ -2276,6 +2313,12 @@ a:hover {
                                                    `cover` recorta, con
                                                    `contain` se ve entera
                                                    con bandas)
+     Anclar UNA foto (subir o bajar la cara) ...... `galeriaPos` de
+                                                   src/data/perfil.ts, en el
+                                                   mismo orden que `galeria`;
+                                                   la CSS solo lo lee como
+                                                   `--img-pos` y si no hay
+                                                   valor se queda en `center`
      Cambiar la suavidad del fundido .............. .rob-collage__layer
                                                    (transition)
      Quitar el movimiento ........................ este bloque, dentro de
@@ -2489,7 +2532,7 @@ a:hover {
 
 .rob-collage__tile {
   position: relative;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   background: var(--bg);
 }
@@ -2508,13 +2551,16 @@ a:hover {
  *
  * Se quito el `padding` que traia la capa: con la imagen al 100% un margen
  * interior solo dejaria un borde de fondo alrededor de cada foto.
+ *
+ * El anclaje sale de `--img-pos`, que monta Robotica.astro desde
+ * `galeriaPos` de perfil.ts. Sin variable, queda `center`.
  */
 
 .rob-collage__img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: var(--img-pos, center);
   display: block;
 }
 
@@ -3252,6 +3298,617 @@ a:hover {
   .project-card__btn,
   .project-card__btn-arrow {
     transition: none;
+  }
+}
+
+/* ============================================================
+   10B. CERTIFICACIONES
+   ------------------------------------------------------------
+   USADO POR: Certificaciones.astro
+
+   Bloque nuevo SIN renumerar los demás: la sección va entre Proyectos (10)
+   y Contacto (11), y el orden de la página manda, así que su CSS vive aquí,
+   justo en ese sitio.
+
+   Reutiliza `.card-grid` y `.card` del bloque 3; solo se añade lo propio de
+   la tarjeta. Con `certificaciones` vacío la sección se pinta igual, pero con
+   `.cert-vacio` en lugar de la rejilla: el hueco queda reservado.
+   ============================================================ */
+
+.cert-vacio {
+  margin: 0;
+  padding: 1.75rem;
+  border: 1px dashed var(--line);
+  border-radius: 4px;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.4px;
+}
+
+.cert-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-radius: 4px;
+}
+
+.cert-card__titulo {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--white);
+}
+
+.cert-card__meta {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.4px;
+}
+
+/* Va con `margin-top: auto` para que el enlace quede siempre al pie de la
+   tarjeta, aunque el nombre del curso ocupe una o dos líneas. */
+
+.cert-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  color: var(--accent-2);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.cert-card__arrow {
+  display: inline-block;
+  transition: transform 180ms ease;
+}
+
+@media (hover: hover) {
+  .cert-card__link:hover {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .cert-card__link:hover .cert-card__arrow {
+    transform: translate(2px, -2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cert-card__link,
+  .cert-card__arrow {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   10C. SERVICIOS
+   ------------------------------------------------------------
+   USADO POR: Servicios.astro
+
+   Sección 9 de la guía de portafolio del usuario, en modo reducido (D37):
+   el objetivo del sitio es empleo o prácticas, así que son cinco tarjetas
+   de una línea y sin CTA de venta. Reutiliza `.card` del bloque 3.
+
+   Con seis tarjetas, `auto-fit` dejaba celdas vacías en la última fila de
+   escritorio (D49). La rejilla ahora es fija: 3 columnas en escritorio (2×3),
+   2 en tabletas, 1 en móvil, así las filas siempre salen completas. Debajo,
+   la banda `servicios-nota` recuerda el objetivo del sitio con un enlace a
+   Contacto: no es un CTA de venta, es el propósito declarado.
+   ============================================================ */
+
+.servicios-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  list-style: none;
+  margin: 0;
+}
+
+@media (max-width: 1050px) {
+  .servicios-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .servicios-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.servicio-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  border-radius: 4px;
+  padding: 1.25rem 1.5rem;
+}
+
+.servicio-card__icon {
+  display: inline-flex;
+  flex: none;
+  color: var(--accent-2);
+}
+
+.servicio-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.servicio-card__titulo {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--white);
+}
+
+.servicio-card__desc {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+/* Banda de cierre de Servicios (D49): recuerda el objetivo del sitio
+   (empleo o prácticas) con un enlace a Contacto. No es un CTA de venta. */
+
+.servicios-nota {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 2rem 0 0;
+  padding: 1rem 1.5rem;
+  background: var(--bg-raise);
+  border: 1px dashed var(--line);
+  border-radius: 4px;
+  font-size: 0.95rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.servicios-nota__punto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+  animation: punto-latido 3s ease-in-out infinite;
+}
+
+.servicios-nota__cta {
+  color: var(--accent);
+  font-weight: 700;
+  text-underline-offset: 3px;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.servicios-nota__cta:hover {
+  color: var(--accent-2);
+  text-decoration-color: var(--accent-2);
+}
+
+/* ============================================================
+   10D. ESTADÍSTICAS
+   ------------------------------------------------------------
+   USADO POR: Estadisticas.astro
+
+   Sección 10 de la guía: cifras que se desprenden de los datos reales en
+   `perfil.ts` (D38). Cuatro números, en mono y con el acento de títulos.
+   ============================================================ */
+
+.stat-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(4, 1fr);
+  list-style: none;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.5rem;
+  background: var(--bg-raise);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.stat-card__valor {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.stat-card__etiqueta {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.4px;
+}
+
+@media (max-width: 1050px) {
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .stat-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   10E. PROCESO DE TRABAJO
+   ------------------------------------------------------------
+   Guía 24: cómo se desarrolla una solución, en siete pasos.
+
+   Para que no parezca otra rejilla de tarjetas (D42·D43) se dibuja
+   como una "cinta de pasos": los números van en anillos y una línea
+   horizontal los atraviesa por el centro, un paso lleva al siguiente
+   igual que la línea de la trayectoria. Sobre la cinta, un pulso que
+   recorre los anillos de izquierda a derecha (`node-flujo`) sugiere
+   el avance del proceso; en pantallas estrechas la cinta se pliega
+   en una columna con la línea al lado izquierdo.
+
+   El avance de los anillos se anima al pasar el cursor: el anillo se
+   llena de ámbar y la cifra se vuelve del color del fondo.
+
+   USADO POR: Proceso.astro
+   ============================================================ */
+
+.proceso-grid {
+  position: relative;
+  display: grid;
+  gap: 1.5rem 1rem;
+  grid-template-columns: repeat(7, 1fr);
+  list-style: none;
+  margin: 0;
+}
+
+/* Base de la línea de la cinta: se difumina en los extremos. */
+.proceso-grid::before {
+  content: '';
+  position: absolute;
+  top: 24px;
+  left: 5%;
+  right: 5%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--line-soft) 18%,
+    var(--line-soft) 82%,
+    transparent
+  );
+}
+
+.proceso-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+}
+
+/* Anillo numerado. El retardo del pulso lo pone el estilo en línea con
+   `--reveal-delay`: un anillo se enciende tras otro, y la chispa recorre
+   la cinta de izquierda a derecha. */
+.proceso-card__num {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  animation: node-flujo 4.5s ease-in-out infinite;
+  animation-delay: var(--reveal-delay, 0s);
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+/* La chispa que recorre los anillos: un halo ámbar que se enciende y
+   se apaga, un anillo por turno (`animation-delay` escalonado). */
+@keyframes node-flujo {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 9px transparent;
+  }
+}
+
+.proceso-card__titulo {
+  margin: 0;
+  color: var(--white);
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.proceso-card__detalle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  max-width: 16rem;
+}
+
+@media (hover: hover) {
+  .proceso-card:hover .proceso-card__num,
+  .proceso-card:focus-within .proceso-card__num {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+    transform: translateY(-3px);
+  }
+}
+
+/* Plegado de la cinta: primero cuatro columnas, luego una. La línea
+   horizontal ya no tiene sentido en dos dimensiones, se oculta. */
+@media (max-width: 1050px) {
+  .proceso-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .proceso-grid::before {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .proceso-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  /* En columna la línea va por la izquierda, pasando por los anillos. */
+  .proceso-grid::before {
+    display: block;
+    top: 0;
+    bottom: 0;
+    left: 20px;
+    right: auto;
+    width: 1px;
+    height: auto;
+    background: linear-gradient(
+      180deg,
+      transparent,
+      var(--line-soft) 12%,
+      var(--line-soft) 88%,
+      transparent
+    );
+  }
+
+  .proceso-card {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
+    text-align: left;
+    padding-bottom: 1.75rem;
+  }
+
+  .proceso-card:last-child {
+    padding-bottom: 0;
+  }
+
+  .proceso-card__num {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex: none;
+    margin-top: 0.1rem;
+  }
+
+  .proceso-card__detalle {
+    max-width: none;
+  }
+}
+
+/* ============================================================
+   10F. IDIOMAS
+   ------------------------------------------------------------
+   Guía 27: idiomas con nivel honesto (Español nativo, Inglés B1
+   según IFEC, mejorando). No se sube el nivel sin certificado.
+
+   En vez de dos tarjetas planas (que se leen genéricas) los idiomas
+   son dos "píldoras": punto ámbar + idioma, con el nivel en mono a
+   la derecha, el mismo lenguaje de las etiquetas del Sobre mí. El
+   punto late suavemente y la píldora se levanta al pasar el cursor.
+
+   A su lado, una escala CEFR A1→C2 (D48) marca la posición real del
+   inglés (B1) y rellena el hueco de la sección ancha: solo datos
+   ciertos, sin objetivo ni percentil inventados.
+
+   USADO POR: Idiomas.astro
+   ============================================================ */
+
+.idiomas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.idiomas-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+}
+
+.idiomas-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1.35rem;
+  background: var(--bg-raise);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+
+.idiomas-pill::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+  animation: punto-latido 3s ease-in-out infinite;
+}
+
+@keyframes punto-latido {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 1;
+  }
+}
+
+.idiomas-pill__nombre {
+  color: var(--white);
+  font-weight: 700;
+}
+
+.idiomas-pill__nivel {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  letter-spacing: 0.3px;
+}
+
+@media (hover: hover) {
+  .idiomas-pill:hover {
+    border-color: var(--accent-2);
+    transform: translateY(-2px);
+  }
+}
+
+/* Escala CEFR A1→C2 (D48): rellena el hueco junto a las píldoras y sitúa el
+   nivel real (B1 según el IFEC) sin inventar objetivo ni percentil. Solo la
+   posición actual se resalta. */
+
+.idiomas-escala {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 1.5rem;
+  background: var(--bg-raise);
+  border: 1px solid var(--line);
+  border-radius: 1.2rem;
+}
+
+.idiomas-escala__titulo {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--white);
+  text-align: center;
+}
+
+.idiomas-escala__regla {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.4rem;
+  width: 100%;
+  list-style: none;
+  margin: 0;
+}
+
+.idiomas-escala__nivel {
+  padding: 0.55rem 0;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.idiomas-escala__nivel.is-actual {
+  color: var(--ink-black);
+  font-weight: 700;
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.idiomas-escala__nota {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.idiomas-escala__nota strong {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-weight: 700;
+}
+
+.idiomas-escala__estado {
+  color: var(--white);
+}
+
+/* En pantallas estrechas una sola columna: las píldoras vuelven a
+   apilarse en fila y la escala queda debajo. */
+
+@media (max-width: 700px) {
+  .idiomas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .idiomas-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* Con `prefers-reduced-motion` la cinta no se mueve; tampoco el pulso
+   de los anillos ni el latido de los puntos (D43). */
+@media (prefers-reduced-motion: reduce) {
+  .proceso-card__num,
+  .idiomas-pill::before,
+  .servicios-nota__punto {
+    animation: none;
   }
 }
 

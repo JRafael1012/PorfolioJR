@@ -1,0 +1,65 @@
+---
+import { idiomas } from '../data/perfil';
+
+/**
+ * IDIOMAS (guía 27)
+ * ---------------------------------------------------------------------------
+ * Solo niveles reales: Español nativo e Inglés B1 confirmado por el usuario
+ * ("según el IFEC"), y mejorando. Si algún día hay certificado, se actualiza.
+ *
+ * Con el mismo lenguaje visual de las etiquetas del Sobre mí (punto + texto),
+ * pero en píldoras: idioma a la izquierda, nivel en mono ámbar a la derecha.
+ *
+ * En pantalla ancha las píldoras van a la izquierda y, a su lado, una escala
+ * CEFR A1→C2 con la posición actual (B1) marcada (D48): rellena el hueco que
+ * dejaban dos píldoras dentro de una sección ancha y, de paso, da contexto
+ * visual al "mejorando". Se usa el dato real del IFEC; no se declara un nivel
+ * objetivo ni un percentil: solo la posición.
+ * El revelado es `.reveal`, como el resto.
+ */
+---
+<section class="section idiomas" id="idiomas" aria-labelledby="idiomas-title">
+  <div class="container">
+    <div class="section__head">
+      <p class="eyebrow">IDIOMAS</p>
+      <h2 class="section__title" id="idiomas-title">Idiomas</h2>
+    </div>
+
+    <div class="idiomas-grid">
+      <ul class="idiomas-list reveal">
+        {
+          idiomas.map((item) => (
+            <li class="idiomas-pill">
+              <span class="idiomas-pill__nombre">{item.idioma}</span>
+              <span class="idiomas-pill__nivel">{item.nivel}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <aside
+        class="idiomas-escala reveal"
+        aria-labelledby="idiomas-escala-titulo"
+      >
+        <h3 class="idiomas-escala__titulo" id="idiomas-escala-titulo">
+          Inglés · posición según el examen IFEC
+        </h3>
+        <ul class="idiomas-escala__regla">
+          <li class="idiomas-escala__nivel">A1</li>
+          <li class="idiomas-escala__nivel">A2</li>
+          <li class="idiomas-escala__nivel is-actual" aria-current="true">
+            B1
+          </li>
+          <li class="idiomas-escala__nivel">B2</li>
+          <li class="idiomas-escala__nivel">C1</li>
+          <li class="idiomas-escala__nivel">C2</li>
+        </ul>
+        <p class="idiomas-escala__nota">
+          Estoy en <strong>B1</strong>
+          <span class="idiomas-escala__estado">· mejorando</span>. Cuando tenga
+          el certificado, actualizo su posición aquí.
+        </p>
+      </aside>
+    </div>
+  </div>
+</section>

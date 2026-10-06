@@ -3,8 +3,13 @@ export interface Experiencia {
   empresa: string;
   periodo: string;
   resumen: string;
-  logros: string[];
-  stack: string[];
+  /**
+   * Opcionales: una ficha sin logros o sin tecnologías no las inventa. El
+   * componente no pinta la lista si el campo falta o viene vacío, y así no
+   * queda un hueco de margen donde no hay contenido.
+   */
+  logros?: string[];
+  stack?: string[];
   /**
    * Nombres de las fotos del collage de este bloque. Solo el nombre: la
    * carpeta es `public/img/`. Si falta, no se pinta collage, y el bloque se
@@ -18,6 +23,17 @@ export interface Experiencia {
    * vez de quedarse sin texto, que es peor para quien usa lector de pantalla.
    */
   galeriaAlt?: string[];
+  /**
+   * Anclaje vertical de cada foto dentro de su casilla, en el mismo orden que
+   * `galeria`. Cualquier valor válido de `object-position`, por ejemplo
+   * `'center 20%'`: cuanto más bajo el número, más se ve la parte de arriba.
+   *
+   * Hace falta en las fotos verticales: con `object-fit: cover` la casilla
+   * recorta el alto y un `center` a secas se come la cabeza. Si una foto no
+   * lleva entrada, se queda en `center` (el valor por defecto de la CSS), así
+   * que el arreglo puede ser de 1 a 7 entradas.
+   */
+  galeriaPos?: string[];
   /**
    * El detalle de este bloque (logros, stack y galería) se muestra en una
    * sección propia en vez de aquí, para no repetirlo dos veces. Guardar el id
@@ -109,6 +125,13 @@ export interface Competencia {
 
 export interface Tecnologia {
   nombre: string;
+  /**
+   * Qué es, para que la cifra de Estadísticas no mezcle peras con manzanas
+   * (D41): 'tecnologia', 'herramienta' y 'base-de-datos' se cuentan en
+   * `estadisticas.tecnologiasYHerramientas`; 'plataforma' e 'ia' solo viven
+   * en la marquesina del Stack con su logo.
+   */
+  categoria: 'tecnologia' | 'base-de-datos' | 'herramienta' | 'plataforma' | 'ia';
   /** Slug de Simple Icons. Opcional: si falta, el nombre se muestra sin logo. */
   slug?: string;
   /**
@@ -219,6 +242,8 @@ export const nav = [
   { label: 'Trayectoria', href: '#trayectoria' },
   { label: 'Destacados', href: '#destacados' },
   { label: 'Proyectos', href: '#proyectos' },
+  { label: 'Servicios', href: '#servicios' },
+  { label: 'Certificados', href: '#certificaciones' },
   { label: 'Contacto', href: '#contacto' },
 ];
 
@@ -267,6 +292,7 @@ export const sobreMi: SobreMi = {
         'Robótica',
         'Automatización',
         'Inteligencia artificial',
+        'Ciberseguridad',
         'Software empresarial',
         'Emprendimiento',
         'Impacto social',
@@ -386,6 +412,34 @@ export const experiencia: Experiencia[] = [
       'Fotografía de la competencia de WRO',
       'Fotografía de la competencia de WRO',
     ],
+    /**
+     * Las tres verticales cortaban la cara con el anclaje centrado: con
+     * `cover`, una foto de 720×1599 en una casilla cuadrada solo muestra
+     * algo más de la mitad de su alto, y el centro de ese hueco caía en el
+     * pecho. El anclaje sube la ventana para que entre la cabeza.
+     *
+     * Se ajusta mirando el sitio: si la cara queda cortada por arriba, baja
+     * el número (más arriba); si sobra techo, súbelo. 0 = tope del archivo,
+     * 100 = pie.
+     */
+    galeriaPos: [
+      'center 16%', //  documental.jpg — 720×1599
+      'center 50%', //  foto competencia.jpg — sin anclaje propio
+      'center 50%', //  fotoig.jpg
+      'center 50%', //  mexico 1.jpeg
+      'center 50%', //  mexico 2.jpg
+      'center 11%', //  wro.jpg — 900×1600
+      'center 25%', //  wro1.jpg — 1200×1600
+    ],
+  },
+  {
+    /* Bachillerato. Va al final de la lista: por encima están la formación
+       técnica y la universidad, que es lo que interesa a quien lee. El año es
+       el de graduación, confirmado por el usuario. */
+    puesto: 'Bachillerato (Grado 11)',
+    empresa: 'IED Los Naranjos',
+    periodo: '2026',
+    resumen: 'Bachillerato completo en el IED Los Naranjos.',
   },
 ];
 
@@ -698,15 +752,19 @@ export const robotica: Robotica = {
    * fundación, y eso es exactamente el una afirmación que no se
    * sostiene cuando alguien lo busca. Se dice lo que pasó y quién lo recibió.
    *
-   * PIDE CONFIRMAR:
-   *   · ¿Cuáles son los DOS reconocimientos de la ONU? El Zero Project
-   *     Award 2024 podría ser uno, pero no está confirmado que cuente como
-   *     tal, y hace falta el segundo para no duplicarlo.
-   *   · ¿Rafael aparece en la entrega del Zero Project Award o solo el
-   *     equipo? Cambia el `dirigidoA`.
-   *   · Los canales de TV: cuáles, año, y el video.
-   *   · El documental de FLL: título, año, dónde se publicó, y si sale en
-   *     pantalla.
+   * CONFIRMADO POR EL USUARIO (2026-10-05). Lo que queda abierto:
+   *   · Los reconocimientos "de la ONU" son UNO, y es el Zero Project Award
+   *     2024 que ya está arriba. No se añade segunda tarjeta.
+   *   · El Zero Project Award es totalmente un reconocimiento a la
+   *     fundación, que es dueña del equipo. `dirigidoA: 'fundacion'` es
+   *     correcto y no se toca.
+*   · Rafael NO aparece en la entrega: el reconocimiento entero es de la
+    *     fundación.
+   *   · Los canales de TV fueron varios, pero el usuario no recuerda cuáles.
+   *     Se conserva 'Varios canales' porque el hecho está confirmado; los
+   *     nombres concretos no se inventan.
+   *   · El documental de FLL saldrá en NETFLIX. El título aún no se sabe,
+   *     así que la tarjeta no lo nombra.
    */
 reconocimientos: [
     {
@@ -714,7 +772,11 @@ reconocimientos: [
       /* `entidad` no se pone: el nombre del premio ya dice quién lo otorga, y
          escribir "Zero Project Award" en las dos líneas repetía el mismo texto
          dos veces seguidas. Aquí no se rellena con "Zero Project" solo para
-         llenar el hueco. */
+         llenar el hueco.
+
+         Confirmado por el usuario: es un reconocimiento entero a la fundación,
+         que es dueña del equipo. Rafael no aparece en la entrega. Por eso
+         `dirigidoA` sigue siendo 'fundacion'. */
       periodo: '2024',
       detalle:
         'Galardío internacional en la categoría de tecnología innovadora y educación inclusiva, por un proyecto de inclusión social a través de la robótica.',
@@ -728,10 +790,9 @@ reconocimientos: [
         'Proposición 801, aprobada por la plenaria del Concejo a propuesta del concejal Julián Espinoza Ortiz. Distingue la labor de la fundación en la inclusión y el desarrollo de niños y jóvenes con autismo a través de la robótica.',
       dirigidoA: 'fundacion',
     },
-    // PENDIENTE: el usuario aclaró que los reconocimientos "de la ONU" son
-    // UNO, no dos. No está confirmado si ese uno es el Zero Project Award 2024
-    // u otro distinto, así que no se añade una segunda tarjeta con un nombre
-    // supuesto. Ver la nota de atribución de arriba.
+    // Los reconocimientos "de la ONU" son UNO, no dos: el Zero Project Award
+    // 2024 de arriba. Confirmado por el usuario, así que no se añade una
+    // segunda tarjeta. Ver la nota de atribución de arriba.
   ],
   /**
    * La organización detrás de los números. Va aparte porque sus credenciales
@@ -755,19 +816,24 @@ reconocimientos: [
     {
       titulo: 'Apariciones en televisión',
       entidad: 'Varios canales',
-      // PENDIENTE: cuáles canales y en qué año. "Varios canales" no es
-      // verificable por un tercero, así que sin esto queda como afirmación.
+      // El usuario confirma que fueron varios canales, pero no recuerda
+      // cuáles ni el año. Se conserva 'Varios canales': el hecho está
+      // confirmado y los nombres no se inventan. Si en algún momento se
+      // recuerdan, este es el sitio donde se desglosan.
     },
     {
       titulo: 'Entrevistas',
       entidad: 'Robótica y tecnología',
-      // PENDIENTE: medio, fecha y enlace.
+      // El usuario describe así las entrevistas: a canales, fundaciones y
+      // organizaciones que apoyan la robótica en Colombia y en el mundo.
+      // Sin fecha ni enlace porque no los tiene localizados.
     },
     {
       titulo: 'Participación en el documental',
-      entidad: 'FIRST LEGO League',
-      // PENDIENTE: título del documental, año, dónde se publicó, y si Rafael
-      // aparece en pantalla o solo participó del proyecto.
+      entidad: 'FIRST LEGO League · Netflix',
+      // Saldrá en Netflix, pero aún no se conoce el título ni la fecha. Por
+      // eso la tarjeta no nombra el documental ni enlaza a nada: se actualizará
+      // cuando exista el enlace real.
     },
   ],
 };
@@ -821,57 +887,57 @@ reconocimientos: [
  */
 export const stack: Tecnologia[] = [
   // Lenguajes
-  { nombre: 'HTML', slug: 'html5' },
-  { nombre: 'CSS', slug: 'css' },
-  { nombre: 'JavaScript', slug: 'javascript' },
-  { nombre: 'TypeScript', slug: 'typescript' },
-  { nombre: 'Python', slug: 'python' },
-  { nombre: 'Java', di: 'java' },
-  { nombre: 'C', slug: 'c' },
-  { nombre: 'C++', slug: 'cplusplus' },
-  { nombre: 'Dart', slug: 'dart' },
-  { nombre: 'PHP', slug: 'php' },
+  { nombre: 'HTML', categoria: 'tecnologia', slug: 'html5' },
+  { nombre: 'CSS', categoria: 'tecnologia', slug: 'css' },
+  { nombre: 'JavaScript', categoria: 'tecnologia', slug: 'javascript' },
+  { nombre: 'TypeScript', categoria: 'tecnologia', slug: 'typescript' },
+  { nombre: 'Python', categoria: 'tecnologia', slug: 'python' },
+  { nombre: 'Java', categoria: 'tecnologia', di: 'java' },
+  { nombre: 'C', categoria: 'tecnologia', slug: 'c' },
+  { nombre: 'C++', categoria: 'tecnologia', slug: 'cplusplus' },
+  { nombre: 'Dart', categoria: 'tecnologia', slug: 'dart' },
+  { nombre: 'PHP', categoria: 'tecnologia', slug: 'php' },
 
   // Frameworks, motores y entornos
-  { nombre: 'React', slug: 'react' },
-  { nombre: 'Astro', slug: 'astro' },
-  { nombre: 'Node.js', slug: 'nodedotjs' },
-  { nombre: 'XAMPP', slug: 'xampp' },
-  { nombre: 'MySQL', slug: 'mysql' },
-  { nombre: 'SQLite', slug: 'sqlite' },
-  { nombre: 'Arduino', slug: 'arduino' },
-  { nombre: 'Android Studio', slug: 'androidstudio' },
-  { nombre: 'Scratch', slug: 'scratch' },
+  { nombre: 'React', categoria: 'tecnologia', slug: 'react' },
+  { nombre: 'Astro', categoria: 'tecnologia', slug: 'astro' },
+  { nombre: 'Node.js', categoria: 'tecnologia', slug: 'nodedotjs' },
+  { nombre: 'XAMPP', categoria: 'herramienta', slug: 'xampp' },
+  { nombre: 'MySQL', categoria: 'base-de-datos', slug: 'mysql' },
+  { nombre: 'SQLite', categoria: 'base-de-datos', slug: 'sqlite' },
+  { nombre: 'Arduino', categoria: 'herramienta', slug: 'arduino' },
+  { nombre: 'Android Studio', categoria: 'herramienta', slug: 'androidstudio' },
+  { nombre: 'Scratch', categoria: 'plataforma', slug: 'scratch' },
 
   // Diseño
-  { nombre: 'AutoCAD 2D y 3D', slug: 'autocad' },
-  { nombre: 'Figma', slug: 'figma' },
-  { nombre: 'Canva', icono: 'img/logos/canva.svg' },
+  { nombre: 'AutoCAD 2D y 3D', categoria: 'herramienta', slug: 'autocad' },
+  { nombre: 'Figma', categoria: 'herramienta', slug: 'figma' },
+  { nombre: 'Canva', categoria: 'plataforma', icono: 'img/logos/canva.svg' },
 
   // Control de versiones
-  { nombre: 'Git', slug: 'git' },
-  { nombre: 'GitHub', slug: 'github' },
+  { nombre: 'Git', categoria: 'herramienta', slug: 'git' },
+  { nombre: 'GitHub', categoria: 'plataforma', slug: 'github' },
 
   // Terminal
-  { nombre: 'Bash', slug: 'gnubash' },
-  { nombre: 'PowerShell', di: 'powershell' },
+  { nombre: 'Bash', categoria: 'herramienta', slug: 'gnubash' },
+  { nombre: 'PowerShell', categoria: 'herramienta', di: 'powershell' },
 
   // Sistemas operativos
-  { nombre: 'Linux', slug: 'linux' },
-  { nombre: 'Kali Linux', slug: 'kalilinux' },
-  { nombre: 'Windows', icono: 'img/logos/windows.svg' },
+  { nombre: 'Linux', categoria: 'plataforma', slug: 'linux' },
+  { nombre: 'Kali Linux', categoria: 'plataforma', slug: 'kalilinux' },
+  { nombre: 'Windows', categoria: 'plataforma', icono: 'img/logos/windows.svg' },
 
   // Herramientas
-  { nombre: 'VS Code', di: 'vscode' },
-  { nombre: 'Notion', slug: 'notion' },
+  { nombre: 'VS Code', categoria: 'herramienta', di: 'vscode' },
+  { nombre: 'Notion', categoria: 'plataforma', slug: 'notion' },
 
   // Asistentes de IA
-  { nombre: 'Claude Code', slug: 'claude' },
-  { nombre: 'ChatGPT', icono: 'img/logos/chatgpt.svg' },
-  { nombre: 'GitHub Copilot', slug: 'githubcopilot' },
-  { nombre: 'Copilot (Windows)', icono: 'img/logos/copilot.svg' },
-  { nombre: 'OpenCode', slug: 'opencode' },
-  { nombre: 'AntiGravity', icono: 'img/logos/antigravity.svg' },
+  { nombre: 'Claude Code', categoria: 'ia', slug: 'claude' },
+  { nombre: 'ChatGPT', categoria: 'ia', icono: 'img/logos/chatgpt.svg' },
+  { nombre: 'GitHub Copilot', categoria: 'ia', slug: 'githubcopilot' },
+  { nombre: 'Copilot (Windows)', categoria: 'ia', icono: 'img/logos/copilot.svg' },
+  { nombre: 'OpenCode', categoria: 'ia', slug: 'opencode' },
+  { nombre: 'AntiGravity', categoria: 'ia', icono: 'img/logos/antigravity.svg' },
 ];
 
 /**
@@ -1014,5 +1080,222 @@ export const contacto: Contacto[] = [
     icono: 'Whatsapp',
   },
 ];
+
+/**
+ * Certificaciones y cursos.
+ *
+ * La sección Certificaciones está siempre en la página: el usuario quiere el
+ * hueco reservado y rellenarlo después. Con este array vacío se muestra un
+ * aviso en lugar de tarjetas (src/components/Certificaciones.astro).
+ *
+ * PENDIENTE: queda sin cargar `certificado-jonatan-rafael-arlant-cortes.pdf`
+ * (el PDF es una imagen sin texto); falta el nombre del curso, la institución
+ * y el año. Los dos de Coursera ya están cargados con los datos leídos del
+ * propio PDF, que es la fuente real.
+ */
+export interface Certificacion {
+  /** Nombre del curso o de la certificación, tal como aparece en el diploma. */
+  titulo: string;
+  /** Quién la emite: institución, plataforma o empresa. */
+  institucion: string;
+  /** Año de obtención. Si falta, la tarjeta no pinta el año. */
+  anio?: string;
+  /**
+   * Dónde se ve el certificado. Dos formatos y el componente los distingue:
+   *   · `https://...` → enlace externo, se abre en pestaña nueva.
+   *   · `certificados/archivo.pdf` → archivo dentro de `public/`, y la ruta
+   *     se antepone con `withBase()` para que no dé 404 en GitHub Pages.
+   * Si falta, la tarjeta sale sin botón.
+   */
+  url?: string;
+}
+
+export const certificaciones: Certificacion[] = [
+  {
+    titulo: 'Apropiación de los conceptos en ciberseguridad',
+    institucion: 'SENA',
+    anio: '2026',
+    url: 'certificados/apropiacion-conceptos-ciberseguridad.pdf',
+  },
+  {
+    titulo: 'Trámites legales para la constitución de una empresa',
+    institucion: 'SENA',
+    anio: '2026',
+    url: 'certificados/tramites-legales-constitucion-empresa.pdf',
+  },
+  {
+    titulo: 'Desarrollo web con PHP',
+    institucion: 'SENA',
+    anio: '2026',
+    url: 'certificados/desarrollo-web-php.pdf',
+  },
+  {
+    titulo: 'Transformación de datos en modelos de inteligencia artificial',
+    institucion: 'SENA',
+    anio: '2025',
+    url: 'certificados/transformacion-datos-modelos-ia.pdf',
+  },
+  {
+    titulo: 'Aplicación de herramientas del procesador de texto Microsoft Word',
+    institucion: 'SENA',
+    anio: '2025',
+    url: 'certificados/aplicacion-herramientas-microsoft-word.pdf',
+  },
+  {
+    titulo: 'Cómo resolver problemas y tomar decisiones con eficacia',
+    institucion: 'University of California, Irvine (Coursera)',
+    anio: '2025',
+    url: 'certificados/como-resolver-problemas-y-tomar-decisiones.pdf',
+  },
+  {
+    titulo: 'Blockchain en criptomonedas',
+    institucion: 'SENA',
+    anio: '2025',
+    url: 'certificados/blockchain-en-criptomonedas.pdf',
+  },
+  {
+    titulo: 'Procesos de soporte técnico para el mantenimiento de equipos de cómputo',
+    institucion: 'SENA',
+    anio: '2025',
+    url: 'certificados/procesos-soporte-tecnico-mantenimiento-equipos.pdf',
+  },
+  {
+    titulo: 'Controles y seguridad informática',
+    institucion: 'SENA',
+    anio: '2025',
+    url: 'certificados/controles-seguridad-informatica.pdf',
+  },
+  {
+    titulo: 'AutoCAD 3D',
+    institucion: 'SENA',
+    anio: '2025',
+    url: 'certificados/autocad-3d.pdf',
+  },
+  {
+    titulo: 'Elaboración del presupuesto para el manejo de las finanzas personales',
+    institucion: 'SENA',
+    anio: '2025',
+    url: 'certificados/elaboracion-presupuesto-finanzas-personales.pdf',
+  },
+  {
+    titulo: 'AutoCAD 2D',
+    institucion: 'SENA',
+    anio: '2025',
+    url: 'certificados/autocad-2d.pdf',
+  },
+  {
+    titulo: 'Aspectos básicos: Datos, datos, en todas partes',
+    institucion: 'Google (Coursera)',
+    anio: '2025',
+    url: 'certificados/datos-datos-en-todas-partes.pdf',
+  },
+  // Queda una ficha en `public/certificados/`
+  // (certificado-jonatan-rafael-arlant-cortes.pdf) sin entrada: el PDF es una
+  // imagen y no se puede leer el curso; falta el dato real. No se inventa.
+];
+
+/**
+ * Servicios que ofrece, en modo reducido (D37).
+ *
+ * El objetivo principal del portafolio es conseguir empleo o prácticas, no
+ * clientes, así que la sección es corta y se presenta como "qué sé hacer", no
+ * como un catálogo de agencia. Las descripciones son las que propuso el
+ * usuario en la guía de portafolio; los iconos son de `lucide-astro`.
+ */
+export interface Servicio {
+  titulo: string;
+  descripcion: string;
+  /** Icono de `lucide-astro`. Solo existen los seis mapeados en
+   *  `Servicios.astro`; no se añade uno nuevo sin mapearlo allí. */
+  icono: 'Globe' | 'Code' | 'Database' | 'Workflow' | 'Wrench' | 'ShieldCheck';
+}
+
+export const servicios: Servicio[] = [
+  {
+    titulo: 'Desarrollo web',
+    descripcion: 'Sitios modernos y responsivos.',
+    icono: 'Globe',
+  },
+  {
+    titulo: 'Desarrollo de software',
+    descripcion: 'Aplicaciones y sistemas personalizados.',
+    icono: 'Code',
+  },
+  {
+    titulo: 'Bases de datos',
+    descripcion: 'Diseño y gestión de bases de datos.',
+    icono: 'Database',
+  },
+  {
+    titulo: 'Automatización',
+    descripcion: 'Automatización de tareas y procesos.',
+    icono: 'Workflow',
+  },
+  {
+    titulo: 'Mantenimiento',
+    descripcion: 'Corrección y mejora de sistemas existentes.',
+    icono: 'Wrench',
+  },
+  {
+    titulo: 'Ciberseguridad',
+    descripcion: 'Respaldo, actualizaciones, contraseñas y buenas prácticas.',
+    icono: 'ShieldCheck',
+  },
+];
+
+/**
+ * Proceso de trabajo (guía 24). Siete pasos de cómo se desarrolla una
+ * solución. Son descripciones del proceso, no logros: no se inventa nada.
+ */
+export interface PasoProceso {
+  numero: string;
+  titulo: string;
+  detalle: string;
+}
+
+export const proceso: PasoProceso[] = [
+  { numero: '01', titulo: 'Entender', detalle: 'Clarificar qué problema resuelve y qué debe hacer.' },
+  { numero: '02', titulo: 'Investigar', detalle: 'Reunir lo que ya se sabe y las herramientas a usar.' },
+  { numero: '03', titulo: 'Diseñar', detalle: 'Definir la estructura, los datos y las pantallas antes del código.' },
+  { numero: '04', titulo: 'Desarrollar', detalle: 'Construir la solución por partes, con versiones controladas.' },
+  { numero: '05', titulo: 'Probar', detalle: 'Verificar que cada función cumple lo que promete.' },
+  { numero: '06', titulo: 'Mejorar', detalle: 'Corregir lo que falle y pulir la experiencia.' },
+  { numero: '07', titulo: 'Publicar', detalle: 'Dejar la solución en funcionamiento y disponible.' },
+];
+
+/**
+ * Idiomas (guía 27). Nivel honesto y con fuente: el B1 lo confirma el usuario
+ * "según el IFEC". Si algún día hay un certificado a la mano, se actualiza.
+ */
+export const idiomas = [
+  { idioma: 'Español', nivel: 'Nativo' },
+  { idioma: 'Inglés', nivel: 'B1 · IFEC, mejorando' },
+] as const;
+
+/**
+ * Cifras de la sección Estadísticas (D38).
+ *
+ * La regla: solo números desprendidos de los datos reales de este archivo, o
+ * confirmados por el usuario. Nada de "10+ proyectos" redondeado hacia arriba:
+ * si el dato no existe, no se muestra.
+ *  · proyectos: `proyectos.length` (2) + `robotica.proyectos.length` (1) = 3.
+ *  · añosRobotica: los 6 que ya afirma el subtítulo de `robotica`.
+ *  · tecnologiasYHerramientas: los items del stack con `categoria`
+ *    'tecnologia', 'herramienta' o 'base-de-datos' (D41). Quedan fuera las
+ *    plataformas y los asistentes de IA: son 24 de los 37 que muestra
+ *    la marquesina.
+ *  · certificaciones: `certificaciones.length` = 13.
+ */
+export const estadisticas = {
+  proyectos: proyectos.length + robotica.proyectos.length,
+  añosRobotica: 6,
+  tecnologiasYHerramientas: stack.filter(
+    (t) =>
+      t.categoria === 'tecnologia' ||
+      t.categoria === 'herramienta' ||
+      t.categoria === 'base-de-datos',
+  ).length,
+  certificaciones: certificaciones.length,
+} as const;
 
 export const años = String(new Date().getFullYear());

@@ -1,5 +1,5 @@
 ---
-import { perfil, nav } from '../data/perfil';
+import { perfil, nav, datosContacto } from '../data/perfil';
 import { withBase } from '../paths';
 ---
 
@@ -25,6 +25,17 @@ import { withBase } from '../paths';
           </li>
         ))
       }
+      <li>
+        <a
+          class="nav-cv"
+          href={datosContacto.githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+          <span class="btn__arrow" aria-hidden="true">↗</span>
+        </a>
+      </li>
       <li>
         <a class="nav-cv" href={withBase(`/${perfil.cv.href}`)}>
           {perfil.cv.label}

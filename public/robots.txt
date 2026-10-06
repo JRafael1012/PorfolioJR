@@ -1,0 +1,6 @@
+# Todos los crawlers pueden indexar el sitio.
+User-agent: *
+Allow: /
+
+# El sitio es una sola página bajo /PorfolioJR/; el sitemap enumera las URLs.
+Sitemap: https://jrafael1012.github.io/PorfolioJR/sitemap.xml

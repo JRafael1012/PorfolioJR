@@ -1,0 +1,43 @@
+---
+import { estadisticas } from '../data/perfil';
+
+/**
+ * Sección "Estadísticas" (D38).
+ *
+ * Solo cifras justificables: las calcula `estadisticas` de `perfil.ts` a partir
+ * de los datos reales del sitio (nunca escritas a mano ni redondeadas hacia
+ * arriba). Si un dato no existe, no se muestra.
+ *
+ * No tiene entrada en el `nav`: es una franja corta que vive junto a
+ * "Servicios", y añadirla a la barra alargaría el menú sin ganar navegación.
+ */
+
+const items = [
+  { valor: estadisticas.proyectos, etiqueta: 'Proyectos' },
+  { valor: estadisticas.añosRobotica, etiqueta: 'Años en robótica' },
+  { valor: estadisticas.tecnologiasYHerramientas, etiqueta: 'Tecnologías y herramientas' },
+  { valor: estadisticas.certificaciones, etiqueta: 'Certificaciones' },
+];
+---
+<section class="section estadisticas" id="estadisticas">
+  <div class="container">
+    <div class="section__head">
+      <p class="eyebrow">ESTADÍSTICAS</p>
+      <h2 class="section__title">Números con evidencia</h2>
+      <p class="section__subtitle">
+        Cifras que se desprenden de los datos reales de este portafolio.
+      </p>
+    </div>
+
+    <ul class="stat-grid">
+      {
+        items.map((item) => (
+          <li class="stat-card">
+            <span class="stat-card__valor">{item.valor}</span>
+            <span class="stat-card__etiqueta">{item.etiqueta}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

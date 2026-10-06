@@ -48,16 +48,20 @@ import { experiencia } from '../data/perfil';
               ) : (
                 <>
                   <p class="exp-summary">{item.resumen}</p>
-                  <ul class="exp-achievements">
-                    {item.logros.map((logro) => (
-                      <li>{logro}</li>
-                    ))}
-                  </ul>
-                  <ul class="tag-list">
-                    {item.stack.map((tech) => (
-                      <li class="tag">{tech}</li>
-                    ))}
-                  </ul>
+                  {item.logros && item.logros.length > 0 && (
+                    <ul class="exp-achievements">
+                      {item.logros.map((logro) => (
+                        <li>{logro}</li>
+                      ))}
+                    </ul>
+                  )}
+                  {item.stack && item.stack.length > 0 && (
+                    <ul class="tag-list">
+                      {item.stack.map((tech) => (
+                        <li class="tag">{tech}</li>
+                      ))}
+                    </ul>
+                  )}
                 </>
               )}
               {item.puesto === 'Técnico en Desarrollo de Software' && (

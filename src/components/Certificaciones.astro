@@ -1,0 +1,76 @@
+---
+import { certificaciones } from '../data/perfil';
+import { withBase } from '../paths';
+
+/**
+ * Sección "Certificaciones".
+ *
+ * La sección se pinta SIEMPRE: el usuario quiere el hueco reservado en la
+ * página y rellenarlo después. Con el array vacío sale un aviso en lugar de
+ * tarjetas, nunca una rejilla a medio montar.
+ *
+ * Tampoco hay entrada en el nav: `nav` de perfil.ts se edita cuando haya
+ * certificados que enseñar, no antes.
+ *
+ * El enlace "Ver certificado" distingue dos casos:
+ *   · `https://...` → pestaña nueva con `rel="noopener noreferrer"`.
+ *   · `certificados/archivo.pdf` → archivo de `public/`, con `withBase()` para
+ *     que no dé 404 en GitHub Pages (la ruta base del sitio es `/PorfolioJR`).
+ */
+
+const hay = certificaciones.length > 0;
+
+const esExterna = (url: string) => /^https?:\/\//i.test(url);
+
+function resolverUrl(url: string): string {
+  if (esExterna(url)) return url;
+  return withBase(`/${url.replace(/^\/+/, '')}`);
+}
+---
+
+<section class="section" id="certificaciones">
+  <div class="container">
+    <div class="section__head">
+      <p class="eyebrow">CERTIFICACIONES</p>
+      <h2 class="section__title">Certificaciones</h2>
+      <p class="section__subtitle">
+        Formación complementaria acreditada.
+      </p>
+    </div>
+
+    {
+      hay ? (
+        <ul class="card-grid">
+          {certificaciones.map((cert) => (
+            <li class="card cert-card">
+              <h3 class="cert-card__titulo">{cert.titulo}</h3>
+              <p class="cert-card__meta">
+                {cert.institucion}
+                {cert.anio && <span> · {cert.anio}</span>}
+              </p>
+              {cert.url && (
+                <a
+                  class="cert-card__link"
+                  href={resolverUrl(cert.url)}
+                  target={esExterna(cert.url) ? '_blank' : undefined}
+                  rel={
+                    esExterna(cert.url) ? 'noopener noreferrer' : undefined
+                  }
+                >
+                  Ver certificado
+                  <span class="cert-card__arrow" aria-hidden="true">
+                    {esExterna(cert.url) ? '↗' : '→'}
+                  </span>
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="cert-vacio">
+          Espacio reservado: aquí irán los certificados.
+        </p>
+      )
+    }
+  </div>
+</section>
