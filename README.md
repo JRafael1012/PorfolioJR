@@ -252,11 +252,16 @@ centran en esa misma línea, así su centro queda a ras con el texto de la marca
 texto o la fuente la fila no se desalinea. El header base bajó a 84 px para que
 los botones no quedaran huérfanos dentro de una barra muy alta.
 
-**El `:not(.nav-cv)` de `.nav-links a` no es cosmético.** El botón de «Hoja de
-vida» también es un `<a>` dentro de `.nav-links`, así que sin el filtro heredaría
-el subrayado y el `padding-block`, y este último le ganaría por especificidad al
-`padding` de `.nav-cv`, dejándolo a 6 px de alto. La regla de los 11 px en el
-corte de 700 px repite el mismo `:not()` por lo mismo.
+**Los botones viven en `.nav-actions` (D50).** GitHub y Hoja de vida no están
+dentro de `.nav-links`: los diez enlaces de texto del menú están en el `ul`, y
+los dos botones en un `div.nav-actions` hermano. En escritorio quedan pegados
+tras los enlaces; en ≤1050 px (y en móvil) la marca y los botones **se quedan
+arriba en la primera fila** (marca a la izquierda, botones a la derecha) y los
+enlaces del menú pasan a su fila propia de ancho completo debajo. Eso evita el
+problema que se veía en el despliegue: desde que los botones rodeaban junto con
+los ocho enlaces, en pantallas estrechas se caían a la última fila del header.
+Como los botones ya no son `<a>` dentro de `.nav-links`, los selectores de los
+enlaces dejaron de necesitar el filtro `:not(.nav-cv)`.
 
 ### «Sobre mí»: seis preguntas que se despliegan hacia la derecha
 

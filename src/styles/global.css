@@ -850,7 +850,6 @@ a:hover {
   min-height: 84px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 1rem 2rem;
   flex-wrap: wrap;
   padding-block: 0.75rem;
@@ -897,11 +896,27 @@ a:hover {
 .nav-links {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  margin-left: auto;
   gap: clamp(1rem, 2.6vw, 52px);
   list-style: none;
 }
 
-.nav-links a:not(.nav-cv) {
+/* Grupos de acción (D50): GitHub y Hoja de vida ya no viven dentro de
+   `.nav-links`. En escritorio van pegados tras los enlaces; en pantallas
+   estrechas (≤1050 px) se quedan en la fila superior junto a la marca,
+   mientras los enlaces pasan a su propia fila debajo. Así los botones nunca
+   se caen al fondo del header. */
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  flex: none;
+}
+
+.nav-links a {
   position: relative;
   height: 44px;
   display: inline-flex;
@@ -912,7 +927,7 @@ a:hover {
   transition: color 0.2s ease;
 }
 
-.nav-links a:not(.nav-cv)::after {
+.nav-links a::after {
   content: '';
   position: absolute;
   inset: auto 0 0;
@@ -923,25 +938,25 @@ a:hover {
   transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.nav-links a:not(.nav-cv):hover {
+.nav-links a:hover {
   color: var(--accent);
   text-decoration: none;
 }
 
 /* Sección activa (scroll-spy, D45): el subrayado queda puesto y el texto en
    acento, sin esperar al hover. `aria-current` acompaña para lectores. */
-.nav-links a:not(.nav-cv).is-current {
+.nav-links a.is-current {
   color: var(--accent);
 }
 
-.nav-links a:not(.nav-cv).is-current::after {
+.nav-links a.is-current::after {
   transform: scaleX(1);
 }
 
 /* Solo con hover real: en táctil el subrayado se quedaría puesto. */
 
 @media (hover: hover) {
-  .nav-links a:not(.nav-cv):hover::after {
+  .nav-links a:hover::after {
     transform: scaleX(1);
   }
 }
@@ -986,8 +1001,12 @@ a:hover {
   transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ≤1050 px (D50): los enlaces pasan a su fila propia de ancho completo;
+   arriba quedan solo la marca (izquierda) y los botones (derecha). */
+
 @media (max-width: 1050px) {
   .nav-links {
+    flex: 1 1 100%;
     gap: 1.25rem;
   }
 }
@@ -1006,9 +1025,7 @@ a:hover {
     flex-wrap: wrap;
   }
 
-/* El `:not()` repite a propósito el del bloque principal: sin él, la regla de
-     arriba (más específica) ganaría y el texto no bajaría a 11 px. */
-  .nav-links a:not(.nav-cv) {
+  .nav-links a {
     font-size: 11px;
   }
 

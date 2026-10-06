@@ -25,23 +25,22 @@ import { withBase } from '../paths';
           </li>
         ))
       }
-      <li>
-        <a
-          class="nav-cv"
-          href={datosContacto.githubUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          GitHub
-          <span class="btn__arrow" aria-hidden="true">↗</span>
-        </a>
-      </li>
-      <li>
-        <a class="nav-cv" href={withBase(`/${perfil.cv.href}`)}>
-          {perfil.cv.label}
-          <span class="btn__arrow" aria-hidden="true">↗</span>
-        </a>
-      </li>
     </ul>
+
+    <div class="nav-actions">
+      <a
+        class="nav-cv"
+        href={datosContacto.githubUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        GitHub
+        <span class="btn__arrow" aria-hidden="true">↗</span>
+      </a>
+      <a class="nav-cv" href={withBase(`/${perfil.cv.href}`)}>
+        {perfil.cv.label}
+        <span class="btn__arrow" aria-hidden="true">↗</span>
+      </a>
+    </div>
   </nav>
 </header>

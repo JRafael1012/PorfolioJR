@@ -1472,6 +1472,31 @@ agregar para ocuparlo.
 - **CSS servido:** `.servicios-grid{…grid-template-columns:repeat(3,1fr)}`,
   cortes a 2 y 1 columnas, y `.servicios-nota` (borde punteado).
 
+### Decisión D50 (2026-10-06) — Los botones suben arriba en pantallas estrechas
+
+El usuario ve en el despliegue publicado que «se bajan los botones y no están
+arriba como debería estar en el header». Causa: los dos `.nav-cv` eran `<li>`
+al final de `.nav-links`, la misma fila que los 8 enlaces; al estrecharse, los
+botones quedaban en la última fila del header.
+
+- **D50.1 — Markup.** GitHub y Hoja de vida salen del `<ul>` a un
+  `div.nav-actions` hermano de `.nav-links`.
+- **D50.2 — CSS.** `.nav` deja de usar `space-between`; `.nav-links`
+  `margin-left: auto` (grupo a la derecha en escritorio). En `≤1050 px`,
+  `.nav-links { flex: 1 1 100% }`: fila superior = marca (izquierda) +
+  `nav-actions` (derecha); fila inferior = enlaces a 100%.
+- **D50.3 — Limpieza.** Los selectores `.nav-links a:not(.nav-cv)` pierden el
+  `:not()` (ya no hay `.nav-cv` dentro del `ul`). `main.js` no cambia: el
+  scroll-spy ya apunta a `.nav-links a[href^="#"]`.
+
+### Evidencia (2026-10-06) — D50
+
+- **Build:** `astro check` 0 errores / 0 warnings; `astro build` ✓ (1 página).
+- **`dist/index.html`:** `ul.nav-links` con 8 enlaces y, hermano,
+  `div.nav-actions` con los dos `a.nav-cv` (GitHub y Hoja de vida).
+- **CSS servido:** `.nav-links{…margin-left:auto…}`, `.nav-actions` y el corte
+  `@media (max-width:1050px) .nav-links{flex:1 1 100%}`.
+
 ---
 
 ## Fase 06 — Verificación y validación
