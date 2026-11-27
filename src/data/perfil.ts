@@ -912,9 +912,9 @@ export const stack: Tecnologia[] = [
  * acciones. `imagen` se deja fuera a propósito mientras se suben las capturas:
  * la tarjeta conserva su hueco y el aviso con la ruta pendiente.
  *
- * `repositorio` apunta al perfil de GitHub mientras no haya un repo público
- * por tarjeta. `demoPendiente` muestra "Demo no publicada" hasta que exista
- * `demo: 'URL de Render/Railway/YouTube'` y `demoEtiqueta`.
+ * `repositorio` apunta al perfil en la tarjeta que aún no tiene repo público;
+ * FinovaTech ya enlaza su repo real. `demoPendiente` muestra "Demo no publicada"
+ * en la tarjeta que aún no tiene demo; FinovaTech no muestra botón de demo.
  *
  * RAF VESTIGIA vive en `robotica.proyectos`, su sitio natural. No se duplica
  * aquí: la sección "Proyectos" lo señala y el contador de Estadísticas lo suma.
@@ -993,11 +993,10 @@ export const proyectos: Proyecto[] = [
       'Normalicé movimientos y cuentas para que los totales salieran de una sola fuente de verdad.',
       'Separé la lógica financiera de la interfaz para probar los cálculos sin depender del HTML.',
     ],
-    demoPendiente: true,
     stack: ['Python', 'Flask', 'MySQL', 'HTML5', 'CSS3', 'JavaScript', 'PHP', 'Git'],
     distincion:
       'Graduado con Honores · Mejor Proyecto Final de Promoción (Ficha 3154526) y Representante Institucional en la Muestra de Proyectos de Articulación SENA 2026 (CENIGRAF)',
-    repositorio: 'https://github.com/JRafael1012',
+    repositorio: 'https://github.com/RDVSYSTEMS/FinovaTech-',
   },
 ];
 
