@@ -1670,7 +1670,7 @@ section[id] {
    anula. */
 
 .marquee.marquee--torneos {
-  --marquee-duration: 120s;
+  --marquee-duration: 15s;
   border-radius: 4px;
 }
 
@@ -1746,7 +1746,7 @@ section[id] {
 }
 
 .marquee {
-  --marquee-duration: 42s;
+  --marquee-duration: 15s;
   overflow: hidden;
   border-block: 1px solid var(--line-soft);
   padding-block: 1.75rem;
@@ -1761,7 +1761,7 @@ section[id] {
 }
 
 .stack .marquee {
-  --marquee-duration: 120s;
+  --marquee-duration: 15s;
 }
 
 .marquee__track {
