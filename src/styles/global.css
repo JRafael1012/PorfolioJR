@@ -1669,8 +1669,8 @@ section[id] {
    Ese hueco es justo lo que no queremos, así que `.marquee__item--torneo` lo
    anula. */
 
-.marquee--torneos {
-  --marquee-duration: 72s;
+.marquee.marquee--torneos {
+  --marquee-duration: 120s;
   border-radius: 4px;
 }
 
@@ -1761,7 +1761,7 @@ section[id] {
 }
 
 .stack .marquee {
-  --marquee-duration: 60s;
+  --marquee-duration: 120s;
 }
 
 .marquee__track {
@@ -1837,6 +1837,10 @@ section[id] {
 
 .marquee:focus-within .marquee__track {
   animation-play-state: paused;
+}
+
+.marquee--torneos:hover .marquee__track {
+  animation-play-state: running;
 }
 
 /* --- Sin movimiento: Stack y torneos siguen avanzando solos --- */
