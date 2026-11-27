@@ -9,7 +9,7 @@ const proyectosRobotica = robotica.proyectos
 /**
  * Sección "Proyectos" — la lista completa.
  *
- * Aquí van TODOS los proyectos, los destacados incluidos: los dos destacados
+ * Aquí van TODOS los proyectos, los destacados incluidos: los tres destacados
  * tienen su propia sección más arriba y aquí se ven en igualdad con el resto.
  * La tarjeta es la misma (`ProyectoCard.astro`) con `variante="caso"`.
  *
@@ -17,7 +17,7 @@ const proyectosRobotica = robotica.proyectos
  * y con avance automático que se pausa al interactuar. Cada tarjeta conserva
  * su caso completo.
  *
- * Hay catorce proyectos de software en `proyectos` (dos destacados) y uno de
+ * Hay catorce proyectos de software en `proyectos` (tres destacados) y uno de
  * robótica en `robotica.proyectos` (RAF VESTIGIA), que se muestra en su propia
  * sección. El contador de Estadísticas suma los quince; el aviso de abajo lo
  * explica para que la cifra y lo que se ve en pantalla sean coherentes.
@@ -38,35 +38,40 @@ const proyectosRobotica = robotica.proyectos
 
     <div class="project-carousel" data-project-carousel>
       <div class="project-carousel__controls">
-        <span class="project-carousel__label">ÍNDICE</span>
-        <button
-          class="project-carousel__nav project-carousel__nav--toggle"
-          type="button"
-          data-carousel-toggle
-          aria-label="Pausar avance automático"
-          aria-pressed="true"
-        >
-          Pausar
-        </button>
-        <button
-          class="project-carousel__nav"
-          type="button"
-          data-carousel-prev
-          aria-label="Proyecto anterior"
-        >
-          ←
-        </button>
-        <span class="project-carousel__count" data-carousel-count aria-live="polite">
-          01 / {String(proyectos.length).padStart(2, '0')}
-        </span>
-        <button
-          class="project-carousel__nav"
-          type="button"
-          data-carousel-next
-          aria-label="Proyecto siguiente"
-        >
-          →
-        </button>
+        <div class="project-carousel__progress" aria-hidden="true">
+          <span class="project-carousel__progress-fill" data-carousel-progress></span>
+        </div>
+        <div class="project-carousel__nav-row">
+          <span class="project-carousel__label">ÍNDICE</span>
+          <button
+            class="project-carousel__nav project-carousel__nav--toggle"
+            type="button"
+            data-carousel-toggle
+            aria-label="Pausar avance automático"
+            aria-pressed="true"
+          >
+            Pausar
+          </button>
+          <button
+            class="project-carousel__nav"
+            type="button"
+            data-carousel-prev
+            aria-label="Proyecto anterior"
+          >
+            ←
+          </button>
+          <span class="project-carousel__count" data-carousel-count aria-live="polite">
+            01 / {String(proyectos.length).padStart(2, '0')}
+          </span>
+          <button
+            class="project-carousel__nav"
+            type="button"
+            data-carousel-next
+            aria-label="Proyecto siguiente"
+          >
+            →
+          </button>
+        </div>
       </div>
 
       <div

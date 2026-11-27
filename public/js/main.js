@@ -445,12 +445,14 @@
     var carouselNext = projectCarousel.querySelector('[data-carousel-next]');
     var carouselCount = projectCarousel.querySelector('[data-carousel-count]');
     var carouselToggle = projectCarousel.querySelector('[data-carousel-toggle]');
+    var carouselProgress = projectCarousel.querySelector('[data-carousel-progress]');
     var carouselFrame = 0;
     var carouselIndex = 0;
     var carouselAutoplay = !reduceMotion;
     var carouselPointerInside = false;
     var carouselFocusWithin = false;
     var carouselTimer = null;
+    var carouselProgressFrame = null;
     var CAROUSEL_AUTOPLAY_DELAY = 10000;
 
     var centeredSlide = function () {
@@ -529,18 +531,47 @@
       }
     };
 
+    var resetCarouselProgress = function () {
+      if (!carouselProgress) return;
+      if (carouselProgressFrame !== null) {
+        window.cancelAnimationFrame(carouselProgressFrame);
+        carouselProgressFrame = null;
+      }
+      carouselProgress.style.transform = 'scaleX(0)';
+    };
+
+    var startCarouselProgress = function () {
+      if (!carouselProgress) return;
+      var startedAt = null;
+
+      var paintProgress = function (now) {
+        if (startedAt === null) startedAt = now;
+        var progress = Math.min((now - startedAt) / CAROUSEL_AUTOPLAY_DELAY, 1);
+        carouselProgress.style.transform = 'scaleX(' + String(progress) + ')';
+
+        if (progress < 1) {
+          carouselProgressFrame = window.requestAnimationFrame(paintProgress);
+        } else {
+          carouselProgressFrame = null;
+        }
+      };
+
+      carouselProgressFrame = window.requestAnimationFrame(paintProgress);
+    };
+
     var scheduleCarouselAutoplay = function () {
       clearCarouselTimer();
+      resetCarouselProgress();
       var interactionActive = carouselPointerInside || carouselFocusWithin;
+      var shouldPlay = carouselAutoplay && !interactionActive && !document.hidden;
       if (carouselCount) {
-        carouselCount.setAttribute(
-          'aria-live',
-          carouselAutoplay && !interactionActive ? 'off' : 'polite'
-        );
+        carouselCount.setAttribute('aria-live', shouldPlay ? 'off' : 'polite');
       }
-      if (!carouselAutoplay || interactionActive || document.hidden) return;
+      if (!shouldPlay) return;
 
+      startCarouselProgress();
       carouselTimer = window.setTimeout(function () {
+        carouselTimer = null;
         var next = carouselIndex + 1;
         goToSlide(next >= carouselSlides.length ? 0 : next);
       }, CAROUSEL_AUTOPLAY_DELAY);
