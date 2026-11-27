@@ -453,6 +453,8 @@
     var carouselFocusWithin = false;
     var carouselTimer = null;
     var carouselProgressFrame = null;
+    var carouselVisible = false;
+    var carouselEntered = false;
     var CAROUSEL_AUTOPLAY_DELAY = 10000;
 
     var centeredSlide = function () {
@@ -563,7 +565,8 @@
       clearCarouselTimer();
       resetCarouselProgress();
       var interactionActive = carouselPointerInside || carouselFocusWithin;
-      var shouldPlay = carouselAutoplay && !interactionActive && !document.hidden;
+      var shouldPlay =
+        carouselAutoplay && carouselVisible && !interactionActive && !document.hidden;
       if (carouselCount) {
         carouselCount.setAttribute('aria-live', shouldPlay ? 'off' : 'polite');
       }
@@ -655,6 +658,25 @@
       });
       document.addEventListener('visibilitychange', scheduleCarouselAutoplay);
       window.addEventListener('resize', requestCarouselPaint);
+      if ('IntersectionObserver' in window) {
+        var carouselObserver = new IntersectionObserver(
+          function (entries) {
+            carouselVisible = entries.some(function (entry) {
+              return entry.isIntersecting;
+            });
+            if (carouselVisible && !carouselEntered) {
+              carouselEntered = true;
+              goToSlide(0);
+            } else {
+              scheduleCarouselAutoplay();
+            }
+          },
+          { threshold: 0.25 }
+        );
+        carouselObserver.observe(projectCarousel);
+      } else {
+        carouselVisible = true;
+      }
       requestCarouselPaint();
       setCarouselAutoplay(carouselAutoplay);
     }
