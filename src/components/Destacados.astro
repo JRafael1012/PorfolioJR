@@ -3,13 +3,23 @@ import { proyectos } from '../data/perfil';
 import ProyectoCard from './ProyectoCard.astro';
 
 /**
- * Sección "Proyectos destacados" — los proyectos marcados, en tarjetas anchas.
+ * Sección "Proyectos destacados" — una baraja fija con tres proyectos.
  *
  * Es una sección APARTE de "Proyectos", no un bloque dentro de ella: el
  * visitante ve primero lo mejor y luego, más abajo, la lista completa.
- * Solo entra lo que lleva `destacado: true`.
+ * FinovaTech queda al frente; los otros dos proyectos se escogen desde la
+ * misma lista y conservan la marca `destacado: true`.
  */
-const destacados = proyectos.filter((proyecto) => proyecto.destacado);
+const ordenDestacados = ['FinovaTech', 'CursoTracker', 'AutoAlDía'];
+const destacados = ordenDestacados.map((titulo) => {
+  const proyecto = proyectos.find(
+    (item) => item.titulo === titulo && item.destacado,
+  );
+  if (!proyecto) {
+    throw new Error(`Falta marcar "${titulo}" como proyecto destacado.`);
+  }
+  return proyecto;
+});
 ---
 
 <section class="section" id="destacados">
@@ -22,17 +32,74 @@ const destacados = proyectos.filter((proyecto) => proyecto.destacado);
       </p>
     </div>
 
-    <div class="destacados__grid">
-      {
-        destacados.map((proyecto, i) => (
-          <ProyectoCard
-            proyecto={proyecto}
-            destacada
-            indice={i + 1}
-            variante="resumen"
+    <div class="destacados-carousel" data-featured-carousel>
+      <div class="destacados__grid" data-featured-stack>
+        {
+          destacados.map((proyecto, i) => (
+            <div
+              class="destacados__card"
+              data-featured-slide
+              data-featured-title={proyecto.titulo}
+            >
+              <ProyectoCard
+                proyecto={proyecto}
+                destacada
+                indice={i + 1}
+                variante="resumen"
+              />
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="destacados__controls" data-featured-controls hidden>
+        <svg
+          class="destacados__timer"
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <circle class="destacados__timer-track" cx="16" cy="16" r="13" />
+          <circle
+            class="destacados__timer-progress"
+            cx="16"
+            cy="16"
+            r="13"
+            transform="rotate(-90 16 16)"
+            stroke-dasharray="81.68"
+            stroke-dashoffset="81.68"
+            data-featured-progress
           />
-        ))
-      }
+        </svg>
+        <span class="destacados__count" data-featured-count aria-live="polite">
+          01 / 03
+        </span>
+        <button
+          class="destacados__button destacados__button--toggle"
+          type="button"
+          data-featured-toggle
+          aria-label="Pausar avance automático"
+          aria-pressed="true"
+        >
+          Pausar
+        </button>
+        <button
+          class="destacados__button"
+          type="button"
+          data-featured-prev
+          aria-label="Proyecto destacado anterior"
+        >
+          ←
+        </button>
+        <button
+          class="destacados__button"
+          type="button"
+          data-featured-next
+          aria-label="Proyecto destacado siguiente"
+        >
+          →
+        </button>
+      </div>
     </div>
   </div>
 </section>

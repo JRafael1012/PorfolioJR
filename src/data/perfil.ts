@@ -260,8 +260,8 @@ export const nav = [
 ];
 
 /**
- * Sección "Sobre mí". Cinco preguntas que se pliegan y se despliegan: quien
- * entra ve las preguntas y abre solo la que le interesa.
+ * Sección "Sobre mí". Seis preguntas en una pila navegable: quien entra
+ * recorre una respuesta a la vez, sin perder el contexto de las demás.
  *
  * REGLA DE ESTA SECCIÓN: no se inventa. Cada respuesta se apoya en datos que
  * ya están en este mismo archivo —`perfil.descripcion`, `experiencia`,
@@ -919,6 +919,7 @@ export const stack: Tecnologia[] = [
 export const proyectos: Proyecto[] = [
   {
     titulo: 'CursoTracker',
+    destacado: true,
     estado: 'SaaS · Fase 09: evaluación',
     descripcion:
       'SaaS multi-tenant para colegios y academias que gestiona estudiantes, cursos y notas y genera reportes y evidencias académicas en PDF/Excel. Web responsive, accesible desde cualquier dispositivo.',

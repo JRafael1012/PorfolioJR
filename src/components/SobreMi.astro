@@ -10,7 +10,7 @@ import { sobreMi } from '../data/perfil';
       <p class="section__subtitle">{sobreMi.subtitulo}</p>
     </div>
 
-    <div class="about-grid">
+    <div class="about-grid" data-about-carousel>
       {
         sobreMi.items.map((item, indice) => (
           <article
@@ -23,12 +23,16 @@ import { sobreMi } from '../data/perfil';
               },
             ]}
             style={`--about-index: ${indice};`}
+            data-about-slide
           >
             <div class="about-card__heading">
               <span class="about-card__index" aria-hidden="true">
                 {String(indice + 1).padStart(2, '0')}
               </span>
-              <h3 class="about-card__title">{item.pregunta}</h3>
+              <h3 class="about-card__title" id={`about-question-${indice + 1}`}>
+                {item.pregunta}
+                <span class="card-title-star" aria-hidden="true">★</span>
+              </h3>
             </div>
             <div class="about-card__body">
               <p class:list={['about-card__text', indice === 0 && 'about-card__text--lead']}>
@@ -45,6 +49,40 @@ import { sobreMi } from '../data/perfil';
           </article>
         ))
       }
+    </div>
+
+    <div class="about-carousel__controls" data-about-controls hidden>
+      <div class="about-carousel__progress" aria-hidden="true">
+        <span class="about-carousel__progress-fill" data-about-progress></span>
+      </div>
+      <div class="about-carousel__nav">
+        <span class="about-carousel__count" data-about-count aria-live="polite"></span>
+        <button
+          class="about-carousel__button about-carousel__button--toggle"
+          type="button"
+          data-about-toggle
+          aria-label="Pausar avance automático"
+          aria-pressed="true"
+        >
+          Pausar
+        </button>
+        <button
+          class="about-carousel__button"
+          type="button"
+          data-about-prev
+          aria-label="Pregunta anterior"
+        >
+          ←
+        </button>
+        <button
+          class="about-carousel__button"
+          type="button"
+          data-about-next
+          aria-label="Pregunta siguiente"
+        >
+          →
+        </button>
+      </div>
     </div>
 
     <aside class="about-value reveal">

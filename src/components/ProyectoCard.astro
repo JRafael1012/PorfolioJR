@@ -44,7 +44,9 @@ const nombreArchivo = proyecto.titulo
   .replace(/^-|-$/g, '');
 const rutaCaptura = `/img/proyectos/${nombreArchivo}.webp`;
 const stackPrincipal = proyecto.stack?.slice(0, 3) ?? [];
-const tecnologiasVisibles = esResumen ? stackPrincipal : (proyecto.stack ?? []);
+const tecnologiasVisibles =
+  destacada || !esResumen ? (proyecto.stack ?? []) : stackPrincipal;
+const etiquetaTecnologias = destacada ? 'Lenguajes y tecnologías' : 'Tecnologías';
 const senaEnEstado = proyecto.estado?.includes('SENA') ? 'SENA' : undefined;
 const distincionResumen = proyecto.distincion
   ? [proyecto.distincion.split(' · ')[0], senaEnEstado].filter(Boolean).join(' · ')
@@ -70,47 +72,24 @@ const detallesId = `proyecto-detalles-${nombreArchivo}`;
     { 'project-card--wide': destacada },
   ]}
 >
-  {
-    esResumen ? (
-      <div class="project-card__media">
-        {
-          imagenSrc ? (
-            <img
-              class="project-card__img"
-              src={imagenSrc}
-              alt={`Captura de ${proyecto.titulo}`}
-              loading={destacada ? 'eager' : 'lazy'}
-              decoding="async"
-            />
-          ) : (
-            <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaCaptura}>
-              <span class="project-card__slot-mark">{proyecto.stack?.[0] ?? 'JR'}</span>
-              <span class="project-card__slot-text">Sin imagen publicada</span>
-            </div>
-          )
-        }
-      </div>
-    ) : (
-      <div class="project-card__media">
-        {
-          imagenSrc ? (
-            <img
-              class="project-card__img"
-              src={imagenSrc}
-              alt={`Captura de ${proyecto.titulo}`}
-              loading={destacada ? 'eager' : 'lazy'}
-              decoding="async"
-            />
-          ) : (
-            <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaCaptura}>
-              <span class="project-card__slot-mark">{proyecto.stack?.[0] ?? 'JR'}</span>
-              <span class="project-card__slot-text">Sin imagen publicada</span>
-            </div>
-          )
-        }
-      </div>
-    )
-  }
+  <div class="project-card__media">
+    {
+      imagenSrc ? (
+        <img
+          class="project-card__img"
+          src={imagenSrc}
+          alt={`Captura de ${proyecto.titulo}`}
+          loading={destacada ? 'eager' : 'lazy'}
+          decoding="async"
+        />
+      ) : (
+        <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaCaptura}>
+          <span class="project-card__slot-mark">{proyecto.stack?.[0] ?? 'JR'}</span>
+          <span class="project-card__slot-text">Sin imagen publicada</span>
+        </div>
+      )
+    }
+  </div>
 
   <div class="project-card__body">
     <div class="project-card__head">
@@ -119,7 +98,10 @@ const detallesId = `proyecto-detalles-${nombreArchivo}`;
           {String(indice).padStart(2, '0')}
         </span>
       )}
-      <h3 class="project-card__title">{proyecto.titulo}</h3>
+      <h3 class="project-card__title">
+        {proyecto.titulo}
+        <span class="card-title-star" aria-hidden="true">★</span>
+      </h3>
       {proyecto.estado && <p class="project-card__estado">{proyecto.estado}</p>}
     </div>
 
@@ -142,7 +124,7 @@ const detallesId = `proyecto-detalles-${nombreArchivo}`;
     {
       tecnologiasVisibles.length > 0 && (
         <div class="project-card__block">
-          <p class="project-card__label">Tecnologías</p>
+          <p class="project-card__label">{etiquetaTecnologias}</p>
           <ul class="tag-list">
             {tecnologiasVisibles.map((tech) => (
               <li class="tag">{tech}</li>

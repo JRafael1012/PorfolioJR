@@ -7,6 +7,8 @@
  * 4. Despliega los paneles de competencias y torneos.
  * 5. Abre y cierra el menú móvil y salta a una sección compensando el header fijo.
  * 6. Encoge y oscurece el header al hacer scroll, y marca la sección activa.
+ * 7. Navega las preguntas de "Sobre mí" en una pila de tarjetas.
+ * 8. Navega los tres proyectos destacados como una baraja.
  *
  * La pausa de las marquesinas ya no tiene botón (D43): la cinta de STACK corta
  * al pasar el puntero o al recibir foco. Las galerías de fotos siguen cambiando
@@ -46,6 +48,476 @@
     targets.forEach(function (el) {
       observer.observe(el);
     });
+  }
+
+  /* --- Baraja de proyectos destacados --- */
+  var featuredCarousel = document.querySelector('[data-featured-carousel]');
+
+  if (featuredCarousel) {
+    var featuredStack = featuredCarousel.querySelector('[data-featured-stack]');
+    var featuredSlides = Array.prototype.slice.call(
+      featuredCarousel.querySelectorAll('[data-featured-slide]')
+    );
+    var featuredControls = featuredCarousel.querySelector('[data-featured-controls]');
+    var featuredCount = featuredCarousel.querySelector('[data-featured-count]');
+    var featuredPrev = featuredCarousel.querySelector('[data-featured-prev]');
+    var featuredNext = featuredCarousel.querySelector('[data-featured-next]');
+    var featuredToggle = featuredCarousel.querySelector('[data-featured-toggle]');
+    var featuredProgress = featuredCarousel.querySelector('[data-featured-progress]');
+
+    if (
+      featuredStack &&
+      featuredSlides.length > 1 &&
+      featuredControls &&
+      featuredCount &&
+      featuredPrev &&
+      featuredNext &&
+      featuredToggle &&
+      featuredProgress
+    ) {
+      var featuredIndex = 0;
+      var featuredSwipeStart = null;
+      var featuredHoldTimer = null;
+      var featuredAutoplay = !reduceMotion;
+      var featuredFocusWithin = false;
+      var featuredTimer = null;
+      var featuredProgressFrame = null;
+      var FEATURED_AUTOPLAY_DELAY = 7000;
+      var FEATURED_HOLD_DELAY = 650;
+      var FEATURED_PROGRESS_CIRCUMFERENCE = 81.68;
+
+      featuredCarousel.setAttribute('role', 'region');
+      featuredCarousel.setAttribute('aria-roledescription', 'carrusel');
+      featuredCarousel.setAttribute('aria-label', 'Proyectos destacados');
+      featuredStack.setAttribute('role', 'group');
+      featuredStack.setAttribute('aria-label', 'Baraja de proyectos destacados');
+      featuredStack.setAttribute('tabindex', '0');
+      featuredStack.style.touchAction = 'pan-y';
+      featuredStack.classList.add('destacados__grid--stacked');
+      featuredControls.hidden = false;
+
+      featuredSlides.forEach(function (slide, index) {
+        slide.setAttribute('role', 'group');
+        slide.setAttribute('aria-roledescription', 'tarjeta de proyecto');
+        slide.setAttribute(
+          'aria-label',
+          slide.getAttribute('data-featured-title') +
+            ', ' +
+            String(index + 1) +
+            ' de ' +
+            String(featuredSlides.length)
+        );
+      });
+
+      function paintFeaturedCarousel() {
+        featuredSlides.forEach(function (slide, index) {
+          var position =
+            (index - featuredIndex + featuredSlides.length) % featuredSlides.length;
+          var active = position === 0;
+
+          slide.setAttribute('data-stack', String(position));
+          slide.setAttribute('aria-hidden', String(!active));
+          slide.inert = !active;
+        });
+
+        featuredCount.textContent =
+          String(featuredIndex + 1).padStart(2, '0') +
+          ' / ' +
+          String(featuredSlides.length).padStart(2, '0');
+      }
+
+      function goToFeaturedSlide(offset) {
+        featuredIndex =
+          (featuredIndex + offset + featuredSlides.length) % featuredSlides.length;
+        paintFeaturedCarousel();
+        scheduleFeaturedAutoplay();
+      }
+
+      function clearFeaturedTimer() {
+        if (featuredTimer !== null) {
+          window.clearTimeout(featuredTimer);
+          featuredTimer = null;
+        }
+      }
+
+      function clearFeaturedHoldTimer() {
+        if (featuredHoldTimer !== null) {
+          window.clearTimeout(featuredHoldTimer);
+          featuredHoldTimer = null;
+        }
+      }
+
+      function resetFeaturedProgress() {
+        if (featuredProgressFrame !== null) {
+          window.cancelAnimationFrame(featuredProgressFrame);
+          featuredProgressFrame = null;
+        }
+        featuredProgress.style.strokeDashoffset = String(
+          FEATURED_PROGRESS_CIRCUMFERENCE
+        );
+      }
+
+      function startFeaturedProgress() {
+        var startedAt = null;
+
+        function paintProgress(now) {
+          if (startedAt === null) startedAt = now;
+          var progress = Math.min((now - startedAt) / FEATURED_AUTOPLAY_DELAY, 1);
+          featuredProgress.style.strokeDashoffset = String(
+            FEATURED_PROGRESS_CIRCUMFERENCE * (1 - progress)
+          );
+
+          if (progress < 1) {
+            featuredProgressFrame = window.requestAnimationFrame(paintProgress);
+          } else {
+            featuredProgressFrame = null;
+          }
+        }
+
+        featuredProgressFrame = window.requestAnimationFrame(paintProgress);
+      }
+
+      function scheduleFeaturedAutoplay() {
+        clearFeaturedTimer();
+        resetFeaturedProgress();
+        var shouldPlay = featuredAutoplay && !featuredFocusWithin && !document.hidden;
+        featuredCount.setAttribute('aria-live', shouldPlay ? 'off' : 'polite');
+        if (!shouldPlay) return;
+
+        startFeaturedProgress();
+        featuredTimer = window.setTimeout(function () {
+          featuredTimer = null;
+          featuredIndex = (featuredIndex + 1) % featuredSlides.length;
+          paintFeaturedCarousel();
+          scheduleFeaturedAutoplay();
+        }, FEATURED_AUTOPLAY_DELAY);
+      }
+
+      function setFeaturedAutoplay(enabled) {
+        featuredAutoplay = enabled;
+        featuredToggle.textContent = enabled ? 'Pausar' : 'Reanudar';
+        featuredToggle.setAttribute(
+          'aria-label',
+          enabled ? 'Pausar avance automático' : 'Reanudar avance automático'
+        );
+        featuredToggle.setAttribute('aria-pressed', String(enabled));
+        scheduleFeaturedAutoplay();
+      }
+
+      featuredCarousel.addEventListener('focusin', function () {
+        featuredFocusWithin = true;
+        scheduleFeaturedAutoplay();
+      });
+      featuredCarousel.addEventListener('focusout', function (event) {
+        if (!featuredCarousel.contains(event.relatedTarget)) {
+          featuredFocusWithin = false;
+          scheduleFeaturedAutoplay();
+        }
+      });
+      featuredPrev.addEventListener('click', function () {
+        goToFeaturedSlide(-1);
+      });
+      featuredNext.addEventListener('click', function () {
+        goToFeaturedSlide(1);
+      });
+      featuredToggle.addEventListener('click', function () {
+        var enabled = !featuredAutoplay;
+        if (enabled) {
+          featuredFocusWithin = false;
+        }
+        setFeaturedAutoplay(enabled);
+      });
+      featuredStack.addEventListener('keydown', function (event) {
+        if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          goToFeaturedSlide(1);
+        } else if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          goToFeaturedSlide(-1);
+        } else if (event.key === 'Home') {
+          event.preventDefault();
+          featuredIndex = 0;
+          paintFeaturedCarousel();
+          scheduleFeaturedAutoplay();
+        } else if (event.key === 'End') {
+          event.preventDefault();
+          featuredIndex = featuredSlides.length - 1;
+          paintFeaturedCarousel();
+          scheduleFeaturedAutoplay();
+        }
+      });
+      featuredStack.addEventListener('pointerdown', function (event) {
+        if (!event.isPrimary || event.pointerType === 'mouse') return;
+        clearFeaturedHoldTimer();
+        featuredSwipeStart = {
+          x: event.clientX,
+          y: event.clientY,
+          pointerId: event.pointerId,
+        };
+
+        if (event.pointerType === 'touch') {
+          var pointerId = event.pointerId;
+          featuredHoldTimer = window.setTimeout(function () {
+            featuredHoldTimer = null;
+            if (!featuredSwipeStart || featuredSwipeStart.pointerId !== pointerId) return;
+            setFeaturedAutoplay(false);
+          }, FEATURED_HOLD_DELAY);
+        }
+      });
+      featuredStack.addEventListener('pointermove', function (event) {
+        if (!featuredSwipeStart || event.pointerId !== featuredSwipeStart.pointerId) return;
+        var deltaX = event.clientX - featuredSwipeStart.x;
+        var deltaY = event.clientY - featuredSwipeStart.y;
+        if (Math.abs(deltaX) > 20 || Math.abs(deltaY) > 20) {
+          clearFeaturedHoldTimer();
+        }
+      });
+      featuredStack.addEventListener('pointerup', function (event) {
+        if (!featuredSwipeStart || event.pointerId !== featuredSwipeStart.pointerId) return;
+
+        clearFeaturedHoldTimer();
+        var deltaX = event.clientX - featuredSwipeStart.x;
+        var deltaY = event.clientY - featuredSwipeStart.y;
+        featuredSwipeStart = null;
+
+        if (Math.abs(deltaX) < 48 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+        goToFeaturedSlide(deltaX < 0 ? 1 : -1);
+      });
+      featuredStack.addEventListener('pointercancel', function () {
+        clearFeaturedHoldTimer();
+        featuredSwipeStart = null;
+      });
+
+      document.addEventListener('visibilitychange', scheduleFeaturedAutoplay);
+      paintFeaturedCarousel();
+      setFeaturedAutoplay(featuredAutoplay);
+    }
+  }
+
+  /* --- Carrusel apilado de "Sobre mí" --- */
+  var aboutCarousel = document.querySelector('[data-about-carousel]');
+
+  if (aboutCarousel) {
+    var aboutSlides = Array.prototype.slice.call(
+      aboutCarousel.querySelectorAll('[data-about-slide]')
+    );
+    var aboutControls = document.querySelector('[data-about-controls]');
+    var aboutCount = document.querySelector('[data-about-count]');
+    var aboutPrev = document.querySelector('[data-about-prev]');
+    var aboutNext = document.querySelector('[data-about-next]');
+    var aboutToggle = document.querySelector('[data-about-toggle]');
+    var aboutProgress = document.querySelector('[data-about-progress]');
+
+    if (
+      aboutSlides.length > 1 &&
+      aboutControls &&
+      aboutCount &&
+      aboutPrev &&
+      aboutNext &&
+      aboutToggle &&
+      aboutProgress
+    ) {
+      var aboutIndex = 0;
+      var aboutAutoplay = !reduceMotion;
+      var aboutPointerInside = false;
+      var aboutFocusWithin = false;
+      var aboutTimer = null;
+      var aboutProgressFrame = null;
+      var aboutSwipeStart = null;
+      var ABOUT_AUTOPLAY_DELAY = 10000;
+
+      aboutCarousel.classList.add('about-grid--carousel');
+      aboutCarousel.style.touchAction = 'pan-y';
+      aboutCarousel.setAttribute('role', 'region');
+      aboutCarousel.setAttribute('aria-roledescription', 'carrusel');
+      aboutCarousel.setAttribute('aria-label', 'Preguntas sobre mí');
+      aboutCarousel.setAttribute('tabindex', '0');
+      aboutControls.hidden = false;
+
+      aboutSlides.forEach(function (slide, index) {
+        slide.setAttribute('role', 'group');
+        slide.setAttribute('aria-roledescription', 'diapositiva');
+        slide.setAttribute(
+          'aria-labelledby',
+          'about-question-' + String(index + 1)
+        );
+      });
+
+      function paintAboutCarousel() {
+        aboutSlides.forEach(function (slide, index) {
+          var position = (index - aboutIndex + aboutSlides.length) % aboutSlides.length;
+          var stackPosition = position < 3 ? String(position) : 'hidden';
+          var active = position === 0;
+
+          slide.setAttribute('data-stack', stackPosition);
+          slide.setAttribute('aria-hidden', String(!active));
+          slide.inert = !active;
+        });
+
+        aboutCount.textContent =
+          String(aboutIndex + 1).padStart(2, '0') +
+          ' / ' +
+          String(aboutSlides.length).padStart(2, '0');
+      }
+
+      function goToAboutSlide(offset) {
+        aboutIndex = (aboutIndex + offset + aboutSlides.length) % aboutSlides.length;
+        paintAboutCarousel();
+        scheduleAboutAutoplay();
+      }
+
+      function clearAboutTimer() {
+        if (aboutTimer !== null) {
+          window.clearTimeout(aboutTimer);
+          aboutTimer = null;
+        }
+      }
+
+      function resetAboutProgress() {
+        if (aboutProgressFrame !== null) {
+          window.cancelAnimationFrame(aboutProgressFrame);
+          aboutProgressFrame = null;
+        }
+        aboutProgress.style.transform = 'scaleX(0)';
+      }
+
+      function startAboutProgress() {
+        var startedAt = null;
+
+        function paintProgress(now) {
+          if (startedAt === null) startedAt = now;
+          var progress = Math.min((now - startedAt) / ABOUT_AUTOPLAY_DELAY, 1);
+          aboutProgress.style.transform = 'scaleX(' + String(progress) + ')';
+
+          if (progress < 1) {
+            aboutProgressFrame = window.requestAnimationFrame(paintProgress);
+          } else {
+            aboutProgressFrame = null;
+          }
+        }
+
+        aboutProgressFrame = window.requestAnimationFrame(paintProgress);
+      }
+
+      function scheduleAboutAutoplay() {
+        clearAboutTimer();
+        resetAboutProgress();
+        var interactionActive = aboutPointerInside || aboutFocusWithin;
+        var shouldPlay = aboutAutoplay && !interactionActive && !document.hidden;
+        aboutCount.setAttribute(
+          'aria-live',
+          shouldPlay ? 'off' : 'polite'
+        );
+        if (!shouldPlay) return;
+
+        startAboutProgress();
+        aboutTimer = window.setTimeout(function () {
+          aboutTimer = null;
+          aboutIndex = (aboutIndex + 1) % aboutSlides.length;
+          paintAboutCarousel();
+          scheduleAboutAutoplay();
+        }, ABOUT_AUTOPLAY_DELAY);
+      }
+
+      function setAboutAutoplay(enabled) {
+        aboutAutoplay = enabled;
+        aboutToggle.textContent = enabled ? 'Pausar' : 'Reanudar';
+        aboutToggle.setAttribute(
+          'aria-label',
+          enabled ? 'Pausar avance automático' : 'Reanudar avance automático'
+        );
+        aboutToggle.setAttribute('aria-pressed', String(enabled));
+        scheduleAboutAutoplay();
+      }
+
+      function isInsideAboutCarousel(target) {
+        return (
+          target &&
+          (aboutCarousel.contains(target) || aboutControls.contains(target))
+        );
+      }
+
+      [aboutCarousel, aboutControls].forEach(function (element) {
+        element.addEventListener('pointerenter', function () {
+          aboutPointerInside = true;
+          scheduleAboutAutoplay();
+        });
+        element.addEventListener('pointerleave', function () {
+          aboutPointerInside = false;
+          scheduleAboutAutoplay();
+        });
+        element.addEventListener('focusin', function () {
+          aboutFocusWithin = true;
+          scheduleAboutAutoplay();
+        });
+        element.addEventListener('focusout', function (event) {
+          if (!isInsideAboutCarousel(event.relatedTarget)) {
+            aboutFocusWithin = false;
+            scheduleAboutAutoplay();
+          }
+        });
+      });
+
+      aboutCarousel.addEventListener('pointerdown', function (event) {
+        if (!event.isPrimary || event.pointerType === 'mouse') return;
+        aboutSwipeStart = {
+          x: event.clientX,
+          y: event.clientY,
+          pointerId: event.pointerId,
+        };
+      });
+      aboutCarousel.addEventListener('pointerup', function (event) {
+        if (!aboutSwipeStart || event.pointerId !== aboutSwipeStart.pointerId) return;
+
+        var deltaX = event.clientX - aboutSwipeStart.x;
+        var deltaY = event.clientY - aboutSwipeStart.y;
+        aboutSwipeStart = null;
+
+        if (Math.abs(deltaX) < 48 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+        goToAboutSlide(deltaX < 0 ? 1 : -1);
+      });
+      aboutCarousel.addEventListener('pointercancel', function () {
+        aboutSwipeStart = null;
+      });
+
+      aboutPrev.addEventListener('click', function () {
+        goToAboutSlide(-1);
+      });
+      aboutNext.addEventListener('click', function () {
+        goToAboutSlide(1);
+      });
+      aboutToggle.addEventListener('click', function () {
+        var enabled = !aboutAutoplay;
+        if (enabled) {
+          aboutPointerInside = false;
+          aboutFocusWithin = false;
+        }
+        setAboutAutoplay(enabled);
+      });
+      aboutCarousel.addEventListener('keydown', function (event) {
+        if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          goToAboutSlide(1);
+        } else if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          goToAboutSlide(-1);
+        } else if (event.key === 'Home') {
+          event.preventDefault();
+          aboutIndex = 0;
+          paintAboutCarousel();
+          scheduleAboutAutoplay();
+        } else if (event.key === 'End') {
+          event.preventDefault();
+          aboutIndex = aboutSlides.length - 1;
+          paintAboutCarousel();
+          scheduleAboutAutoplay();
+        }
+      });
+
+      document.addEventListener('visibilitychange', scheduleAboutAutoplay);
+      paintAboutCarousel();
+      setAboutAutoplay(aboutAutoplay);
+    }
   }
 
   /* --- 2. Cifras que cuentan solas ---
