@@ -906,12 +906,12 @@ export const stack: Tecnologia[] = [
 /**
  * PROYECTOS DE SOFTWARE.
  *
- * Las trece tarjetas tienen descripción, problema, funcionalidades y stack;
+ * Las catorce tarjetas tienen descripción, problema, funcionalidades y stack;
  * FinovaTech, AutoAlDía y Reaction Race tienen `imagen`. No hay diagramas.
  *
- * Siete tarjetas enlazan su repo real; las seis prácticas académicas (tres webs
- * y tres scripts Python) no tienen repo público. RDV SYSTEMS también tiene
- * demo pública. No queda `demoPendiente`.
+ * Siete tarjetas enlazan su repo real; las siete prácticas académicas (tres
+ * webs, tres scripts Python y una evidencia PHP) no tienen repo público. RDV
+ * SYSTEMS también tiene demo pública. No queda `demoPendiente`.
  *
  * RAF VESTIGIA vive en `robotica.proyectos`, su sitio natural. No se duplica
  * aquí: la sección "Proyectos" lo señala y el contador de Estadísticas lo suma.
@@ -1407,6 +1407,42 @@ export const proyectos: Proyecto[] = [
     demoEtiqueta: 'Ver sitio',
     repositorio: 'https://github.com/rdvsystems1012-oss/rdvsystems',
   },
+  {
+    titulo: 'Calculadora PHP — Taller de funciones',
+    estado: 'Evidencia SENA · PHP',
+    descripcion:
+      'Ejercicio de PHP que separa las operaciones en una biblioteca de funciones y muestra ejemplos de suma, resta, multiplicación y división.',
+    problema:
+      'Evidencia del taller “Uso de funciones” para practicar parámetros, valores por defecto, switch y control de división por cero.',
+    funcionalidades: [
+      'Función operaciones($num1, $num2, $operacion = "S")',
+      'Códigos S, R, M y D para cada operación',
+      'Valor por defecto de suma si no se envía la operación',
+      'Mensajes para división por cero y operación no válida',
+    ],
+    participacion:
+      'Desarrollé la biblioteca de funciones y el script de ejemplos como evidencia del programa Desarrollo Web con PHP del SENA.',
+    seguridad: [
+      'La división por cero se controla antes de dividir.',
+      'Cualquier operación desconocida devuelve “Operación no válida” en vez de fallar.',
+    ],
+    arquitectura: [
+      'index.php incluye biblioteca.php con require_once y muestra los resultados.',
+      'biblioteca.php encapsula la lógica en una sola función con switch.',
+      'Salida HTML simple con saltos de línea <br>.',
+    ],
+    calidad: [
+      'Lógica dividida en archivo de biblioteca y script de ejemplos.',
+      'Cubre las cuatro operaciones y el caso por defecto con los mismos operandos.',
+      'Práctica breve y autocontenida, sin dependencias externas.',
+    ],
+    bitacora: [
+      'El encabezado registra desarrollador, programa de formación y evidencia.',
+      'Los ejemplos usan 10 y 5 para las cuatro operaciones más la llamada por defecto.',
+      'Es una práctica académica breve, no una aplicación con interfaz.',
+    ],
+    stack: ['PHP', 'SENA'],
+  },
 ];
 
 /**
@@ -1707,7 +1743,7 @@ export const idiomas = [
  * La regla: solo números desprendidos de los datos reales de este archivo, o
  * confirmados por el usuario. Nada de "10+ proyectos" redondeado hacia arriba:
  * si el dato no existe, no se muestra.
- *  · proyectos: `proyectos.length` (13) + `robotica.proyectos.length` (1) = 14.
+ *  · proyectos: `proyectos.length` (14) + `robotica.proyectos.length` (1) = 15.
  *  · añosRobotica: los 6 que ya afirma el subtítulo de `robotica`.
  *  · tecnologiasYHerramientas: `stack.length` = 27, incluidas las que la
  *    cinta separa en "Conocimientos básicos".
