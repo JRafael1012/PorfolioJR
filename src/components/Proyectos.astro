@@ -1,14 +1,18 @@
 ---
-import { proyectos } from '../data/perfil';
+import { estadisticas, proyectos, robotica } from '../data/perfil';
 import ProyectoCard from './ProyectoCard.astro';
+
+const proyectosRobotica = robotica.proyectos
+  .map((proyecto) => proyecto.titulo)
+  .join(', ');
 
 /**
  * Sección "Proyectos" — la lista completa.
  *
  * Aquí van TODOS los proyectos, los destacados incluidos: los 3 mejores ya
  * tienen su propia sección más arriba y aquí se ven en igualdad con el
- * resto. La tarjeta es la misma (`ProyectoCard.astro`), sin `destacada`, así
- * que sale en la rejilla y no en ancho completo.
+ * resto. La tarjeta es la misma (`ProyectoCard.astro`) con `variante="caso"`:
+ * muestra el caso completo en la rejilla, no el resumen ejecutivo.
  *
  * Hay dos proyectos de software en `proyectos` y un tercero de robótica en
  * `robotica.proyectos` (RAF VESTIGIA), que se muestra en su propia sección.
@@ -30,14 +34,16 @@ import ProyectoCard from './ProyectoCard.astro';
     <div class="card-grid">
       {
         proyectos.map((proyecto, i) => (
-          <ProyectoCard proyecto={proyecto} indice={i + 1} />
+          <ProyectoCard proyecto={proyecto} indice={i + 1} variante="caso" />
         ))
       }
     </div>
 
     <p class="proyectos__nota">
-      El tercer proyecto del contador es <a href="#robotica">RAF VESTIGIA</a>,
-      un proyecto de robótica que se presenta en su propia sección.
+      El contador de <strong>{estadisticas.proyectos} Proyectos</strong> suma
+      {proyectos.length} de software y {robotica.proyectos.length} de robótica:
+      <a href="#robotica">{proyectosRobotica}</a>, presentado en su propia
+      sección.
     </p>
   </div>
 </section>

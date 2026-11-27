@@ -231,10 +231,11 @@
   }
 
   /* --- 6. Collage de fotos de robótica --- */
-  /* Cuatro casillas enrejan el grupo de fotos: en cada turno todas avanzan
-     una posición, así que las combinaciones que salen son distintas sin
-     repetir fotos. Cada casilla lleva dentro todas las capas y solo se ve la
-     activa, para que el cambio sea un fundido y no un salto.
+  /* Cuatro casillas enrejan el grupo de fotos: en cada turno cada casilla elige
+     una foto aleatoria, nunca la que tiene ahora ni la que tienen las demás.
+     Así no hay repetidos consecutivos ni dos fotos iguales juntas en pantalla.
+     Cada casilla lleva dentro todas las capas y solo se ve la activa, para que
+     el cambio sea un fundido y no un salto.
 
      Va solo, sin botones: si el usuario pidió menos movimiento, no arranca. */
   var robCollage = document.querySelector('[data-rob-collage]');
@@ -243,27 +244,74 @@
     var robTiles = Array.prototype.slice.call(
       robCollage.querySelectorAll('.rob-collage__tile')
     );
-
-    if (robTiles.length > 1) {
-      var robTotal = robTiles[0].querySelectorAll('.rob-collage__layer').length;
-      var robTurn = 0;
-
-      var scheduleRobTurn = function () {
-        robTiles.forEach(function (tile, casilla) {
-          var layers = tile.querySelectorAll('.rob-collage__layer');
-
-          for (var i = 0; i < layers.length; i += 1) {
-            layers[i].classList.toggle('is-active', i === (casilla + robTurn) % layers.length);
-          }
-        });
-      };
-
-      if (robTotal > robTiles.length) {
-        window.setInterval(function () {
-          robTurn = (robTurn + 1) % robTotal;
-          scheduleRobTurn();
-        }, 5000);
+    var robLayersPorCasilla = robTiles.map(function (tile) {
+      return Array.prototype.slice.call(tile.querySelectorAll('.rob-collage__layer'));
+    });
+    var robActuales = robLayersPorCasilla.map(function (layers) {
+      var activo = -1;
+      for (var i = 0; i < layers.length; i += 1) {
+        if (layers[i].classList.contains('is-active')) {
+          activo = i;
+          break;
+        }
       }
+      return activo === -1 ? 0 : activo;
+    });
+
+    var robSrc = function (layer) {
+      var img = layer.querySelector('img');
+      return img ? img.currentSrc || img.src : '';
+    };
+
+    if (robLayersPorCasilla.length > 1 && robLayersPorCasilla.every(function (layers) {
+      return layers.length > 1;
+    })) {
+      window.setInterval(function () {
+        var actualesSrc = robActuales.map(function (indice, casilla) {
+          return robSrc(robLayersPorCasilla[casilla][indice]);
+        });
+        var elegidos = [];
+        var nuevosSrc = [];
+
+        robTiles.forEach(function (_, casilla) {
+          var layers = robLayersPorCasilla[casilla];
+          var prohibidos = actualesSrc.filter(function (__, otra) {
+            return otra !== casilla;
+          }).concat(nuevosSrc, [actualesSrc[casilla]]);
+          var vistos = {};
+          var candidatos = [];
+
+          layers.forEach(function (layer, indice) {
+            var src = robSrc(layer);
+            if (prohibidos.indexOf(src) !== -1 || vistos[src]) return;
+            vistos[src] = true;
+            candidatos.push(indice);
+          });
+
+          if (!candidatos.length) {
+            candidatos = layers.map(function (_, indice) {
+              return indice;
+            }).filter(function (indice) {
+              return indice !== robActuales[casilla];
+            });
+          }
+
+          var elegido = candidatos.length
+            ? candidatos[Math.floor(Math.random() * candidatos.length)]
+            : robActuales[casilla];
+          elegidos[casilla] = elegido;
+          nuevosSrc[casilla] = robSrc(layers[elegido]);
+        });
+
+        robTiles.forEach(function (_, casilla) {
+          robLayersPorCasilla[casilla].forEach(function (layer, indice) {
+            var activo = indice === elegidos[casilla];
+            layer.classList.toggle('is-active', activo);
+            layer.setAttribute('aria-hidden', activo ? 'false' : 'true');
+          });
+          robActuales[casilla] = elegidos[casilla];
+        });
+      }, 5000);
     }
   }
 

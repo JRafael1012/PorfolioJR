@@ -9,8 +9,8 @@ import { withBase } from '../paths';
 //      withBase porque en GitHub Pages el sitio vive bajo /<repositorio>/.
 // El nombre siempre se escribe al lado, así el logo es decorativo: si el
 // CDN falla o no hay conexión, el texto sigue diciendo qué es cada cosa.
-// La lista se pinta UNA sola vez: antes se duplicaba para el bucle infinito
-// de la marquesina, y eso hacía que cada herramienta apareciera dos veces.
+// La lista se pinta dos veces: la segunda copia es la que permite que el
+// bucle `translateX(-50%)` reinicie sin hueco y queda oculta a lectores.
 const iconUrl = (slug?: string, di?: string, icono?: string) => {
   if (slug) return `https://cdn.simpleicons.org/${slug}/ffba08`;
   if (di) {
@@ -36,30 +36,39 @@ const iconUrl = (slug?: string, di?: string, icono?: string) => {
   </div>
 
   <div class="marquee">
-    <div class="marquee__track">
-      <ul class="marquee__group">
-        {
-          stack.map((tech) => {
-            const url = iconUrl(tech.slug, tech.di, tech.icono);
-            return (
-              <li class="marquee__item">
-                {url && (
-                  <img
-                    class="marquee__logo"
-                    src={url}
-                    alt=""
-                    width="30"
-                    height="30"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                )}
-                <span class="marquee__name">{tech.nombre}</span>
-              </li>
-            );
-          })
-        }
-      </ul>
+    <div
+      class="marquee__track"
+      tabindex="0"
+      role="group"
+      aria-label="Herramientas. Enfoca esta cinta para detenerla."
+    >
+      {
+        [0, 1].map((copia) => (
+          <ul class="marquee__group" aria-hidden={copia === 1 ? 'true' : undefined}>
+            {
+              stack.map((tech) => {
+                const url = iconUrl(tech.slug, tech.di, tech.icono);
+                return (
+                  <li class="marquee__item">
+                    {url && (
+                      <img
+                        class="marquee__logo"
+                        src={url}
+                        alt=""
+                        width="30"
+                        height="30"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                    <span class="marquee__name">{tech.nombre}</span>
+                  </li>
+                );
+              })
+            }
+          </ul>
+        ))
+      }
     </div>
   </div>
 </section>

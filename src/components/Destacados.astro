@@ -25,7 +25,12 @@ const destacados = proyectos.filter((proyecto) => proyecto.destacado);
     <div class="destacados__grid">
       {
         destacados.map((proyecto, i) => (
-          <ProyectoCard proyecto={proyecto} destacada indice={i + 1} />
+          <ProyectoCard
+            proyecto={proyecto}
+            destacada
+            indice={i + 1}
+            variante="resumen"
+          />
         ))
       }
     </div>

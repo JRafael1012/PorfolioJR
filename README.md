@@ -253,12 +253,13 @@ texto o la fuente la fila no se desalinea. El header base bajó a 84 px para que
 los botones no quedaran huérfanos dentro de una barra muy alta.
 
 **Los botones viven en `.nav-actions` (D50).** GitHub y Hoja de vida no están
-dentro de `.nav-links`: los diez enlaces de texto del menú están en el `ul`, y
+dentro de `.nav-links`: los ocho enlaces de texto del menú están en el `ul`, y
 los dos botones en un `div.nav-actions` hermano. En escritorio quedan pegados
-tras los enlaces; en ≤1050 px (y en móvil) la marca y los botones **se quedan
+tras los enlaces; en ≤1180 px (y en móvil) la marca y los botones **se quedan
 arriba en la primera fila** (marca a la izquierda, botones a la derecha) y los
-enlaces del menú pasan a su fila propia de ancho completo debajo. Eso evita el
-problema que se veía en el despliegue: desde que los botones rodeaban junto con
+enlaces del menú pasan a su fila propia de ancho completo debajo, plegados tras
+el botón hamburguesa. Eso evita el problema que se veía en el despliegue: desde
+que los botones rodeaban junto con
 los ocho enlaces, en pantallas estrechas se caían a la última fila del header.
 Como los botones ya no son `<a>` dentro de `.nav-links`, los selectores de los
 enlaces dejaron de necesitar el filtro `:not(.nav-cv)`.

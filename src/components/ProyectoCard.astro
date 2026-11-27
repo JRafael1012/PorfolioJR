@@ -16,9 +16,16 @@ interface Props {
   proyecto: Proyecto;
   destacada?: boolean;
   indice?: number;
+  variante?: 'resumen' | 'caso';
 }
 
-const { proyecto, destacada = false, indice } = Astro.props;
+const {
+  proyecto,
+  destacada = false,
+  indice,
+  variante = 'caso',
+} = Astro.props;
+const esResumen = variante === 'resumen';
 
 /**
  * `withBase()` solo antepone el prefijo a rutas que empiezan por `/`. Sin esto,
@@ -35,6 +42,13 @@ const nombreArchivo = proyecto.titulo
   .replace(/[̀-ͯ]/g, '')
   .replace(/[^a-z0-9]+/g, '-')
   .replace(/^-|-$/g, '');
+const rutaCaptura = `/img/proyectos/${nombreArchivo}.webp`;
+const stackPrincipal = proyecto.stack?.slice(0, 3) ?? [];
+const tecnologiasVisibles = esResumen ? stackPrincipal : (proyecto.stack ?? []);
+const senaEnEstado = proyecto.estado?.includes('SENA') ? 'SENA' : undefined;
+const distincionResumen = proyecto.distincion
+  ? [proyecto.distincion.split(' · ')[0], senaEnEstado].filter(Boolean).join(' · ')
+  : undefined;
 
 const hayDetalles = Boolean(
   proyecto.problema ||
@@ -43,7 +57,14 @@ const hayDetalles = Boolean(
 );
 ---
 
-<article class:list={['card', 'project-card', { 'project-card--wide': destacada }]}>
+<article
+  class:list={[
+    'card',
+    'project-card',
+    esResumen ? 'project-card--resumen' : 'project-card--caso',
+    { 'project-card--wide': destacada },
+  ]}
+>
   <div class="project-card__media">
     {
       imagenSrc ? (
@@ -55,9 +76,8 @@ const hayDetalles = Boolean(
           decoding="async"
         />
       ) : (
-        <div class="project-card__slot" aria-hidden="true">
-          <span class="project-card__slot-text">Espacio para la captura</span>
-          <code class="project-card__slot-hint">{nombreArchivo}.webp</code>
+        <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaCaptura}>
+          <span class="project-card__slot-text">Vista previa disponible próximamente</span>
         </div>
       )
     }
@@ -78,19 +98,24 @@ const hayDetalles = Boolean(
 
     {
       proyecto.distincion && (
-        <p class="project-card__honor">
+        <p
+          class:list={[
+            'project-card__honor',
+            { 'project-card__honor--resumen': esResumen },
+          ]}
+        >
           <span class="project-card__honor-mark" aria-hidden="true">★</span>
-          {proyecto.distincion}
+          {esResumen ? distincionResumen : proyecto.distincion}
         </p>
       )
     }
 
     {
-      proyecto.stack && proyecto.stack.length > 0 && (
+      tecnologiasVisibles.length > 0 && (
         <div class="project-card__block">
           <p class="project-card__label">Tecnologías</p>
           <ul class="tag-list">
-            {proyecto.stack.map((tech) => (
+            {tecnologiasVisibles.map((tech) => (
               <li class="tag">{tech}</li>
             ))}
           </ul>
@@ -99,45 +124,39 @@ const hayDetalles = Boolean(
     }
 
     {
-      hayDetalles && (
-        <details class="project-card__details">
-          <summary class="project-card__btn project-card__btn--primary">
-            Ver detalles
-            <span class="project-card__btn-arrow" aria-hidden="true">↓</span>
-          </summary>
-          <div class="project-card__details-body">
-            {
-              proyecto.problema && (
-                <div class="project-card__block">
-                  <p class="project-card__label">Problema que resuelve</p>
-                  <p class="project-card__text">{proyecto.problema}</p>
-                </div>
-              )
-            }
+      !esResumen && hayDetalles && (
+        <div class="project-card__details-body project-card__details-body--abierto">
+          {
+            proyecto.problema && (
+              <div class="project-card__block">
+                <p class="project-card__label">Problema que resuelve</p>
+                <p class="project-card__text">{proyecto.problema}</p>
+              </div>
+            )
+          }
 
-            {
-              proyecto.funcionalidades && proyecto.funcionalidades.length > 0 && (
-                <div class="project-card__block">
-                  <p class="project-card__label">Funcionalidades</p>
-                  <ul class="project-card__features">
-                    {proyecto.funcionalidades.map((funcionalidad) => (
-                      <li>{funcionalidad}</li>
-                    ))}
-                  </ul>
-                </div>
-              )
-            }
+          {
+            proyecto.funcionalidades && proyecto.funcionalidades.length > 0 && (
+              <div class="project-card__block">
+                <p class="project-card__label">Funcionalidades</p>
+                <ul class="project-card__features">
+                  {proyecto.funcionalidades.map((funcionalidad) => (
+                    <li>{funcionalidad}</li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
 
-            {
-              proyecto.participacion && (
-                <div class="project-card__block">
-                  <p class="project-card__label">Mi participación</p>
-                  <p class="project-card__text">{proyecto.participacion}</p>
-                </div>
-              )
-            }
-          </div>
-        </details>
+          {
+            proyecto.participacion && (
+              <div class="project-card__block">
+                <p class="project-card__label">Arquitectura y mi participación</p>
+                <p class="project-card__text">{proyecto.participacion}</p>
+              </div>
+            )
+          }
+        </div>
       )
     }
 

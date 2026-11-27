@@ -36,9 +36,9 @@
       13. Ajustes transversales .... reglas que cruzan varias secciones
 
    VARIABLES DE ENTORNO
-     · Los breakpoints son 1050 px y 700 px. Deben coincidir con los
-       @media de cada bloque.
-     · El sitio es de tema oscuro único: no hay modo claro.
+      · Los breakpoints generales son 1050 px y 700 px; el header usa
+        1180 px. Deben coincidir con los @media de cada bloque.
+      · El sitio es de tema oscuro único: no hay modo claro.
 
    ============================================================ */
 
@@ -1766,19 +1766,6 @@ section[id] {
   animation: marquee-scroll var(--marquee-duration) linear infinite;
 }
 
-/* La cinta del Stack se renderiza una sola vez, así que no puede desplazarse
-   en bucle: con una sola lista aparecería un hueco al reiniciar. Se queda
-   como una tira desplazable con el mismo aspecto. La de torneos conserva
-   su bucle, que es otra sección y sí tiene dos copias. */
-.stack .marquee {
-  overflow-x: auto;
-  scrollbar-width: thin;
-}
-
-.stack .marquee__track {
-  animation: none;
-}
-
 .marquee__group {
   display: flex;
   align-items: center;
@@ -1793,6 +1780,10 @@ section[id] {
   align-items: center;
   gap: 12px;
   white-space: nowrap;
+}
+
+.stack .marquee__item {
+  min-height: 44px;
 }
 
 .marquee__logo {
@@ -1858,9 +1849,7 @@ section[id] {
   }
 
   .marquee {
-    overflow-x: auto;
     mask-image: none;
-    scrollbar-width: thin;
   }
 
   .marquee__track {
@@ -3170,8 +3159,12 @@ section[id] {
   line-height: 1.7;
 }
 
-.proyectos__nota a {
+.proyectos__nota a,
+.proyectos__nota strong {
   color: var(--accent);
+}
+
+.proyectos__nota a {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -3238,15 +3231,6 @@ section[id] {
   background: color-mix(in srgb, var(--muted) 42%, transparent);
 }
 
-.project-card__slot-hint {
-  max-width: 100%;
-  color: var(--dim);
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.4px;
-  overflow-wrap: anywhere;
-}
-
 /* --- Contenido ---
    La version de rejilla es la compacta: menos aire y una proporcion
    algo mas corta, para que la lista completa lea como un catalogo y
@@ -3295,6 +3279,23 @@ section[id] {
 
 .project-card__desc {
   color: var(--muted);
+}
+
+.project-card--resumen .project-card__desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.project-card--resumen .project-card__honor {
+  padding: 0.5rem 0.7rem;
+  font-size: 0.66rem;
+}
+
+.project-card--caso .project-card__details-body--abierto {
+  padding-top: 0;
 }
 
 .project-card__honor {
@@ -3352,23 +3353,8 @@ section[id] {
   color: var(--accent);
 }
 
-/* --- Detalles plegables ---
-   El resumen reutiliza el botón primario de la tarjeta, así el único botón
-   que no es un enlace sigue teniendo el mismo aspecto y zona táctil. */
-
-.project-card__details > summary {
-  width: fit-content;
-  list-style: none;
-  cursor: pointer;
-}
-
-.project-card__details > summary::-webkit-details-marker {
-  display: none;
-}
-
-.project-card__details[open] .project-card__btn-arrow {
-  transform: rotate(180deg);
-}
+/* --- Detalles del caso ---
+   En "Todos los proyectos" el caso se lee completo, sin plegado. */
 
 .project-card__details-body {
   display: grid;
@@ -3430,10 +3416,6 @@ section[id] {
   .project-card__btn:hover .project-card__btn-arrow {
     transform: translate(2px, -2px);
   }
-}
-
-.project-card__actions + .project-card__hint {
-  margin-top: -0.4rem;
 }
 
 /* --- Destacada ---
@@ -3910,7 +3892,7 @@ section[id] {
    10F. IDIOMAS
    ------------------------------------------------------------
    Guía 27: idiomas con nivel honesto (Español nativo, Inglés B1
-   según IFEC, mejorando). No se sube el nivel sin certificado.
+   según ICFES, mejorando). No se sube el nivel sin certificado.
 
    En vez de dos tarjetas planas (que se leen genéricas) los idiomas
    son dos "píldoras": punto ámbar + idioma, con el nivel en mono a
@@ -3995,7 +3977,7 @@ section[id] {
 }
 
 /* Escala CEFR A1→C2 (D48): rellena el hueco junto a las píldoras y sitúa el
-   nivel real (B1 según el IFEC) sin inventar objetivo ni percentil. Solo la
+   nivel real (B1 según el ICFES) sin inventar objetivo ni percentil. Solo la
    posición actual se resalta. */
 
 .idiomas-escala {
