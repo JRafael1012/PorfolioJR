@@ -906,10 +906,11 @@ export const stack: Tecnologia[] = [
 /**
  * PROYECTOS DE SOFTWARE.
  *
- * Las seis tarjetas tienen descripción, problema, funcionalidades y stack;
+ * Las nueve tarjetas tienen descripción, problema, funcionalidades y stack;
  * FinovaTech, AutoAlDía y Reaction Race tienen `imagen`. No hay diagramas.
  *
- * Las seis tarjetas enlazan su repo real. No queda ningún `demoPendiente`.
+ * Seis tarjetas enlazan su repo real; las tres webs académicas no tienen repo
+ * público. No queda ningún `demoPendiente`.
  *
  * RAF VESTIGIA vive en `robotica.proyectos`, su sitio natural. No se duplica
  * aquí: la sección "Proyectos" lo señala y el contador de Estadísticas lo suma.
@@ -1148,6 +1149,113 @@ export const proyectos: Proyecto[] = [
     ],
     stack: ['Python', 'Telegram', 'python-telegram-bot', 'yfinance', 'pandas', 'matplotlib'],
     repositorio: 'https://github.com/JRafael1012/Nexfin-JR',
+  },
+  {
+    titulo: 'Panel de Estudio ICFES',
+    estado: 'Web estática · Proyecto académico',
+    descripcion:
+      'Panel de estudio en HTML, CSS y JavaScript para organizar la preparación del ICFES: tareas con progreso, registro de horas por materia y estadísticas en barras.',
+    problema:
+      'Preparar un examen sin un lugar único para tareas y horas de estudio dificulta medir el avance. Este panel guarda el progreso en el navegador y lo muestra con reloj, calendario y gráfico.',
+    funcionalidades: [
+      'Barra lateral con vistas de Tareas, Estadísticas y Plan ICFES',
+      'Alta, finalización y borrado de tareas con barra de progreso',
+      'Registro de horas por materia con localStorage',
+      'Gráfico de barras con Chart.js y reloj/fecha en vivo',
+    ],
+    participacion:
+      'Construí la interfaz y la lógica en JavaScript puro, incluido el guardado local y la vista de estadísticas con Chart.js.',
+    seguridad: [
+      'No envía datos a servidores: tareas y horas quedan en localStorage del navegador.',
+      'Valida que las horas sean mayores a cero antes de guardar una sesión de estudio.',
+    ],
+    arquitectura: [
+      'HTML fijo con barra lateral, contenido dinámico y widgets de calendario/reloj.',
+      'JavaScript organizado por funciones: verTareas, planICFES y verEstadisticas.',
+      'Chart.js cargado por CDN para el gráfico de horas por materia.',
+    ],
+    calidad: [
+      'Sintaxis verificada con node --check en app.js.',
+      'Datos persistentes entre recargas mediante localStorage.',
+      'Interfaz en español con las materias del ICFES: Matemáticas, Lectura crítica, Ciencias, Sociales e Inglés.',
+    ],
+    bitacora: [
+      'Corregí el reloj: sus elementos salieron del contenido reemplazable y ahora se actualizan sin error cada segundo.',
+      'El progreso se calcula como tareas finalizadas sobre total y se redondea a enteros.',
+    ],
+    stack: ['HTML5', 'CSS3', 'JavaScript', 'Chart.js', 'LocalStorage'],
+  },
+  {
+    titulo: 'Quiz de Mecánica Automotriz',
+    estado: 'Web estática · Proyecto académico',
+    descripcion:
+      'Quiz interactivo de 15 preguntas sobre carros, motos y camiones con navegación entre preguntas, puntaje, mensaje según el nivel y gráfico de aciertos y errores.',
+    problema:
+      'Repasar conceptos de mecánica sin retroalimentación inmediata dificulta detectar fallos. El quiz entrega un puntaje final y un resumen visual al terminar.',
+    funcionalidades: [
+      '15 preguntas de mecánica automotriz con opciones seleccionables',
+      'Botones Siguiente y Anterior con barra de progreso',
+      'Puntaje final con mensaje según porcentaje y opción de reinicio',
+      'Gráfico de aciertos y errores con Chart.js',
+    ],
+    participacion:
+      'Implementé la interfaz, el banco de preguntas, la navegación, el cálculo de puntaje y la vista de estadísticas en JavaScript puro.',
+    seguridad: [
+      'Todo el quiz se ejecuta en el navegador; no requiere backend ni envío de datos.',
+      'La selección se valida antes de avanzar: no permite seguir sin elegir una opción.',
+    ],
+    arquitectura: [
+      'HTML con contenedor del quiz y sección de estadísticas oculta hasta el final.',
+      'preguntas.js separa el banco de preguntas, script.js controla el flujo y estadisticas.js dibuja la gráfica.',
+      'Chart.js se carga por CDN y los resultados se mantienen en memoria durante la sesión.',
+    ],
+    calidad: [
+      'Sintaxis verificada con node --check en preguntas.js, script.js y estadisticas.js.',
+      'Corregí una referencia sobrante en estadisticas.js que impedía cargar la gráfica.',
+      'El reinicio limpia respuestas, resultados y puntaje antes de volver a la primera pregunta.',
+    ],
+    bitacora: [
+      'La carpeta de origen menciona ICFES, pero el contenido real del quiz es mecánica automotriz.',
+      'Los mensajes van de “Sigue estudiando” a “Maestro Mecánico” según el porcentaje obtenido.',
+      'El gráfico muestra aciertos y errores en porcentaje con escala de 0 a 100.',
+    ],
+    stack: ['HTML5', 'CSS3', 'JavaScript', 'Chart.js'],
+  },
+  {
+    titulo: 'Buscaminas Web',
+    estado: 'Web estática · Proyecto académico',
+    descripcion:
+      'Implementación de Buscaminas en HTML, CSS y JavaScript con tres niveles, primera jugada segura, banderas, temporizador, sonidos y récord local por dificultad.',
+    problema:
+      'Un juego clásico sirve para practicar lógica de tablero, eventos y estado en JavaScript sin frameworks. Esta versión añade dificultades y feedback visual y sonoro.',
+    funcionalidades: [
+      'Niveles fácil 9x9/10 minas, medio 16x16/40 y difícil 20x20/99',
+      'Clic izquierdo para revelar y clic derecho para colocar banderas',
+      'Primera jugada segura, expansión de celdas vacías y contador de minas',
+      'Temporizador, modal de victoria o derrota y récord por dificultad',
+    ],
+    participacion:
+      'Desarrollé la clase Minesweeper con generación del tablero, cálculo de minas vecinas, revelado recursivo y control de eventos del DOM.',
+    seguridad: [
+      'El juego es completamente local: no hay servidor ni envío de datos.',
+      'El contador de minas se deriva de las banderas colocadas y se actualiza en cada acción.',
+    ],
+    arquitectura: [
+      'Clase Minesweeper que encapsula tablero, estado del juego, temporizador y sonidos.',
+      'El tablero se renderiza dinámicamente y se regenera al cambiar dificultad o reiniciar.',
+      'Cuatro efectos MP3 locales para clic, bandera, explosión y victoria.',
+    ],
+    calidad: [
+      'Sintaxis verificada con node --check en script.js.',
+      'La primera jugada se regenera si cae sobre una mina, evitando perder al azar.',
+      'Los récords se guardan por nivel con las claves record_easy, record_medium y record_hard.',
+    ],
+    bitacora: [
+      'El revelado de celdas vacías usa recursión sobre las ocho celdas vecinas.',
+      'El modal distingue derrota y victoria; al ganar se detiene el temporizador y se guarda el récord.',
+      'La interfaz incluye selector de dificultad, contador de minas y temporizador.',
+    ],
+    stack: ['HTML5', 'CSS3', 'JavaScript', 'LocalStorage', 'Web Audio'],
   },
 ];
 
@@ -1449,7 +1557,7 @@ export const idiomas = [
  * La regla: solo números desprendidos de los datos reales de este archivo, o
  * confirmados por el usuario. Nada de "10+ proyectos" redondeado hacia arriba:
  * si el dato no existe, no se muestra.
- *  · proyectos: `proyectos.length` (6) + `robotica.proyectos.length` (1) = 7.
+ *  · proyectos: `proyectos.length` (9) + `robotica.proyectos.length` (1) = 10.
  *  · añosRobotica: los 6 que ya afirma el subtítulo de `robotica`.
  *  · tecnologiasYHerramientas: `stack.length` = 27, incluidas las que la
  *    cinta separa en "Conocimientos básicos".
