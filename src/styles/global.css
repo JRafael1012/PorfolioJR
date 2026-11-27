@@ -3215,6 +3215,14 @@ section[id] {
     color 180ms ease;
 }
 
+.project-carousel__nav--toggle {
+  min-width: 5.5rem;
+  padding-inline: 0.75rem;
+  font-size: 0.68rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
 .project-carousel__nav:hover:not(:disabled),
 .project-carousel__nav:focus-visible {
   border-color: var(--accent);

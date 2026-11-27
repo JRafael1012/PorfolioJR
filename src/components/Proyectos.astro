@@ -14,8 +14,8 @@ const proyectosRobotica = robotica.proyectos
  * La tarjeta es la misma (`ProyectoCard.astro`) con `variante="caso"`.
  *
  * La lista se presenta como carrusel horizontal con profundidad, sin rotación
- * y sin avance automático: el foco lo decide el lector con scroll, flechas o
- * teclado. Cada tarjeta conserva su caso completo.
+ * y con avance automático que se pausa al interactuar. Cada tarjeta conserva
+ * su caso completo.
  *
  * Hay catorce proyectos de software en `proyectos` (dos destacados) y uno de
  * robótica en `robotica.proyectos` (RAF VESTIGIA), que se muestra en su propia
@@ -30,14 +30,24 @@ const proyectosRobotica = robotica.proyectos
       <p class="eyebrow">PROYECTOS</p>
       <h2 class="section__title">Todos los proyectos</h2>
       <p class="section__subtitle">
-        Carrusel horizontal con profundidad, sin rotación ni avance automático.
-        Cada uno con su problema, su stack y lo que aporté.
+        Carrusel horizontal con profundidad, sin rotación y con avance
+        automático que se pausa cuando interactúas. Cada uno con su problema,
+        su stack y lo que aporté.
       </p>
     </div>
 
     <div class="project-carousel" data-project-carousel>
       <div class="project-carousel__controls">
         <span class="project-carousel__label">ÍNDICE</span>
+        <button
+          class="project-carousel__nav project-carousel__nav--toggle"
+          type="button"
+          data-carousel-toggle
+          aria-label="Pausar avance automático"
+          aria-pressed="true"
+        >
+          Pausar
+        </button>
         <button
           class="project-carousel__nav"
           type="button"
@@ -74,10 +84,6 @@ const proyectosRobotica = robotica.proyectos
           ))
         }
       </div>
-
-      <p class="project-carousel__hint">
-        Desliza, usa las flechas o las teclas ← → con el foco en la cinta. Sin autoplay.
-      </p>
     </div>
 
     <p class="proyectos__nota">
