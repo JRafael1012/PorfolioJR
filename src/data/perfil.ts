@@ -906,10 +906,10 @@ export const stack: Tecnologia[] = [
 /**
  * PROYECTOS DE SOFTWARE.
  *
- * Las tres tarjetas tienen `imagen`, descripción, problema, funcionalidades y
- * stack. No se muestra ningún diagrama.
+ * Las cuatro tarjetas tienen descripción, problema, funcionalidades y stack;
+ * FinovaTech, AutoAlDía y Reaction Race tienen `imagen`. No hay diagramas.
  *
- * Las tres tarjetas enlazan su repo real. No queda ningún `demoPendiente`.
+ * Las cuatro tarjetas enlazan su repo real. No queda ningún `demoPendiente`.
  *
  * RAF VESTIGIA vive en `robotica.proyectos`, su sitio natural. No se duplica
  * aquí: la sección "Proyectos" lo señala y el contador de Estadísticas lo suma.
@@ -1033,6 +1033,45 @@ export const proyectos: Proyecto[] = [
     ],
     stack: ['HTML5', 'CSS3', 'JavaScript', 'LocalStorage', 'Web Serial', 'Arduino', 'C++'],
     repositorio: 'https://github.com/JRafael1012/-Reaction-Race',
+  },
+  {
+    titulo: 'CursoTracker',
+    estado: 'SaaS · Fase 09: evaluación',
+    descripcion:
+      'SaaS multi-tenant para colegios y academias que gestiona estudiantes, cursos y notas y genera reportes y evidencias académicas en PDF/Excel. Web responsive, accesible desde cualquier dispositivo.',
+    problema:
+      'La gestión académica repartida entre hojas y documentos dificulta consolidar notas, asistencia y evidencias por centro. CursoTracker reúne esos datos con roles y aislamiento por institución.',
+    funcionalidades: [
+      'CRUD de estudiantes, cursos, períodos, asignaturas y usuarios',
+      'Carga de notas por clase, período y corte, y asistencia diaria',
+      'Reportes PDF/Excel: boletín por estudiante, sábana por curso y estadísticas',
+      'Roles para SuperAdmin, Rector, Coordinador, Docente, Estudiante, Padre y Secretario',
+    ],
+    participacion:
+      'Desarrollé el MVP completo: modelo de datos, autenticación, roles, CRUDs, carga de notas, reportes, pruebas y despliegue en red local.',
+    seguridad: [
+      'Auth.js con JWT, bcryptjs y validación Zod en los formularios.',
+      'Permisos por rol: el docente ve solo sus clases, el estudiante su boletín y el padre solo los de sus hijos.',
+      'Aislamiento multi-tenant verificado: rector ajeno 404 y padre ajeno 403.',
+      'AuditLog en cada exportación y backup/ restauración documentada con mysqldump.',
+    ],
+    arquitectura: [
+      'Next.js 16 App Router, React 19, TypeScript y Tailwind 4.',
+      'Prisma 6 + MySQL/MariaDB; modelo v2 con UUID, Estudiante = Usuario + perfil y CursoAsignaturaDocente.',
+      'Sesión con centroId y escala de calificación configurable por centro.',
+    ],
+    calidad: [
+      'tsc 0, eslint 0, vitest 3/3 y next build OK.',
+      'Smoke test 22/22 por rol y login de 5 roles demo con /panel 200.',
+      '6 exportaciones validadas por magic bytes (PK xlsx, %PDF) y UTF-8; restauración probada 85/85 filas.',
+    ],
+    bitacora: [
+      'Sesión con cookie inválida resuelta: el proxy valida el JWE y limpia la cookie.',
+      'Backup diario a las 23:00 con retención de 30 días y health check HTTP+BD en verde.',
+      'Auditoría npm documentada: 1 vulnerabilidad alta en xlsx sin fix disponible.',
+    ],
+    stack: ['Next.js', 'React', 'TypeScript', 'Tailwind', 'Prisma', 'MySQL', 'Auth.js', 'Zod'],
+    repositorio: 'https://github.com/JRafael1012/CursoTracker',
   },
 ];
 
@@ -1334,7 +1373,7 @@ export const idiomas = [
  * La regla: solo números desprendidos de los datos reales de este archivo, o
  * confirmados por el usuario. Nada de "10+ proyectos" redondeado hacia arriba:
  * si el dato no existe, no se muestra.
- *  · proyectos: `proyectos.length` (3) + `robotica.proyectos.length` (1) = 4.
+ *  · proyectos: `proyectos.length` (4) + `robotica.proyectos.length` (1) = 5.
  *  · añosRobotica: los 6 que ya afirma el subtítulo de `robotica`.
  *  · tecnologiasYHerramientas: `stack.length` = 27, incluidas las que la
  *    cinta separa en "Conocimientos básicos".
