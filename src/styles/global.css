@@ -769,28 +769,6 @@ section[id] {
   }
 }
 
-@keyframes about-wipe {
-  from {
-    clip-path: inset(0 100% 0 0);
-  }
-
-  to {
-    clip-path: inset(0 0 0 0);
-  }
-}
-
-@keyframes about-slide-right {
-  from {
-    opacity: 0;
-    transform: translateX(12px);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
 /* Las etiquetas de "¿Qué me interesa?" sí se resaltan, como en la
    trayectoria, pero sin el salto: aquí no hay lista de logos. */
 
@@ -1864,276 +1842,171 @@ section[id] {
 /* ============================================================
    7. SOBRE MÍ
    ------------------------------------------------------------
-   Preguntas plegables y propuesta de valor.
+   Perfil editorial y preguntas presentadas como contenido visible.
 
    USADO POR: SobreMi.astro
    ============================================================ */
-.about-list {
-  list-style: none;
+.about-grid {
   display: grid;
-  gap: 0.6rem;
-  /* 54 rem = 864 px. Es el mando del ancho: antes era 74ch, que con la
-     fuente cargada daba entre 590 y 710 px según el navegador. */
-  max-width: 54rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }
 
-.about-item {
+.about-card {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 0fr;
-  border: 1px solid var(--line);
-  /* El que se pinta al abrirse. transparente = mismo grosor siempre. */
-  border-left: 2px solid transparent;
-  background: color-mix(in srgb, var(--bg-raise) 50%, transparent);
-  /* `grid-template-columns` es LA transición que hace el efecto lateral: sin
-     esta línea la columna salta de 0fr a 1.05fr de golpe y la respuesta
-     aparece entera en vez de crecer hacia la derecha de la pregunta.
-     Es interpolable porque ambas pistas son `<flex>`. */
-  transition:
-    grid-template-columns 0.5s cubic-bezier(0.33, 1, 0.68, 1),
-    border-color 0.22s ease,
-    background-color 0.22s ease,
-    box-shadow 0.3s ease;
-}
-
-.about-item:has(.about-toggle[aria-expanded='true']) {
-  /* 1.07fr sobre 1fr = 51,7 % para la respuesta. Con 1.05fr eran 51 % y el
-     texto se quedaba corto; el reparto es el mando del ancho. */
-  grid-template-columns: minmax(0, 1fr) 1.07fr;
-  border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
-  border-left-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 6%, transparent);
-  box-shadow: 0 16px 42px -32px color-mix(in srgb, var(--accent) 60%, transparent);
-}
-
-/* La pregunta es el único elemento siempre visible de cada fila. */
-
-.about-item__head {
-  margin: 0;
-  align-self: center;
-  font-size: 1rem;
-}
-
-.about-toggle {
-  display: grid;
-  grid-template-columns: 2.4rem minmax(0, 1fr) auto;
-  align-items: center;
+  align-content: start;
   gap: 1.25rem;
-  width: 100%;
-  padding: 1.15rem 1.4rem;
-  border: 0;
-  background: none;
-  color: var(--white);
-  font-family: var(--sans);
-  font-size: 1.05rem;
-  font-weight: 700;
-  line-height: 1.4;
-  letter-spacing: -0.01em;
-  text-align: left;
-  cursor: pointer;
+  min-width: 0;
+  padding: clamp(1.4rem, 3vw, 2rem);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg-raise) 72%, transparent);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease,
+    border-color 0.24s ease,
+    background-color 0.24s ease,
+    box-shadow 0.24s ease;
 }
 
-@media (hover: hover) {
-  .about-toggle:hover {
-    background: color-mix(in srgb, var(--accent) 5%, transparent);
-  }
+.about-card--lead,
+.about-card--interests {
+  grid-column: 1 / -1;
 }
 
-.about-toggle:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+.about-card--lead {
+  grid-template-columns: minmax(15rem, 0.72fr) minmax(0, 1.28fr);
+  align-items: center;
+  gap: clamp(2rem, 6vw, 5rem);
+  min-height: 18rem;
+  padding: clamp(2rem, 5vw, 3.75rem);
+  background:
+    radial-gradient(ellipse at 92% 8%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 38%),
+    color-mix(in srgb, var(--bg-raise) 78%, transparent);
 }
 
-/* El número va en monoespaciada, como los periodos de la trayectoria. */
+.about-card--interests {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3rem);
+}
 
-.about-toggle__index {
+.about-card__heading {
+  display: grid;
+  align-content: start;
+  gap: 0.85rem;
+}
+
+.about-card__index {
   color: var(--accent);
   font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 1px;
-  transition:
-    color 0.22s ease,
-    transform 0.22s ease;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
 }
 
-.about-toggle__icon {
-  display: flex;
-  color: var(--accent);
-  transition: transform 0.22s ease;
-}
-
-.about-toggle__icon svg {
-  width: 1rem;
-  height: 1rem;
-}
-
-.about-toggle[aria-expanded='true'] .about-toggle__index {
+.about-card__title {
+  margin: 0;
   color: var(--white);
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
 }
 
-.about-toggle[aria-expanded='true'] .about-toggle__icon {
-  transform: rotate(180deg);
+.about-card--lead .about-card__title {
+  max-width: 9ch;
+  font-size: clamp(2.25rem, 4.7vw, 3.5rem);
+  line-height: 1.05;
 }
 
-@media (hover: hover) {
-  .about-toggle:hover .about-toggle__index {
-    color: var(--white);
-    transform: translateX(3px);
-  }
-}
-
-/* LA RESPUESTA. Grid de una fila que colapsa: `0fr` cerrado, `1fr`
-   abierto. La transición va también en el estado abierto, porque
-   si no el navegador solo animaría al cerrar. */
-
-.about-panel {
-  display: grid;
-  grid-template-rows: 0fr;
-  overflow: hidden;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    grid-template-rows 0.5s cubic-bezier(0.33, 1, 0.68, 1),
-    opacity 0.4s ease,
-    visibility 0s linear 0.5s;
-}
-
-/* El envoltorio que recorta. Sin `min-height: 0` el contenido
-   seguiría marcando el alto y la fila no se plegaría. */
-
-.about-panel__inner {
-  min-height: 0;
-  overflow: hidden;
-  padding: 0 1.4rem;
-  transition: padding 0.5s cubic-bezier(0.33, 1, 0.68, 1);
-}
-
-.about-item:has(.about-toggle[aria-expanded='true']) .about-panel {
-  grid-template-rows: 1fr;
-  opacity: 1;
-  visibility: visible;
-  transition:
-    grid-template-rows 0.5s cubic-bezier(0.33, 1, 0.68, 1),
-    opacity 0.4s ease 0.08s,
-    visibility 0s;
-}
-
-.about-item:has(.about-toggle[aria-expanded='true']) .about-panel__inner {
-  padding: 0.2rem 1.4rem 1.5rem;
-}
-
-/* Sin JavaScript el panel trae `hidden` y gana a este bloque. */
-
-.about-panel[hidden] {
-  display: none;
-}
-
-.about-panel__text {
-  /* Sin `max-width`: el ancho lo manda la columna, que es justo lo que se
-     está animando. Con un tope de 46ch el texto se cortaba antes de
-     aprovechar el espacio nuevo. A 0.98 rem sale a ~66 caracteres por línea,
-     que es lo justo para leer. */
+.about-card__text {
+  max-width: 58ch;
+  margin: 0;
   color: var(--muted);
   font-size: 0.98rem;
   line-height: 1.8;
-  opacity: 0;
-  transition: opacity 0.24s ease;
 }
 
-/* La propuesta de valor va siempre desplegada y con más presencia: es el
-   cierre de la sección y lo que el usuario quiere leer sí o sí. */
+.about-card__text--lead {
+  color: color-mix(in srgb, var(--white) 84%, var(--muted));
+  font-size: clamp(1rem, 1.35vw, 1.15rem);
+  line-height: 1.85;
+}
+
+.about-card__tags {
+  margin-top: 1.25rem;
+}
+
+@media (hover: hover) {
+  .about-card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
+    background-color: color-mix(in srgb, var(--bg-raise) 88%, transparent);
+    box-shadow: 0 18px 48px -38px color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+}
 
 .about-value {
-  margin-top: 2.75rem;
-  padding: 1.85rem 2rem;
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.55fr) minmax(0, 1.45fr);
+  align-items: start;
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  margin-top: 1rem;
+  padding: clamp(1.5rem, 3.5vw, 2.25rem);
   border-left: 3px solid var(--accent);
   background: color-mix(in srgb, var(--accent) 6%, transparent);
 }
 
 .about-value__label {
-  margin-bottom: 0.8rem;
+  margin: 0;
   color: var(--accent);
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.8px;
+  line-height: 1.5;
   text-transform: uppercase;
 }
 
 .about-value__text {
   max-width: 60ch;
+  margin: 0;
   color: var(--white);
-  font-size: 1.08rem;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
   font-weight: 600;
   line-height: 1.7;
 }
 
-/* Si el sistema pide menos movimiento, el despliegue es instantáneo:
-   el contenido es el mismo, solo sin la transición. */
-
 @media (prefers-reduced-motion: reduce) {
-  .about-item,
-  .about-panel,
-  .about-panel__inner {
+  .about-card {
     transition: none;
   }
 
-  .about-panel__text,
-  .about-panel .tag-list,
-  .about-panel .tag {
-    animation: none;
-  }
-
-  .about-panel__text {
-    opacity: 1;
-    transition: none;
+  .about-card:hover {
+    transform: none;
   }
 }
 
 @media (max-width: 700px) {
-  /* Aquí no cabe de lado: una sola columna y la respuesta debajo.
-     Solo queda por animar el alto.
-
-     El selector del estado abierto tiene que repetirse aquí porque, con
-     menos especificidad que `.about-item:has(...)`, no lo ganaría: sin esto
-     el móvil seguiría partiéndose en dos columnas. */
-  .about-item,
-  .about-item:has(.about-toggle[aria-expanded='true']) {
+  .about-grid {
     grid-template-columns: minmax(0, 1fr);
+    gap: 0.8rem;
   }
 
-  .about-item__head {
-    grid-area: 1 / 1;
+  .about-card--lead,
+  .about-card--interests {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.2rem;
   }
 
-  .about-panel {
-    grid-area: 2 / 1;
-  }
-
-  .about-toggle {
-    grid-template-columns: 1.9rem minmax(0, 1fr) auto;
-    gap: 0.85rem;
-    padding: 1rem 1.1rem;
-    font-size: 0.98rem;
-  }
-
-  .about-panel__inner {
-    padding: 0 1.1rem;
-  }
-
-  .about-item:has(.about-toggle[aria-expanded='true']) .about-panel__inner {
-    padding: 0.15rem 1.1rem 1.35rem;
-  }
-
-  .about-panel__text {
-    font-size: 0.94rem;
+  .about-card--lead {
+    min-height: 0;
   }
 
   .about-value {
-    padding: 1.45rem 1.35rem;
-  }
-
-  .about-value__text {
-    font-size: 1rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
   }
 }
 
@@ -5085,47 +4958,6 @@ section[id] {
 
 .stack__head .eyebrow {
   margin-bottom: 1.25rem;
-}
-
-/* --- La apertura de las etiquetas --- */
-
-/* Las etiquetas de "¿Qué me interesa?" se abren como una cortina de
-   izquierda a derecha y luego entran una detrás de otra. Los retardos
-   arrancan antes que en la versión vertical: la caja ya está creciendo
-   hacia la derecha y las etiquetas tienen que ir llegando mientras crece,
-   no aparecer cuando ya ha terminado. */
-
-.about-panel .tag-list {
-  margin-top: 1.35rem;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .about-item.is-visible:has(.about-toggle[aria-expanded='true']) .about-panel__text {
-    opacity: 1;
-  }
-
-  .about-item.is-visible:has(.about-toggle[aria-expanded='true']) .about-panel .tag-list {
-    animation: about-wipe 0.6s cubic-bezier(0.33, 1, 0.68, 1) 0.1s both;
-  }
-
-  .about-item.is-visible:has(.about-toggle[aria-expanded='true']) .about-panel .tag {
-    animation: about-slide-right 0.42s cubic-bezier(0.33, 1, 0.68, 1) both;
-  }
-
-  .about-panel .tag:nth-child(1) { animation-delay: 140ms; }
-  .about-panel .tag:nth-child(2) { animation-delay: 200ms; }
-  .about-panel .tag:nth-child(3) { animation-delay: 260ms; }
-  .about-panel .tag:nth-child(4) { animation-delay: 320ms; }
-  .about-panel .tag:nth-child(5) { animation-delay: 380ms; }
-  .about-panel .tag:nth-child(6) { animation-delay: 440ms; }
-  .about-panel .tag:nth-child(7) { animation-delay: 500ms; }
-  .about-panel .tag:nth-child(8) { animation-delay: 560ms; }
-}
-
-@media (min-width: 701px) and (prefers-reduced-motion: no-preference) {
-  .about-item.is-visible:has(.about-toggle[aria-expanded='true']) .about-panel__text {
-    transition-delay: 0.38s;
-  }
 }
 
 .contact > .container {

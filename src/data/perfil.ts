@@ -276,7 +276,7 @@ export const nav = [
 export const sobreMi: SobreMi = {
   eyebrow: 'SOBRE MÍ',
   titulo: 'Quién soy',
-  subtitulo: 'Seis preguntas, seis respuestas. Abre las que te interesen.',
+  subtitulo: 'Mi camino, lo que me mueve y lo que quiero construir.',
   /**
    * ORDEN DE LAS PREGUNTAS: no es el que se le ocurrió primero, es un arco.
    * Identidad → lo que resuelvo (la capacidad, antes que el papel) → la base

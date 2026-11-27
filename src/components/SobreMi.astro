@@ -10,66 +10,42 @@ import { sobreMi } from '../data/perfil';
       <p class="section__subtitle">{sobreMi.subtitulo}</p>
     </div>
 
-    <ul class="about-list">
+    <div class="about-grid">
       {
         sobreMi.items.map((item, indice) => (
-          <li class="about-item reveal">
-            {/* El botón usa el mismo patrón que "Ver experiencia" en la
-                trayectoria: `data-exp-toggle` + `aria-controls`, y el script
-                de `public/js/main.js` lo pliega y despliega. Sin
-                `data-exp-toggle-label` porque aquí la respuesta no cambia de
-                nombre: la flecha ya marca el estado. La primera pregunta
-                lleva `data-exp-open` para que se lea sin tocar nada. */}
-            <h3 class="about-item__head">
-              <button
-                class="about-toggle"
-                type="button"
-                data-exp-toggle
-                data-exp-css
-                data-exp-open={indice === 0 ? '' : undefined}
-                aria-expanded="false"
-                aria-controls={`panel-sobre-mi-${indice}`}
-              >
-                <span class="about-toggle__index" aria-hidden="true">
-                  {String(indice + 1).padStart(2, '0')}
-                </span>
-                <span class="about-toggle__q">{item.pregunta}</span>
-                <span class="about-toggle__icon" aria-hidden="true">
-                  <svg viewBox="0 0 16 16" fill="none">
-                    <path
-                      d="M4 6l4 4 4-4"
-                      stroke="currentColor"
-                      stroke-width="1.6"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </span>
-              </button>
-            </h3>
-
-            {/* `data-exp-css` le dice al script que el estado lo lleva el CSS
-                —con `aria-expanded`— en vez de `hidden`, porque un panel que
-                se abre de lado necesita poder animarse: con `display: none`
-                no hay transición. El `hidden` del HTML se queda para quien
-                llegue sin JavaScript; el script lo quita y a partir de ahí
-                manda `visibility`. */}
-            <div class="about-panel" id={`panel-sobre-mi-${indice}`} hidden>
-              <div class="about-panel__inner">
-                <p class="about-panel__text">{item.respuesta}</p>
-                {item.intereses && (
-                  <ul class="tag-list">
-                    {item.intereses.map((interes) => (
-                      <li class="tag">{interes}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+          <article
+            class:list={[
+              'about-card',
+              'reveal',
+              {
+                'about-card--lead': indice === 0,
+                'about-card--interests': Boolean(item.intereses),
+              },
+            ]}
+            style={`--about-index: ${indice};`}
+          >
+            <div class="about-card__heading">
+              <span class="about-card__index" aria-hidden="true">
+                {String(indice + 1).padStart(2, '0')}
+              </span>
+              <h3 class="about-card__title">{item.pregunta}</h3>
             </div>
-          </li>
+            <div class="about-card__body">
+              <p class:list={['about-card__text', indice === 0 && 'about-card__text--lead']}>
+                {item.respuesta}
+              </p>
+              {item.intereses && (
+                <ul class="tag-list about-card__tags">
+                  {item.intereses.map((interes) => (
+                    <li class="tag">{interes}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </article>
         ))
       }
-    </ul>
+    </div>
 
     <aside class="about-value reveal">
       <p class="about-value__label">{sobreMi.valor.label}</p>
