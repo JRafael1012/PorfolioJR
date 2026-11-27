@@ -1891,7 +1891,8 @@ section[id] {
   transition:
     grid-template-columns 0.5s cubic-bezier(0.33, 1, 0.68, 1),
     border-color 0.22s ease,
-    background-color 0.22s ease;
+    background-color 0.22s ease,
+    box-shadow 0.3s ease;
 }
 
 .about-item:has(.about-toggle[aria-expanded='true']) {
@@ -1901,6 +1902,7 @@ section[id] {
   border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
   border-left-color: var(--accent);
   background: color-mix(in srgb, var(--accent) 6%, transparent);
+  box-shadow: 0 16px 42px -32px color-mix(in srgb, var(--accent) 60%, transparent);
 }
 
 /* La pregunta es el único elemento siempre visible de cada fila. */
@@ -2033,10 +2035,8 @@ section[id] {
   color: var(--muted);
   font-size: 0.98rem;
   line-height: 1.8;
-  /* Entra desde la derecha, el mismo sentido en que crece la columna. Si el
-     texto apareciera quieto mientras la caja se abre, se leería como un
-     parpadeo en mitad del despliegue. */
-  animation: about-slide-right 0.5s cubic-bezier(0.33, 1, 0.68, 1) 0.08s both;
+  opacity: 0;
+  transition: opacity 0.24s ease;
 }
 
 /* La propuesta de valor va siempre desplegada y con más presencia: es el
@@ -2081,6 +2081,11 @@ section[id] {
   .about-panel .tag-list,
   .about-panel .tag {
     animation: none;
+  }
+
+  .about-panel__text {
+    opacity: 1;
+    transition: none;
   }
 }
 
@@ -3301,6 +3306,20 @@ section[id] {
   display: block;
 }
 
+.project-card__media--caso {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+}
+
+.project-card__media-panel {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+
 /* Hueco vacio: se queda en silencio a proposito. Sin rayas ni iconos: solo
    una linea de monoespaciada con dos filetes a los lados, como una linea
    editorial. Un hueco debe leerse como "aun sin captura", no como error. */
@@ -3335,6 +3354,13 @@ section[id] {
   width: 26px;
   height: 1px;
   background: color-mix(in srgb, var(--muted) 42%, transparent);
+}
+
+.project-card__media--caso .project-card__slot-text {
+  font-size: 0.54rem;
+  letter-spacing: 0.8px;
+  white-space: normal;
+  text-align: center;
 }
 
 /* --- Contenido ---
@@ -3504,6 +3530,13 @@ section[id] {
   color: var(--ink-black);
 }
 
+.project-card__btn--pendiente {
+  border-style: dashed;
+  color: var(--muted);
+  cursor: default;
+  opacity: 0.78;
+}
+
 .project-card__btn-arrow {
   transition: transform 0.2s ease;
 }
@@ -3517,6 +3550,11 @@ section[id] {
 
   .project-card__btn--primary:hover {
     border-color: var(--accent-2);
+  }
+
+  .project-card__btn--pendiente:hover {
+    transform: none;
+    border-color: #5d687b;
   }
 
   .project-card__btn:hover .project-card__btn-arrow {
@@ -5059,31 +5097,36 @@ section[id] {
 
 .about-panel .tag-list {
   margin-top: 1.35rem;
-  animation: about-wipe 0.6s cubic-bezier(0.33, 1, 0.68, 1) 0.1s both;
 }
 
-.about-panel .tag {
-  animation: about-slide-right 0.42s cubic-bezier(0.33, 1, 0.68, 1) both;
+@media (prefers-reduced-motion: no-preference) {
+  .about-item.is-visible:has(.about-toggle[aria-expanded='true']) .about-panel__text {
+    opacity: 1;
+  }
+
+  .about-item.is-visible:has(.about-toggle[aria-expanded='true']) .about-panel .tag-list {
+    animation: about-wipe 0.6s cubic-bezier(0.33, 1, 0.68, 1) 0.1s both;
+  }
+
+  .about-item.is-visible:has(.about-toggle[aria-expanded='true']) .about-panel .tag {
+    animation: about-slide-right 0.42s cubic-bezier(0.33, 1, 0.68, 1) both;
+  }
+
+  .about-panel .tag:nth-child(1) { animation-delay: 140ms; }
+  .about-panel .tag:nth-child(2) { animation-delay: 200ms; }
+  .about-panel .tag:nth-child(3) { animation-delay: 260ms; }
+  .about-panel .tag:nth-child(4) { animation-delay: 320ms; }
+  .about-panel .tag:nth-child(5) { animation-delay: 380ms; }
+  .about-panel .tag:nth-child(6) { animation-delay: 440ms; }
+  .about-panel .tag:nth-child(7) { animation-delay: 500ms; }
+  .about-panel .tag:nth-child(8) { animation-delay: 560ms; }
 }
 
-/* Escalonado: cada etiqueta espera a la anterior. 60 ms es suficiente
-   para que se lea el orden y no tanto que se haga lento. */
-
-.about-panel .tag:nth-child(1) { animation-delay: 140ms; }
-
-.about-panel .tag:nth-child(2) { animation-delay: 200ms; }
-
-.about-panel .tag:nth-child(3) { animation-delay: 260ms; }
-
-.about-panel .tag:nth-child(4) { animation-delay: 320ms; }
-
-.about-panel .tag:nth-child(5) { animation-delay: 380ms; }
-
-.about-panel .tag:nth-child(6) { animation-delay: 440ms; }
-
-.about-panel .tag:nth-child(7) { animation-delay: 500ms; }
-
-.about-panel .tag:nth-child(8) { animation-delay: 560ms; }
+@media (min-width: 701px) and (prefers-reduced-motion: no-preference) {
+  .about-item.is-visible:has(.about-toggle[aria-expanded='true']) .about-panel__text {
+    transition-delay: 0.38s;
+  }
+}
 
 .contact > .container {
   position: relative;

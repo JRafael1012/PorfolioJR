@@ -79,10 +79,24 @@ export interface Proyecto {
   estado?: string;
   /** Ruta dentro de `public/`, por ejemplo `img/proyectos/finovatech.webp`. */
   imagen?: string;
+  /** Ruta o URL del diagrama Entidad-Relación de la base de datos. */
+  diagrama?: string;
   /** URL real del repositorio. Nunca un enlace al perfil. */
   repositorio?: string;
   /** URL de la demo publicada. */
   demo?: string;
+  /** Texto del botón cuando ya hay demo o video. */
+  demoEtiqueta?: string;
+  /** Muestra el botón en estado "Demo próximamente" mientras no haya URL. */
+  demoPendiente?: boolean;
+  /** Prácticas de seguridad y buenas prácticas del caso. */
+  seguridad?: string[];
+  /** Decisiones de modelado, capas y control de versiones. */
+  arquitectura?: string[];
+  /** Pruebas, casos límite y documentación técnica. */
+  calidad?: string[];
+  /** Decisiones técnicas reales explicadas como bitácora. */
+  bitacora?: string[];
 }
 
 /** Una pregunta y su respuesta, tal como se muestran en "Sobre mí". */
@@ -911,8 +925,9 @@ export const stack: Tecnologia[] = [
  * la tarjeta conserva su hueco y el aviso con la ruta pendiente.
  *
  * `repositorio` apunta a `https://github.com` hasta que existan las URLs
- * exactas de cada repo. `demo` se deja fuera hasta que haya una demo real:
- * mientras tanto, el botón "Ver detalles" abre la información de cada proyecto.
+ * exactas de cada repo. `demoPendiente` reserva el botón de demo mientras no
+ * haya URL pública. TODO: sustituirlo por `demo: 'URL de Render/Railway/YouTube'`
+ * y `demoEtiqueta` cuando la demo o el video walkthrough estén publicados.
  *
  * RAF VESTIGIA vive en `robotica.proyectos`, su sitio natural. No se duplica
  * aquí: la sección "Proyectos" lo señala y el contador de Estadísticas lo suma.
@@ -932,6 +947,27 @@ export const proyectos: Proyecto[] = [
     ],
     participacion:
       'Construí la base de datos, la lógica del sistema y la interfaz web, y controlé los cambios con Git.',
+    seguridad: [
+      'Control de registros únicos para evitar duplicidad de propietarios y vehículos.',
+      'Validación de formularios antes de persistir la información.',
+      'Manejo controlado de errores para no exponer detalles internos al usuario.',
+    ],
+    arquitectura: [
+      'Modelado relacional normalizado en MySQL a partir de un Modelo Entidad-Relación.',
+      'Separación de lógica de negocio y presentación siguiendo el patrón MVC.',
+      'Control de versiones estructurado con Git para seguir cada cambio.',
+    ],
+    calidad: [
+      'Pruebas funcionales de registro, consulta y actualización de estado.',
+      'Verificación de casos límite: campos vacíos, datos inválidos y registros duplicados.',
+      'Documentación de requisitos bajo estándares técnicos para cada módulo.',
+    ],
+    bitacora: [
+      'Centralicé el historial de movimientos para reconstruir el estado operativo sin repetir registros.',
+      'Normalicé propietarios y vehículos para que un mismo dato no quede duplicado en varias filas.',
+      'Separé consultas, validaciones y vistas para corregir errores sin reescribir la interfaz.',
+    ],
+    demoPendiente: true,
     stack: ['PHP', 'MySQL', 'HTML5', 'CSS3', 'JavaScript', 'Git'],
     repositorio: 'https://github.com',
   },
@@ -950,6 +986,27 @@ export const proyectos: Proyecto[] = [
     ],
     participacion:
       'Desarrollé el proyecto final de la formación técnica: modelado de datos, lógica de negocio, interfaz y pruebas.',
+    seguridad: [
+      'Validación de datos de entrada antes de registrar ingresos y egresos.',
+      'Consultas SQL parametrizadas para proteger la integridad financiera.',
+      'Control de sesiones y accesos para separar las operaciones por usuario.',
+    ],
+    arquitectura: [
+      'Modelado relacional normalizado en MySQL a partir de un Modelo Entidad-Relación.',
+      'Separación de lógica de negocio y presentación siguiendo el patrón MVC.',
+      'Control de versiones estructurado con Git para seguir cada cambio.',
+    ],
+    calidad: [
+      'Pruebas funcionales de registro, filtrado y resúmenes financieros.',
+      'Verificación de casos límite: campos vacíos, montos inválidos y fechas fuera de rango.',
+      'Documentación de requisitos bajo estándares técnicos para cada flujo.',
+    ],
+    bitacora: [
+      'Estructuré consultas rápidas de filtrado y resúmenes para responder sin recorrer toda la tabla en cada pantalla.',
+      'Normalicé movimientos y cuentas para que los totales salieran de una sola fuente de verdad.',
+      'Separé la lógica financiera de la interfaz para probar los cálculos sin depender del HTML.',
+    ],
+    demoPendiente: true,
     stack: ['Python', 'MySQL', 'HTML5', 'CSS3', 'JavaScript', 'PHP', 'Git'],
     distincion:
       'Graduado con Honores · Mejor Proyecto Final de Promoción (Ficha 3154526) y Representante Institucional en la Muestra de Proyectos de Articulación SENA 2026 (CENIGRAF)',
@@ -1190,17 +1247,17 @@ export interface Servicio {
 export const servicios: Servicio[] = [
   {
     titulo: 'Desarrollo web',
-    descripcion: 'Sitios modernos y responsivos.',
+    descripcion: 'Interfaces responsivas, consumo de APIs REST y experiencia de usuario limpia.',
     icono: 'Globe',
   },
   {
     titulo: 'Desarrollo de software',
-    descripcion: 'Aplicaciones y sistemas personalizados.',
+    descripcion: 'Lógica de negocio estructurada, arquitectura MVC y código mantenible.',
     icono: 'Code',
   },
   {
     titulo: 'Bases de datos',
-    descripcion: 'Diseño y gestión de bases de datos.',
+    descripcion: 'Modelado Entidad-Relación (MER), consultas SQL optimizadas e integridad de datos.',
     icono: 'Database',
   },
   {
@@ -1210,12 +1267,12 @@ export const servicios: Servicio[] = [
   },
   {
     titulo: 'Mantenimiento',
-    descripcion: 'Corrección y mejora de sistemas existentes.',
+    descripcion: 'Depuración de errores, pruebas funcionales y mejora continua de sistemas.',
     icono: 'Wrench',
   },
   {
     titulo: 'Ciberseguridad',
-    descripcion: 'Respaldo, actualizaciones, contraseñas y buenas prácticas.',
+    descripcion: 'Protección contra inyección SQL, validación de entradas, respaldo y control de accesos.',
     icono: 'ShieldCheck',
   },
 ];

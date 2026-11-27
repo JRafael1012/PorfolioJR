@@ -36,6 +36,9 @@ const esResumen = variante === 'resumen';
 const imagenSrc = proyecto.imagen
   ? withBase(proyecto.imagen.startsWith('/') ? proyecto.imagen : `/${proyecto.imagen}`)
   : undefined;
+const diagramaSrc = proyecto.diagrama
+  ? withBase(proyecto.diagrama.startsWith('/') ? proyecto.diagrama : `/${proyecto.diagrama}`)
+  : undefined;
 const nombreArchivo = proyecto.titulo
   .toLowerCase()
   .normalize('NFD')
@@ -43,6 +46,7 @@ const nombreArchivo = proyecto.titulo
   .replace(/[^a-z0-9]+/g, '-')
   .replace(/^-|-$/g, '');
 const rutaCaptura = `/img/proyectos/${nombreArchivo}.webp`;
+const rutaDer = `/img/proyectos/${nombreArchivo}-der.webp`;
 const stackPrincipal = proyecto.stack?.slice(0, 3) ?? [];
 const tecnologiasVisibles = esResumen ? stackPrincipal : (proyecto.stack ?? []);
 const senaEnEstado = proyecto.estado?.includes('SENA') ? 'SENA' : undefined;
@@ -53,7 +57,11 @@ const distincionResumen = proyecto.distincion
 const hayDetalles = Boolean(
   proyecto.problema ||
     proyecto.funcionalidades?.length ||
-    proyecto.participacion,
+    proyecto.participacion ||
+    proyecto.seguridad?.length ||
+    proyecto.arquitectura?.length ||
+    proyecto.calidad?.length ||
+    proyecto.bitacora?.length,
 );
 ---
 
@@ -65,23 +73,64 @@ const hayDetalles = Boolean(
     { 'project-card--wide': destacada },
   ]}
 >
-  <div class="project-card__media">
-    {
-      imagenSrc ? (
-        <img
-          class="project-card__img"
-          src={imagenSrc}
-          alt={`Captura de ${proyecto.titulo}`}
-          loading={destacada ? 'eager' : 'lazy'}
-          decoding="async"
-        />
-      ) : (
-        <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaCaptura}>
-          <span class="project-card__slot-text">Vista previa disponible próximamente</span>
+  {
+    esResumen ? (
+      <div class="project-card__media">
+        {
+          imagenSrc ? (
+            <img
+              class="project-card__img"
+              src={imagenSrc}
+              alt={`Captura de ${proyecto.titulo}`}
+              loading={destacada ? 'eager' : 'lazy'}
+              decoding="async"
+            />
+          ) : (
+            <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaCaptura}>
+              <span class="project-card__slot-text">Vista previa disponible próximamente</span>
+            </div>
+          )
+        }
+      </div>
+    ) : (
+      <div class="project-card__media project-card__media--caso">
+        <div class="project-card__media-panel">
+          {
+            imagenSrc ? (
+              <img
+                class="project-card__img"
+                src={imagenSrc}
+                alt={`Captura de ${proyecto.titulo}`}
+                loading={destacada ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+            ) : (
+              <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaCaptura}>
+                <span class="project-card__slot-text">Vista previa disponible próximamente</span>
+              </div>
+            )
+          }
         </div>
-      )
-    }
-  </div>
+        <div class="project-card__media-panel">
+          {
+            diagramaSrc ? (
+              <img
+                class="project-card__img"
+                src={diagramaSrc}
+                alt={`Diagrama Entidad-Relación de ${proyecto.titulo}`}
+                loading="lazy"
+                decoding="async"
+              />
+            ) : (
+              <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaDer}>
+                <span class="project-card__slot-text">Diagrama ER disponible próximamente</span>
+              </div>
+            )
+          }
+        </div>
+      </div>
+    )
+  }
 
   <div class="project-card__body">
     <div class="project-card__head">
@@ -156,24 +205,85 @@ const hayDetalles = Boolean(
               </div>
             )
           }
+
+          {
+            proyecto.seguridad && proyecto.seguridad.length > 0 && (
+              <div class="project-card__block">
+                <p class="project-card__label">Seguridad y Buenas Prácticas</p>
+                <ul class="project-card__features">
+                  {proyecto.seguridad.map((practica) => (
+                    <li>{practica}</li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
+
+          {
+            proyecto.arquitectura && proyecto.arquitectura.length > 0 && (
+              <div class="project-card__block">
+                <p class="project-card__label">Arquitectura y Base de Datos</p>
+                <ul class="project-card__features">
+                  {proyecto.arquitectura.map((decision) => (
+                    <li>{decision}</li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
+
+          {
+            proyecto.calidad && proyecto.calidad.length > 0 && (
+              <div class="project-card__block">
+                <p class="project-card__label">Calidad y Pruebas (QA)</p>
+                <ul class="project-card__features">
+                  {proyecto.calidad.map((prueba) => (
+                    <li>{prueba}</li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
+
+          {
+            proyecto.bitacora && proyecto.bitacora.length > 0 && (
+              <div class="project-card__block">
+                <p class="project-card__label">Retos Técnicos Resueltos (Bitácora de ingeniería)</p>
+                <ul class="project-card__features">
+                  {proyecto.bitacora.map((reto) => (
+                    <li>{reto}</li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
         </div>
       )
     }
 
     {
-      (proyecto.demo || proyecto.repositorio) && (
+      (proyecto.demo || proyecto.demoPendiente || proyecto.repositorio) && (
         <div class="project-card__actions">
-          {proyecto.demo && (
-            <a
-              class="project-card__btn project-card__btn--primary"
-              href={proyecto.demo}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Demo
-              <span class="project-card__btn-arrow" aria-hidden="true">↗</span>
-            </a>
-          )}
+          {
+            proyecto.demo ? (
+              <a
+                class="project-card__btn"
+                href={proyecto.demo}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {proyecto.demoEtiqueta ?? 'Ver Demo / Video'}
+                <span class="project-card__btn-arrow" aria-hidden="true">↗</span>
+              </a>
+            ) : proyecto.demoPendiente ? (
+              <>
+                {/* TODO: pega aquí la URL de Render/Railway/YouTube en `demo` y quita `demoPendiente`. */}
+                <span class="project-card__btn project-card__btn--pendiente" aria-disabled="true">
+                  Demo próximamente
+                </span>
+              </>
+            ) : null
+          }
           {proyecto.repositorio && (
             <a
               class="project-card__btn"
