@@ -9,10 +9,13 @@ const proyectosRobotica = robotica.proyectos
 /**
  * Sección "Proyectos" — la lista completa.
  *
- * Aquí van TODOS los proyectos, los destacados incluidos: los 3 mejores ya
- * tienen su propia sección más arriba y aquí se ven en igualdad con el
- * resto. La tarjeta es la misma (`ProyectoCard.astro`) con `variante="caso"`:
- * muestra el caso completo en la rejilla, no el resumen ejecutivo.
+ * Aquí van TODOS los proyectos, los destacados incluidos: los dos destacados
+ * tienen su propia sección más arriba y aquí se ven en igualdad con el resto.
+ * La tarjeta es la misma (`ProyectoCard.astro`) con `variante="caso"`.
+ *
+ * La lista se presenta como carrusel horizontal con profundidad, sin rotación
+ * y sin avance automático: el foco lo decide el lector con scroll, flechas o
+ * teclado. Cada tarjeta conserva su caso completo.
  *
  * Hay catorce proyectos de software en `proyectos` (dos destacados) y uno de
  * robótica en `robotica.proyectos` (RAF VESTIGIA), que se muestra en su propia
@@ -27,16 +30,54 @@ const proyectosRobotica = robotica.proyectos
       <p class="eyebrow">PROYECTOS</p>
       <h2 class="section__title">Todos los proyectos</h2>
       <p class="section__subtitle">
+        Carrusel horizontal con profundidad, sin rotación ni avance automático.
         Cada uno con su problema, su stack y lo que aporté.
       </p>
     </div>
 
-    <div class="card-grid">
-      {
-        proyectos.map((proyecto, i) => (
-          <ProyectoCard proyecto={proyecto} indice={i + 1} variante="caso" />
-        ))
-      }
+    <div class="project-carousel" data-project-carousel>
+      <div class="project-carousel__controls">
+        <span class="project-carousel__label">ÍNDICE</span>
+        <button
+          class="project-carousel__nav"
+          type="button"
+          data-carousel-prev
+          aria-label="Proyecto anterior"
+        >
+          ←
+        </button>
+        <span class="project-carousel__count" data-carousel-count aria-live="polite">
+          01 / {String(proyectos.length).padStart(2, '0')}
+        </span>
+        <button
+          class="project-carousel__nav"
+          type="button"
+          data-carousel-next
+          aria-label="Proyecto siguiente"
+        >
+          →
+        </button>
+      </div>
+
+      <div
+        class="project-carousel__track"
+        role="group"
+        aria-label="Proyectos ordenados por impacto"
+        tabindex="0"
+        data-carousel-track
+      >
+        {
+          proyectos.map((proyecto, i) => (
+            <div class="project-carousel__slide" data-carousel-slide>
+              <ProyectoCard proyecto={proyecto} indice={i + 1} variante="caso" />
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="project-carousel__hint">
+        Desliza, usa las flechas o las teclas ← → con el foco en la cinta. Sin autoplay.
+      </p>
     </div>
 
     <p class="proyectos__nota">

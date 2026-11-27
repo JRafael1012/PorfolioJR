@@ -434,6 +434,122 @@
     requestTimelineUpdate();
   }
 
+  var projectCarousel = document.querySelector('[data-project-carousel]');
+
+  if (projectCarousel) {
+    var carouselTrack = projectCarousel.querySelector('[data-carousel-track]');
+    var carouselSlides = Array.prototype.slice.call(
+      projectCarousel.querySelectorAll('[data-carousel-slide]')
+    );
+    var carouselPrev = projectCarousel.querySelector('[data-carousel-prev]');
+    var carouselNext = projectCarousel.querySelector('[data-carousel-next]');
+    var carouselCount = projectCarousel.querySelector('[data-carousel-count]');
+    var carouselFrame = 0;
+    var carouselIndex = 0;
+
+    var centeredSlide = function () {
+      if (!carouselTrack || !carouselSlides.length) return 0;
+      var bounds = carouselTrack.getBoundingClientRect();
+      var center = bounds.left + bounds.width / 2;
+      var best = 0;
+      var shortest = Infinity;
+
+      carouselSlides.forEach(function (slide, i) {
+        var rect = slide.getBoundingClientRect();
+        var distance = Math.abs(rect.left + rect.width / 2 - center);
+        if (distance < shortest) {
+          shortest = distance;
+          best = i;
+        }
+      });
+
+      return best;
+    };
+
+    var paintCarousel = function () {
+      carouselFrame = 0;
+      if (!carouselTrack || !carouselSlides.length) return;
+
+      var bounds = carouselTrack.getBoundingClientRect();
+      var center = bounds.left + bounds.width / 2;
+      var half = Math.max(bounds.width / 2, 1);
+      var focused = document.activeElement;
+
+      carouselSlides.forEach(function (slide) {
+        var rect = slide.getBoundingClientRect();
+        var distance = Math.abs(rect.left + rect.width / 2 - center) / half;
+        var depth = Math.max(0, 1 - Math.min(distance, 1));
+        if (slide.matches(':hover') || slide.contains(focused)) depth = 1;
+        slide.style.setProperty('--depth', depth.toFixed(3));
+      });
+
+      carouselIndex = centeredSlide();
+      if (carouselCount) {
+        carouselCount.textContent =
+          String(carouselIndex + 1).padStart(2, '0') +
+          ' / ' +
+          String(carouselSlides.length).padStart(2, '0');
+      }
+      if (carouselPrev) carouselPrev.disabled = carouselIndex === 0;
+      if (carouselNext) carouselNext.disabled = carouselIndex === carouselSlides.length - 1;
+    };
+
+    var requestCarouselPaint = function () {
+      if (carouselFrame) return;
+      carouselFrame = window.requestAnimationFrame(paintCarousel);
+    };
+
+    var goToSlide = function (index) {
+      if (!carouselTrack || !carouselSlides.length) return;
+      var target = Math.max(0, Math.min(carouselSlides.length - 1, index));
+      var slide = carouselSlides[target];
+      var bounds = carouselTrack.getBoundingClientRect();
+      var rect = slide.getBoundingClientRect();
+      var left =
+        carouselTrack.scrollLeft +
+        rect.left -
+        bounds.left -
+        (bounds.width - rect.width) / 2;
+      carouselTrack.scrollTo({ left: left, behavior: reduceMotion ? 'auto' : 'smooth' });
+      carouselIndex = target;
+    };
+
+    if (carouselTrack && carouselSlides.length) {
+      carouselTrack.addEventListener('scroll', requestCarouselPaint, { passive: true });
+      carouselTrack.addEventListener('pointerover', requestCarouselPaint);
+      carouselTrack.addEventListener('pointerout', requestCarouselPaint);
+      carouselTrack.addEventListener('focusin', requestCarouselPaint);
+      carouselTrack.addEventListener('focusout', requestCarouselPaint);
+      carouselTrack.addEventListener('keydown', function (event) {
+        if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          goToSlide(carouselIndex + 1);
+        } else if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          goToSlide(carouselIndex - 1);
+        } else if (event.key === 'Home') {
+          event.preventDefault();
+          goToSlide(0);
+        } else if (event.key === 'End') {
+          event.preventDefault();
+          goToSlide(carouselSlides.length - 1);
+        }
+      });
+      if (carouselPrev) {
+        carouselPrev.addEventListener('click', function () {
+          goToSlide(carouselIndex - 1);
+        });
+      }
+      if (carouselNext) {
+        carouselNext.addEventListener('click', function () {
+          goToSlide(carouselIndex + 1);
+        });
+      }
+      window.addEventListener('resize', requestCarouselPaint);
+      requestCarouselPaint();
+    }
+  }
+
   var header = document.querySelector('.site-header');
   var navToggle = document.querySelector('[data-nav-toggle]');
   var navMenu = document.querySelector('[data-nav-menu]');

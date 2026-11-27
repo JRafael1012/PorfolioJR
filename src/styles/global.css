@@ -2037,7 +2037,7 @@ section[id] {
 }
 
 /* ============================================================
-   8. TRAYECTORIA / EXPERIENCIA
+    8. TRAYECTORIA / EXPERIENCIA
    ------------------------------------------------------------
    Experiencia laboral, credenciales y roles.
 
@@ -3177,6 +3177,144 @@ section[id] {
 .proyectos__nota a {
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.project-carousel {
+  position: relative;
+  margin-top: 2rem;
+}
+
+.project-carousel__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.project-carousel__label {
+  margin-right: auto;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.project-carousel__nav {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  background: var(--bg-raise);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.project-carousel__nav:hover:not(:disabled),
+.project-carousel__nav:focus-visible {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--ink-black);
+}
+
+.project-carousel__nav:disabled {
+  opacity: 0.32;
+  cursor: not-allowed;
+}
+
+.project-carousel__count {
+  min-width: 6ch;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 1.2px;
+  text-align: center;
+}
+
+.project-carousel__track {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  margin-inline: calc(-1 * var(--gutter));
+  padding: 1.5rem var(--gutter) 2rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) transparent;
+}
+
+.project-carousel__track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.project-carousel__track::-webkit-scrollbar-thumb {
+  background: var(--accent);
+}
+
+.project-carousel__slide {
+  --depth: 0;
+  position: relative;
+  flex: 0 0 min(78vw, 34rem);
+  scroll-snap-align: center;
+  transform: translateY(calc((1 - var(--depth)) * 0.85rem))
+    scale(calc(0.94 + var(--depth) * 0.06));
+  transform-origin: center center;
+  opacity: calc(0.62 + var(--depth) * 0.38);
+  filter: saturate(calc(0.75 + var(--depth) * 0.25));
+  transition:
+    transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 380ms ease,
+    filter 380ms ease;
+}
+
+.project-carousel__slide::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.6);
+  opacity: calc(var(--depth) * 0.9);
+  transition: opacity 380ms ease;
+}
+
+.project-carousel__slide .project-card {
+  height: 100%;
+}
+
+.project-carousel__hint {
+  margin-top: -0.75rem;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 0.66rem;
+}
+
+@media (max-width: 700px) {
+  .project-carousel__track {
+    gap: 1rem;
+    padding-block: 1rem 1.5rem;
+  }
+
+  .project-carousel__slide {
+    flex-basis: 86vw;
+  }
+
+  .project-carousel__label {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-carousel__slide,
+  .project-carousel__slide::after,
+  .project-carousel__nav {
+    transition: none;
+  }
 }
 
 .project-card {
