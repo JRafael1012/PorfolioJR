@@ -87,7 +87,7 @@ const hayDetalles = Boolean(
             />
           ) : (
             <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaCaptura}>
-              <span class="project-card__slot-text">Vista previa disponible próximamente</span>
+              <span class="project-card__slot-text">Sin imagen publicada</span>
             </div>
           )
         }
@@ -106,7 +106,7 @@ const hayDetalles = Boolean(
               />
             ) : (
               <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaCaptura}>
-                <span class="project-card__slot-text">Vista previa disponible próximamente</span>
+                <span class="project-card__slot-text">Sin imagen publicada</span>
               </div>
             )
           }
@@ -123,7 +123,7 @@ const hayDetalles = Boolean(
               />
             ) : (
               <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaDer}>
-                <span class="project-card__slot-text">Diagrama ER disponible próximamente</span>
+                <span class="project-card__slot-text">Sin diagrama publicado</span>
               </div>
             )
           }
@@ -279,7 +279,7 @@ const hayDetalles = Boolean(
               <>
                 {/* TODO: pega aquí la URL de Render/Railway/YouTube en `demo` y quita `demoPendiente`. */}
                 <span class="project-card__btn project-card__btn--pendiente" aria-disabled="true">
-                  Demo próximamente
+                  Demo no publicada
                 </span>
               </>
             ) : null

@@ -81,13 +81,13 @@ export interface Proyecto {
   imagen?: string;
   /** Ruta o URL del diagrama Entidad-Relación de la base de datos. */
   diagrama?: string;
-  /** URL real del repositorio. Nunca un enlace al perfil. */
+  /** URL del repositorio, o del perfil mientras el repo no esté publicado. */
   repositorio?: string;
   /** URL de la demo publicada. */
   demo?: string;
   /** Texto del botón cuando ya hay demo o video. */
   demoEtiqueta?: string;
-  /** Muestra el botón en estado "Demo próximamente" mientras no haya URL. */
+  /** Muestra el botón "Demo no publicada" mientras no haya URL. */
   demoPendiente?: boolean;
   /** Prácticas de seguridad y buenas prácticas del caso. */
   seguridad?: string[];
@@ -141,13 +141,13 @@ export interface Competencia {
 
 export interface Tecnologia {
   nombre: string;
-  /**
-   * Qué es, para que la cifra de Estadísticas no mezcle peras con manzanas
-   * (D41): 'tecnologia', 'herramienta' y 'base-de-datos' se cuentan en
-   * `estadisticas.tecnologiasYHerramientas`; 'plataforma' e 'ia' solo viven
-   * en la marquesina del Stack con su logo.
-   */
+  /** Qué es: se muestra en la cinta y se cuenta en Estadísticas. */
   categoria: 'tecnologia' | 'base-de-datos' | 'herramienta' | 'plataforma' | 'ia';
+  /**
+   * 'basico' separa lo que aún no respalda un proyecto de lo que uso a diario.
+   * Si falta, se trata como 'principal'.
+   */
+  nivel?: 'principal' | 'basico';
   /** Slug de Simple Icons. Opcional: si falta, el nombre se muestra sin logo. */
   slug?: string;
   /**
@@ -194,13 +194,10 @@ export interface Contacto {
  * Este archivo es la base editable del portafolio. La estructura, el diseño y
  * las secciones ya están listos; lo que cambia es solo el texto de aquí.
  *
- * ⚠ PENDIENTE ANTES DE PUBLICAR
- *   1. proyectos[].repositorio → sustituir `https://github.com` por la URL
- *      exacta de cada repositorio cuando estén publicados.
- *
  * YA RESUELTO: correo de contacto, URL de LinkedIn, fechas de SENA
- * (2025 — 2026), ingeniería (2027 — Actualidad), robótica (2020 — Actualidad),
- * hoja de vida ATS en `public/cv-ats.html`,
+ * (2025 — 2026), ingeniería (inicio 18 de enero de 2027), robótica
+ * (2020 — Actualidad), enlaces de GitHub (perfil mientras no haya repo
+ * público por tarjeta), hoja de vida ATS en `public/cv-ats.html`,
  * y nombre de la universidad (Universidad Central) y de la fundación de
  * robótica (Fundación Biosbot Robótica / Team Biosbot Colombia).
  */
@@ -209,11 +206,11 @@ export const perfil = {
   /** El nombre que va en el `<h1>` del hero: corto, como se presenta uno. */
   nombreCorto: 'Rafael Arlant',
   marca: 'Rafael.dev',
-  rol: 'Estudiante de Ingeniería de Sistemas y Computación',
+  rol: 'Admitido a Ingeniería de Sistemas y Computación · inicio enero 2027',
   subtitulo: 'Técnico en Desarrollo de Software',
   titular: 'Desarrollador de software enfocado en soluciones reales.',
   descripcion:
-    'Hola, soy Rafael. Soy estudiante de Ingeniería de Sistemas y Computación y Técnico en Desarrollo de Software. Me apasiona aprender y construir cosas nuevas. Aprendo rápido, me adapto a nuevas tecnologías y utilizo la inteligencia artificial como herramienta para investigar, potenciar mis conocimientos y mejorar mi proceso de desarrollo. Me gusta enfrentar problemas reales y convertir ideas en soluciones funcionales.',
+    'Hola, soy Rafael. Soy Técnico en Desarrollo de Software y estoy admitido en Ingeniería de Sistemas y Computación, con inicio en enero de 2027. Me apasiona aprender y construir cosas nuevas. Aprendo rápido, me adapto a nuevas tecnologías y utilizo la inteligencia artificial como herramienta para investigar, potenciar mis conocimientos y mejorar mi proceso de desarrollo. Me gusta enfrentar problemas reales y convertir ideas en soluciones funcionales.',
   ciudad: 'Bogotá, Colombia',
   areas: 'Frontend · Backend · SQL · Sistemas',
   coordenadas: ["04° 36' N", "74° 04' W"],
@@ -237,8 +234,8 @@ export const perfil = {
     'Python',
     'SQL',
     'PHP',
-    'Java',
-    'TypeScript',
+    'React',
+    'MySQL',
   ],
   cv: {
     label: 'Descargar CV',
@@ -297,7 +294,7 @@ export const sobreMi: SobreMi = {
     {
       pregunta: '¿Qué estudio?',
       respuesta:
-        'Técnico en Desarrollo de Software en el SENA y carrera de Ingeniería de Sistemas y Computación en la Universidad Central, con foco en bases de datos, algoritmos y arquitectura de sistemas.',
+        'Soy Técnico en Desarrollo de Software por el SENA y estoy admitido en Ingeniería de Sistemas y Computación en la Universidad Central, con inicio el 18 de enero de 2027. Me interesa bases de datos, algoritmos y arquitectura de sistemas.',
     },
     {
       pregunta: '¿Qué me interesa?',
@@ -361,12 +358,11 @@ export const experiencia: Experiencia[] = [
   {
     puesto: 'Ingeniería de Sistemas y Computación',
     empresa: 'Universidad Central',
-    periodo: '2027 — Actualidad',
+    periodo: 'Inicio: 18 de enero de 2027',
     resumen:
-      'Carrera de ingeniería en curso. Bases fuertes de matemáticas, algoritmos y arquitectura de sistemas.',
+      'Programa de ingeniería admitido, con inicio el 18 de enero de 2027. Base previa en matemáticas, algoritmos y arquitectura de sistemas.',
     logros: [
-      'Cursando asignaturas de sistemas, bases de datos e ingeniería de software.',
-      'Los proyectos de esta sección nacen de las asignaturas y del trabajo personal.',
+      'Los proyectos de esta sección nacen del trabajo personal y de la formación técnica previa.',
     ],
     stack: ['Algoritmos', 'Estructuras de datos', 'Arquitectura de sistemas'],
   },
@@ -856,7 +852,9 @@ reconocimientos: [
 };
 
 /**
- * Tecnologías y herramientas — las que realmente usa.
+ * Tecnologías y herramientas — divididas en "Uso a diario" y
+ * "Conocimientos básicos" para no presentar como dominio lo que todavía no
+ * respalda un proyecto público.
  *
  * SOLO TECNOLOGÍAS DE DESARROLLO: lenguajes, frameworks, bases de datos,
  * control de versiones, sistemas operativos y CAD. Las herramientas de
@@ -872,22 +870,15 @@ reconocimientos: [
  *   3. `icono` → SVG local en `public/img/logos/`. Solo Windows sigue en uso;
  *      se lee con `withBase()` para no romper la ruta en GitHub Pages.
  *
- * ⚠ Un logo es una afirmación: quien lo ve da por hecho que la manejas.
+ * ⚠ Un logo es una afirmación: `nivel: 'basico'` mantiene la afirmación honesta.
  */
 export const stack: Tecnologia[] = [
-  // Lenguajes
+  // Uso a diario
   { nombre: 'HTML', categoria: 'tecnologia', slug: 'html5' },
   { nombre: 'CSS', categoria: 'tecnologia', slug: 'css' },
   { nombre: 'JavaScript', categoria: 'tecnologia', slug: 'javascript' },
-  { nombre: 'TypeScript', categoria: 'tecnologia', slug: 'typescript' },
   { nombre: 'Python', categoria: 'tecnologia', slug: 'python' },
-  { nombre: 'Java', categoria: 'tecnologia', di: 'java' },
-  { nombre: 'C', categoria: 'tecnologia', slug: 'c' },
-  { nombre: 'C++', categoria: 'tecnologia', slug: 'cplusplus' },
-  { nombre: 'Dart', categoria: 'tecnologia', slug: 'dart' },
   { nombre: 'PHP', categoria: 'tecnologia', slug: 'php' },
-
-  // Frameworks, motores y entornos
   { nombre: 'React', categoria: 'tecnologia', slug: 'react' },
   { nombre: 'Astro', categoria: 'tecnologia', slug: 'astro' },
   { nombre: 'Node.js', categoria: 'tecnologia', slug: 'nodedotjs' },
@@ -895,26 +886,23 @@ export const stack: Tecnologia[] = [
   { nombre: 'MySQL', categoria: 'base-de-datos', slug: 'mysql' },
   { nombre: 'SQLite', categoria: 'base-de-datos', slug: 'sqlite' },
   { nombre: 'Arduino', categoria: 'herramienta', slug: 'arduino' },
-  { nombre: 'Android Studio', categoria: 'herramienta', slug: 'androidstudio' },
-
-  // CAD
   { nombre: 'AutoCAD 2D y 3D', categoria: 'herramienta', slug: 'autocad' },
-
-  // Control de versiones
   { nombre: 'Git', categoria: 'herramienta', slug: 'git' },
   { nombre: 'GitHub', categoria: 'plataforma', slug: 'github' },
-
-  // Terminal
   { nombre: 'Bash', categoria: 'herramienta', slug: 'gnubash' },
   { nombre: 'PowerShell', categoria: 'herramienta', di: 'powershell' },
-
-  // Sistemas operativos
   { nombre: 'Linux', categoria: 'plataforma', slug: 'linux' },
-  { nombre: 'Kali Linux', categoria: 'plataforma', slug: 'kalilinux' },
   { nombre: 'Windows', categoria: 'plataforma', icono: 'img/logos/windows.svg' },
-
-  // Editor
   { nombre: 'VS Code', categoria: 'herramienta', di: 'vscode' },
+
+  // Conocimientos básicos (sin proyecto público que los respalde todavía)
+  { nombre: 'TypeScript', categoria: 'tecnologia', slug: 'typescript', nivel: 'basico' },
+  { nombre: 'Java', categoria: 'tecnologia', di: 'java', nivel: 'basico' },
+  { nombre: 'C', categoria: 'tecnologia', slug: 'c', nivel: 'basico' },
+  { nombre: 'C++', categoria: 'tecnologia', slug: 'cplusplus', nivel: 'basico' },
+  { nombre: 'Dart', categoria: 'tecnologia', slug: 'dart', nivel: 'basico' },
+  { nombre: 'Android Studio', categoria: 'herramienta', slug: 'androidstudio', nivel: 'basico' },
+  { nombre: 'Kali Linux', categoria: 'plataforma', slug: 'kalilinux', nivel: 'basico' },
 ];
 
 /**
@@ -924,10 +912,9 @@ export const stack: Tecnologia[] = [
  * acciones. `imagen` se deja fuera a propósito mientras se suben las capturas:
  * la tarjeta conserva su hueco y el aviso con la ruta pendiente.
  *
- * `repositorio` apunta a `https://github.com` hasta que existan las URLs
- * exactas de cada repo. `demoPendiente` reserva el botón de demo mientras no
- * haya URL pública. TODO: sustituirlo por `demo: 'URL de Render/Railway/YouTube'`
- * y `demoEtiqueta` cuando la demo o el video walkthrough estén publicados.
+ * `repositorio` apunta al perfil de GitHub mientras no haya un repo público
+ * por tarjeta. `demoPendiente` muestra "Demo no publicada" hasta que exista
+ * `demo: 'URL de Render/Railway/YouTube'` y `demoEtiqueta`.
  *
  * RAF VESTIGIA vive en `robotica.proyectos`, su sitio natural. No se duplica
  * aquí: la sección "Proyectos" lo señala y el contador de Estadísticas lo suma.
@@ -948,19 +935,19 @@ export const proyectos: Proyecto[] = [
     participacion:
       'Construí la base de datos, la lógica del sistema y la interfaz web, y controlé los cambios con Git.',
     seguridad: [
-      'Control de registros únicos para evitar duplicidad de propietarios y vehículos.',
-      'Validación de formularios antes de persistir la información.',
-      'Manejo controlado de errores para no exponer detalles internos al usuario.',
+      'Validación de placa y documento del propietario antes de insertar, con consulta previa por valores únicos.',
+      'Consultas SQL parametrizadas en PHP al buscar por placa o propietario.',
+      'Mensajes de error controlados en la interfaz, sin mostrar consultas ni rutas del servidor.',
     ],
     arquitectura: [
-      'Modelado relacional normalizado en MySQL a partir de un Modelo Entidad-Relación.',
-      'Separación de lógica de negocio y presentación siguiendo el patrón MVC.',
-      'Control de versiones estructurado con Git para seguir cada cambio.',
+      'Modelo Entidad-Relación con propietarios, vehículos y movimientos; claves foráneas para no repetir propietarios.',
+      'Historial ordenado por fecha y filtrado por placa, sin recorrer toda la tabla en pantalla.',
+      'Vistas PHP separadas de la lógica de validación para corregir reglas sin tocar el HTML.',
     ],
     calidad: [
-      'Pruebas funcionales de registro, consulta y actualización de estado.',
-      'Verificación de casos límite: campos vacíos, datos inválidos y registros duplicados.',
-      'Documentación de requisitos bajo estándares técnicos para cada módulo.',
+      'Pruebas funcionales de registro, consulta por placa y cambio de estado del vehículo.',
+      'Casos límite probados: placa duplicada, propietario sin documento y fecha de movimiento vacía.',
+      'Revisión manual en navegador para comprobar que el historial refleje el estado actual.',
     ],
     bitacora: [
       'Centralicé el historial de movimientos para reconstruir el estado operativo sin repetir registros.',
@@ -969,14 +956,14 @@ export const proyectos: Proyecto[] = [
     ],
     demoPendiente: true,
     stack: ['PHP', 'MySQL', 'HTML5', 'CSS3', 'JavaScript', 'Git'],
-    repositorio: 'https://github.com',
+    repositorio: 'https://github.com/JRafael1012',
   },
   {
     titulo: 'FinovaTech',
     destacado: true,
     estado: 'Proyecto final · SENA',
     descripcion:
-      'Aplicación web para organizar la información financiera de un negocio: registra movimientos, consulta el estado de las cuentas y presenta resúmenes para tomar decisiones.',
+      'Aplicación web para organizar la información financiera de un negocio: registra movimientos, consulta el estado de las cuentas y presenta resúmenes para tomar decisiones. El backend principal está en Python con Flask; una práctica adicional en PHP usa la misma base de datos para comparar enfoques.',
     problema:
       'Cuando los ingresos y egresos se anotan por separado, saber cuánto entra, cuánto sale y en qué momento requiere reconstruir los datos. FinovaTech los concentra en un solo lugar.',
     funcionalidades: [
@@ -987,19 +974,19 @@ export const proyectos: Proyecto[] = [
     participacion:
       'Desarrollé el proyecto final de la formación técnica: modelado de datos, lógica de negocio, interfaz y pruebas.',
     seguridad: [
-      'Validación de datos de entrada antes de registrar ingresos y egresos.',
-      'Consultas SQL parametrizadas para proteger la integridad financiera.',
-      'Control de sesiones y accesos para separar las operaciones por usuario.',
+      'Validación de montos y fechas en el formulario antes de registrar ingresos o egresos.',
+      'Consultas parametrizadas desde Flask al filtrar movimientos por rango de fecha.',
+      'Control de sesión por usuario para que cada persona vea solo sus movimientos.',
     ],
     arquitectura: [
-      'Modelado relacional normalizado en MySQL a partir de un Modelo Entidad-Relación.',
-      'Separación de lógica de negocio y presentación siguiendo el patrón MVC.',
-      'Control de versiones estructurado con Git para seguir cada cambio.',
+      'Modelo Entidad-Relación con movimientos, cuentas y categorías; totales con consultas SUM agrupadas por mes.',
+      'Backend en Python con Flask bajo MVC: rutas, servicios y modelos separados; la práctica en PHP conecta con la misma base.',
+      'Índice por fecha y cuenta para acelerar el filtrado del resumen mensual.',
     ],
     calidad: [
-      'Pruebas funcionales de registro, filtrado y resúmenes financieros.',
-      'Verificación de casos límite: campos vacíos, montos inválidos y fechas fuera de rango.',
-      'Documentación de requisitos bajo estándares técnicos para cada flujo.',
+      'Pruebas funcionales de registro, filtrado por fecha y resumen mensual con datos de ejemplo.',
+      'Casos límite probados: monto negativo, fecha fuera de rango y categoría vacía.',
+      'Verificación de totales contra una hoja de cálculo para validar las consultas agregadas.',
     ],
     bitacora: [
       'Estructuré consultas rápidas de filtrado y resúmenes para responder sin recorrer toda la tabla en cada pantalla.',
@@ -1007,10 +994,10 @@ export const proyectos: Proyecto[] = [
       'Separé la lógica financiera de la interfaz para probar los cálculos sin depender del HTML.',
     ],
     demoPendiente: true,
-    stack: ['Python', 'MySQL', 'HTML5', 'CSS3', 'JavaScript', 'PHP', 'Git'],
+    stack: ['Python', 'Flask', 'MySQL', 'HTML5', 'CSS3', 'JavaScript', 'PHP', 'Git'],
     distincion:
       'Graduado con Honores · Mejor Proyecto Final de Promoción (Ficha 3154526) y Representante Institucional en la Muestra de Proyectos de Articulación SENA 2026 (CENIGRAF)',
-    repositorio: 'https://github.com',
+    repositorio: 'https://github.com/JRafael1012',
   },
 ];
 
@@ -1252,12 +1239,12 @@ export const servicios: Servicio[] = [
   },
   {
     titulo: 'Desarrollo de software',
-    descripcion: 'Lógica de negocio estructurada, arquitectura MVC y código mantenible.',
+    descripcion: 'MVC aplicado en FinovaTech y en el sistema vehicular, con lógica separada de la interfaz.',
     icono: 'Code',
   },
   {
     titulo: 'Bases de datos',
-    descripcion: 'Modelado Entidad-Relación (MER), consultas SQL optimizadas e integridad de datos.',
+    descripcion: 'Modelado Entidad-Relación y consultas parametrizadas en MySQL para FinovaTech y el sistema vehicular.',
     icono: 'Database',
   },
   {
@@ -1272,7 +1259,7 @@ export const servicios: Servicio[] = [
   },
   {
     titulo: 'Ciberseguridad',
-    descripcion: 'Protección contra inyección SQL, validación de entradas, respaldo y control de accesos.',
+    descripcion: 'Validación de formularios y consultas parametrizadas en los proyectos de MySQL; reconocimiento controlado en laboratorio con Kali Linux.',
     icono: 'ShieldCheck',
   },
 ];
@@ -1314,20 +1301,14 @@ export const idiomas = [
  * si el dato no existe, no se muestra.
  *  · proyectos: `proyectos.length` (2) + `robotica.proyectos.length` (1) = 3.
  *  · añosRobotica: los 6 que ya afirma el subtítulo de `robotica`.
- *  · tecnologiasYHerramientas: los items del stack con `categoria`
- *    'tecnologia', 'herramienta' o 'base-de-datos' (D41). Quedan fuera las
- *    plataformas: son 23 de las 27 tecnologías que muestra la cinta.
+ *  · tecnologiasYHerramientas: `stack.length` = 27, incluidas las que la
+ *    cinta separa en "Conocimientos básicos".
  *  · certificaciones: `certificaciones.length` = 13.
  */
 export const estadisticas = {
   proyectos: proyectos.length + robotica.proyectos.length,
   añosRobotica: 6,
-  tecnologiasYHerramientas: stack.filter(
-    (t) =>
-      t.categoria === 'tecnologia' ||
-      t.categoria === 'herramienta' ||
-      t.categoria === 'base-de-datos',
-  ).length,
+  tecnologiasYHerramientas: stack.length,
   certificaciones: certificaciones.length,
 } as const;
 

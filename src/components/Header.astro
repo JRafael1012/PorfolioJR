@@ -1,5 +1,5 @@
 ---
-import { perfil, nav } from '../data/perfil';
+import { perfil, nav, datosContacto } from '../data/perfil';
 import { withBase } from '../paths';
 ---
 
@@ -32,7 +32,7 @@ import { withBase } from '../paths';
     <div class="nav-actions">
       <a
         class="nav-cv"
-        href="https://github.com"
+        href={datosContacto.githubUrl}
         target="_blank"
         rel="noopener noreferrer"
       >

@@ -9,8 +9,8 @@ import { withBase } from '../paths';
 //      withBase porque en GitHub Pages el sitio vive bajo /<repositorio>/.
 // El nombre siempre se escribe al lado, así el logo es decorativo: si el
 // CDN falla o no hay conexión, el texto sigue diciendo qué es cada cosa.
-// La lista se pinta dos veces: la segunda copia es la que permite que el
-// bucle `translateX(-50%)` reinicie sin hueco y queda oculta a lectores.
+// Cada lista se pinta dos veces: la segunda copia permite que el bucle
+// translateX(-50%) reinicie sin hueco y queda oculta a lectores de pantalla.
 const iconUrl = (slug?: string, di?: string, icono?: string) => {
   if (slug) return `https://cdn.simpleicons.org/${slug}/ffba08`;
   if (di) {
@@ -20,6 +20,20 @@ const iconUrl = (slug?: string, di?: string, icono?: string) => {
   return undefined;
 };
 
+const grupos = [
+  {
+    id: 'principal',
+    etiqueta: 'Uso a diario',
+    titulo: 'Con lo que trabajo',
+    items: stack.filter((tech) => tech.nivel !== 'basico'),
+  },
+  {
+    id: 'basico',
+    etiqueta: 'Conocimientos básicos',
+    titulo: 'En exploración',
+    items: stack.filter((tech) => tech.nivel === 'basico'),
+  },
+];
 ---
 
 <section class="section stack" id="stack">
@@ -35,40 +49,52 @@ const iconUrl = (slug?: string, di?: string, icono?: string) => {
     </div>
   </div>
 
-  <div class="marquee">
-    <div
-      class="marquee__track"
-      tabindex="0"
-      role="group"
-      aria-label="Herramientas. Enfoca esta cinta para detenerla."
-    >
-      {
-        [0, 1].map((copia) => (
-          <ul class="marquee__group" aria-hidden={copia === 1 ? 'true' : undefined}>
+  {
+    grupos.map((grupo) => (
+      <div class:list={['stack-group', `stack-group--${grupo.id}`]}>
+        <div class="container">
+          <p class="stack-group__label">
+            <span>{grupo.etiqueta}</span>
+            <span>{grupo.titulo}</span>
+          </p>
+        </div>
+        <div class="marquee">
+          <div
+            class="marquee__track"
+            tabindex="0"
+            role="group"
+            aria-label={`${grupo.etiqueta}: ${grupo.titulo}. Enfoca esta cinta para detenerla.`}
+          >
             {
-              stack.map((tech) => {
-                const url = iconUrl(tech.slug, tech.di, tech.icono);
-                return (
-                  <li class="marquee__item">
-                    {url && (
-                      <img
-                        class="marquee__logo"
-                        src={url}
-                        alt=""
-                        width="30"
-                        height="30"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    )}
-                    <span class="marquee__name">{tech.nombre}</span>
-                  </li>
-                );
-              })
+              [0, 1].map((copia) => (
+                <ul class="marquee__group" aria-hidden={copia === 1 ? 'true' : undefined}>
+                  {
+                    grupo.items.map((tech) => {
+                      const url = iconUrl(tech.slug, tech.di, tech.icono);
+                      return (
+                        <li class="marquee__item">
+                          {url && (
+                            <img
+                              class="marquee__logo"
+                              src={url}
+                              alt=""
+                              width="30"
+                              height="30"
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          )}
+                          <span class="marquee__name">{tech.nombre}</span>
+                        </li>
+                      );
+                    })
+                  }
+                </ul>
+              ))
             }
-          </ul>
-        ))
-      }
-    </div>
-  </div>
+          </div>
+        </div>
+      </div>
+    ))
+  }
 </section>
