@@ -2448,7 +2448,7 @@ section[id] {
 
    CLASES
      .rob-collage .......... el marco (solo la rejilla)
-     .rob-collage__grid .... la rejilla; role="img", no se lee por partes
+     .rob-collage__grid .... la rejilla accesible que agrupa las fotos
      .rob-collage__tile .... una casilla
      .rob-collage__layer ... una foto dentro de la casilla
      .rob-collage__img ..... el `<img>` que llena la casilla
@@ -2653,6 +2653,7 @@ section[id] {
   display: grid;
   place-items: center;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.6s ease;
 }
 
@@ -2672,6 +2673,111 @@ section[id] {
   object-fit: cover;
   object-position: var(--img-pos, center);
   display: block;
+  cursor: zoom-in;
+}
+
+.rob-collage__img:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: -4px;
+}
+
+.rob-lightbox {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  max-width: none;
+  height: 100vh;
+  max-height: none;
+  margin: 0;
+  padding: clamp(1rem, 3vw, 2rem);
+  border: 0;
+  background: transparent;
+  color: var(--white);
+}
+
+.rob-lightbox[open] {
+  display: grid;
+  place-items: center;
+}
+
+.rob-lightbox::backdrop {
+  background: rgb(3 7 30 / 88%);
+  backdrop-filter: blur(8px);
+}
+
+.rob-lightbox__panel {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(100%, 78rem);
+  max-height: 100%;
+  margin: auto;
+  padding: clamp(0.65rem, 2vw, 1.25rem);
+  border: 1px solid var(--line);
+  background: var(--bg-raise);
+  box-shadow: 0 24px 80px rgb(0 0 0 / 55%);
+}
+
+.rob-lightbox__close {
+  position: absolute;
+  z-index: 1;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--accent);
+  font: inherit;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.rob-lightbox__close:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--bg));
+}
+
+.rob-lightbox__figure {
+  display: grid;
+  gap: 0.85rem;
+  width: 100%;
+  max-height: calc(100vh - 4rem);
+}
+
+.rob-lightbox__image {
+  width: 100%;
+  max-height: calc(100vh - 9rem);
+  object-fit: contain;
+  background: var(--bg);
+}
+
+.rob-lightbox__caption {
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .rob-lightbox {
+    padding: 0.5rem;
+  }
+
+  .rob-lightbox__panel {
+    width: 100%;
+  }
+
+  .rob-lightbox__figure {
+    max-height: calc(100dvh - 1rem);
+  }
+
+  .rob-lightbox__image {
+    max-height: calc(100dvh - 7rem);
+  }
 }
 
 .rob-toggle {
@@ -4229,6 +4335,17 @@ section[id] {
   position: relative;
 }
 
+.contact-card__row {
+  display: contents;
+}
+
+.contact-card__row--copyable {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 48px;
+  align-items: stretch;
+  gap: 0.55rem;
+}
+
 /* La tarjeta entera es el enlace: asi hay una sola parada de tabulacion
    por medio y el objetivo tactil es toda la tarjeta. */
 
@@ -4251,6 +4368,40 @@ section[id] {
     border-color 250ms ease,
     background-color 250ms ease,
     box-shadow 250ms ease;
+}
+
+.contact-copy {
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+  min-height: 96px;
+  border: 1px solid var(--contact-borde);
+  border-radius: var(--contact-radius);
+  background: var(--bg-raise);
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    background-color 200ms ease;
+}
+
+.contact-card--hero .contact-copy {
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg-raise));
+  color: var(--accent);
+}
+
+.contact-copy:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.contact-copy:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 /* Filete de acento a la izquierda, que crece de abajo a arriba al pasar por
@@ -4287,6 +4438,44 @@ section[id] {
     border-color 250ms ease,
     background-color 250ms ease,
     transform 250ms ease;
+}
+
+.copy-toast {
+  position: fixed;
+  z-index: 10000;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  max-width: calc(100vw - 2rem);
+  padding: 0.85rem 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line));
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--bg-raise) 94%, var(--accent));
+  color: var(--white);
+  box-shadow: 0 12px 36px rgb(0 0 0 / 35%);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.copy-toast[hidden] {
+  display: none;
+}
+
+.copy-toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.copy-toast svg {
+  flex: none;
+  color: var(--accent);
+}
+
+.copy-toast[data-state='error'] {
+  border-color: color-mix(in srgb, #ff6b6b 65%, var(--line));
 }
 
 /* El glifo de WhatsApp viene del Hero y es un SVG dibujado a mano, asi que
@@ -4516,6 +4705,10 @@ section[id] {
     padding: 1rem 1.05rem;
   }
 
+  .contact-copy {
+    min-height: 84px;
+  }
+
   .contact-card__icon {
     width: 42px;
     height: 42px;
@@ -4549,6 +4742,11 @@ section[id] {
 @media (max-width: 420px) {
   .contact-card__link {
     padding-inline: 0.9rem;
+  }
+
+  .contact-card__row--copyable {
+    grid-template-columns: minmax(0, 1fr) 44px;
+    gap: 0.4rem;
   }
 }
 
@@ -4806,6 +5004,7 @@ section[id] {
 
 .rob-collage__layer.is-active {
   opacity: 1;
+  pointer-events: auto;
 }
 
 /*

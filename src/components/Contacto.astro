@@ -1,5 +1,5 @@
 ---
-import { ArrowRight, Mail, Github, Linkedin } from 'lucide-astro';
+import { ArrowRight, Copy, Mail, Github, Linkedin } from 'lucide-astro';
 import {
   contacto,
   correoUrl,
@@ -89,6 +89,10 @@ const ICONOS_LUCIDE = { Mail, Github, Linkedin };
               const Ico =
                 item.icono && item.icono !== 'Whatsapp' ? ICONOS_LUCIDE[item.icono] : null;
               const inactivo = item.icono === 'Whatsapp' && !whatsappConfigurado;
+              const esCopiable =
+                item.label === 'Correo' ||
+                (item.label === 'WhatsApp' && whatsappConfigurado);
+              const nombreCopiable = item.label === 'Correo' ? 'correo' : 'teléfono';
 
               return (
                 <li
@@ -101,41 +105,59 @@ const ICONOS_LUCIDE = { Mail, Github, Linkedin };
                     },
                   ]}
                 >
-                  <a
-                    class="contact-card__link"
-                    href={item.href}
-                    aria-disabled={inactivo ? 'true' : undefined}
-                    target={item.href.startsWith('http') ? '_blank' : undefined}
-                    rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  <div
+                    class:list={[
+                      'contact-card__row',
+                      { 'contact-card__row--copyable': esCopiable },
+                    ]}
                   >
-                    <span class="contact-card__icon" aria-hidden="true">
-                      {Ico && <Ico size={22} stroke-width={1.7} />}
-                      {item.icono === 'Whatsapp' && (
-                        /* Glifo copiado de `.hero-social__icon--whatsapp`
-                           del Hero: Lucide no trae iconos de marca. */
-                        <svg
-                          class="contact-card__glyph"
-                          viewBox="0 0 24 24"
-                          focusable="false"
-                        >
-                          <path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4A8 8 0 1 1 20 11.5Z" />
-                          <path d="M9 8.5c.3 2.7 2 4.5 4.8 5.4l1.2-1.3 2 .9c-.2 1.3-1.1 2-2.5 2-3.6-.2-6.9-3.5-7.1-7.1 0-1.3.7-2.2 2-2.5l.9 2L9 9.1" />
-                        </svg>
-                      )}
-                    </span>
+                    <a
+                      class="contact-card__link"
+                      href={item.href}
+                      aria-disabled={inactivo ? 'true' : undefined}
+                      target={item.href.startsWith('http') ? '_blank' : undefined}
+                      rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    >
+                      <span class="contact-card__icon" aria-hidden="true">
+                        {Ico && <Ico size={22} stroke-width={1.7} />}
+                        {item.icono === 'Whatsapp' && (
+                          /* Glifo copiado de `.hero-social__icon--whatsapp`
+                             del Hero: Lucide no trae iconos de marca. */
+                          <svg
+                            class="contact-card__glyph"
+                            viewBox="0 0 24 24"
+                            focusable="false"
+                          >
+                            <path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4A8 8 0 1 1 20 11.5Z" />
+                            <path d="M9 8.5c.3 2.7 2 4.5 4.8 5.4l1.2-1.3 2 .9c-.2 1.3-1.1 2-2.5 2-3.6-.2-6.9-3.5-7.1-7.1 0-1.3.7-2.2 2-2.5l.9 2L9 9.1" />
+                          </svg>
+                        )}
+                      </span>
 
-                    <span class="contact-card__body">
-                      <span class="contact-card__platform">{item.label}</span>
-                      <span class="contact-card__value">{item.valor}</span>
-                      {item.descripcion && (
-                        <span class="contact-card__desc">{item.descripcion}</span>
-                      )}
-                    </span>
+                      <span class="contact-card__body">
+                        <span class="contact-card__platform">{item.label}</span>
+                        <span class="contact-card__value">{item.valor}</span>
+                        {item.descripcion && (
+                          <span class="contact-card__desc">{item.descripcion}</span>
+                        )}
+                      </span>
 
-                    <span class="contact-card__go" aria-hidden="true">
-                      <ArrowRight size={20} stroke-width={1.7} />
-                    </span>
-                  </a>
+                      <span class="contact-card__go" aria-hidden="true">
+                        <ArrowRight size={20} stroke-width={1.7} />
+                      </span>
+                    </a>
+                    {esCopiable && (
+                      <button
+                        class="contact-copy"
+                        type="button"
+                        data-copy-text={item.valor}
+                        aria-label={`Copiar ${nombreCopiable} al portapapeles`}
+                        title="Copiar al portapapeles"
+                      >
+                        <Copy size={18} stroke-width={1.8} aria-hidden="true" />
+                      </button>
+                    )}
+                  </div>
                 </li>
               );
             })
@@ -159,6 +181,17 @@ const ICONOS_LUCIDE = { Mail, Github, Linkedin };
           <span class="btn__arrow" aria-hidden="true">→</span>
         </a>
       </div>
+    </div>
+    <div
+      class="copy-toast"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      data-copy-toast
+      hidden
+    >
+      <Copy size={17} stroke-width={1.8} aria-hidden="true" />
+      <span data-copy-toast-message></span>
     </div>
   </div>
 </section>

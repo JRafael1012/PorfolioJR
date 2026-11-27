@@ -518,62 +518,69 @@ const cifras = [
             <div class="rob-collage" data-rob-collage>
               <div
                 class="rob-collage__grid"
-                role="img"
-                aria-label="Collage de fotos del trabajo en robótica"
+                role="group"
+                aria-label="Galería de fotos del trabajo en robótica"
               >
                 {TILES.map((tile) => (
                   <div class="rob-collage__tile">
-                    {(experienciaRobotica.galeria ?? []).map((foto, indice) => (
-                      <div
-                        class:list={[
-                          'rob-collage__layer',
-                          { 'is-active': indice === tile },
-                        ]}
-                        aria-hidden={indice === tile ? undefined : 'true'}
-                      >
-                        {/*
-                          Las fotos van con `object-fit: cover` y no recortadas
-                          a 4:3 en el archivo. Recortar en disco obligaba a
-                          generar copias de cada imagen, y esas copias se perdian:
-                          OneDrive revierte archivos recien escritos en `public/`.
-                          Cubrir en el navegador ademas sale gratis en peso y
-                          deja el original intacto.
+                    {(experienciaRobotica.galeria ?? []).map((foto, indice) => {
+                      const alt =
+                        experienciaRobotica.galeriaAlt?.[indice] ??
+                        `Fotografía ${indice + 1} de la galería de robótica`;
 
-                          El recorte vertical si es real: `documental.jpg` es
-                          720x1599 y en una casilla 4:3 solo se ve un tercio de
-                          su alto. Por eso `object-position` esta al centro, que
-                          es donde suele estar el sujeto.
-                        */}
-                        <img
-                          class="rob-collage__img"
-                          style={experienciaRobotica.galeriaPos?.[indice]
-                            ? `--img-pos: ${experienciaRobotica.galeriaPos[indice]}`
-                            : undefined}
-                          src={`${import.meta.env.BASE_URL}/img/${foto}`}
-                          alt={
-                            experienciaRobotica.galeriaAlt?.[indice] ??
-                            `Fotografía ${indice + 1} de la galería de robótica`
-                          }
-                          /*
-                            Sin `width`/`height` a proposito: la casilla ya
-                            tiene `aspect-ratio: 4/3` y la foto se estira al
-                            100%. Poner atributos fijos diria "1200x900" para
-                            fotos que en realidad son verticales, y eso es
-                            informacion falsa en el marcado.
-                          */
-                          /* La primera casilla es la que se ve de entrada: no
-                             tiene sentido pedirle al navegador que espere. */
-                          loading={indice === 0 ? 'eager' : 'lazy'}
-                          decoding="async"
-                        />
-                      </div>
-                    ))}
+                      return (
+                        <div
+                          class:list={[
+                            'rob-collage__layer',
+                            { 'is-active': indice === tile },
+                          ]}
+                          aria-hidden={indice === tile ? undefined : 'true'}
+                        >
+                          <img
+                            class="rob-collage__img"
+                            style={experienciaRobotica.galeriaPos?.[indice]
+                              ? `--img-pos: ${experienciaRobotica.galeriaPos[indice]}`
+                              : undefined}
+                            src={`${import.meta.env.BASE_URL}/img/${foto}`}
+                            alt={alt}
+                            role="button"
+                            aria-label={`Ampliar foto: ${alt}`}
+                            tabindex={indice === tile ? 0 : -1}
+                            loading={indice === 0 ? 'eager' : 'lazy'}
+                            decoding="async"
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                 ))}
               </div>
             </div>
           ) : null
         }
+        <dialog
+          class="rob-lightbox"
+          data-rob-lightbox
+          aria-label="Fotografía ampliada de la galería de robótica"
+        >
+          <div class="rob-lightbox__panel">
+            <button
+              class="rob-lightbox__close"
+              type="button"
+              data-rob-lightbox-close
+              aria-label="Cerrar fotografía ampliada"
+            >
+              ×
+            </button>
+            <figure class="rob-lightbox__figure">
+              <img class="rob-lightbox__image" data-rob-lightbox-image alt="" />
+              <figcaption
+                class="rob-lightbox__caption"
+                data-rob-lightbox-caption
+              ></figcaption>
+            </figure>
+          </div>
+        </dialog>
         </div>
       </div>
     </section>

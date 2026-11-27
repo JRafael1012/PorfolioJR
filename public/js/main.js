@@ -294,6 +294,8 @@
             var activo = indice === elegidos[casilla];
             layer.classList.toggle('is-active', activo);
             layer.setAttribute('aria-hidden', activo ? 'false' : 'true');
+            var imagen = layer.querySelector('.rob-collage__img');
+            if (imagen) imagen.tabIndex = activo ? 0 : -1;
           });
           robActuales[casilla] = elegidos[casilla];
         });
@@ -301,7 +303,110 @@
     }
   }
 
-  /* --- 7. Progreso visual de la línea de trayectoria --- */
+  /* --- 7. Copiar correo o teléfono al portapapeles --- */
+  var copyButtons = document.querySelectorAll('[data-copy-text]');
+  var copyToast = document.querySelector('[data-copy-toast]');
+  var copyToastMessage = copyToast && copyToast.querySelector('[data-copy-toast-message]');
+
+  if (copyButtons.length && copyToast && copyToastMessage) {
+    var copyToastTimer = 0;
+    var copyToastHideTimer = 0;
+
+    var showCopyToast = function (message, state) {
+      window.clearTimeout(copyToastTimer);
+      window.clearTimeout(copyToastHideTimer);
+      copyToast.hidden = false;
+      copyToast.dataset.state = state;
+      copyToastMessage.textContent = message;
+      copyToast.classList.remove('is-visible');
+      window.requestAnimationFrame(function () {
+        copyToast.classList.add('is-visible');
+      });
+
+      copyToastTimer = window.setTimeout(function () {
+        copyToast.classList.remove('is-visible');
+        copyToastHideTimer = window.setTimeout(function () {
+          copyToast.hidden = true;
+        }, 200);
+      }, 2500);
+    };
+
+    copyButtons.forEach(function (button) {
+      button.addEventListener('click', async function () {
+        var value = button.getAttribute('data-copy-text');
+
+        if (!value) {
+          console.error('No hay un dato de contacto para copiar.');
+          showCopyToast('No se pudo copiar este dato.', 'error');
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(value);
+          showCopyToast('Copiado al portapapeles', 'success');
+        } catch (error) {
+          console.error('No se pudo copiar el dato al portapapeles.', error);
+          showCopyToast('No se pudo copiar. Revisa los permisos del navegador.', 'error');
+        }
+      });
+    });
+  } else if (copyButtons.length) {
+    console.error('Falta el contenedor de notificaciones para los botones de copia.');
+  }
+
+  /* --- 8. Lightbox accesible para la galería de robótica --- */
+  var robLightbox = document.querySelector('[data-rob-lightbox]');
+
+  if (robCollage && robLightbox) {
+    document.body.appendChild(robLightbox);
+
+    var lightboxImage = robLightbox.querySelector('[data-rob-lightbox-image]');
+    var lightboxCaption = robLightbox.querySelector('[data-rob-lightbox-caption]');
+    var lightboxClose = robLightbox.querySelector('[data-rob-lightbox-close]');
+
+    if (lightboxImage && lightboxCaption && lightboxClose) {
+      var closeRobLightbox = function () {
+        if (robLightbox.open) robLightbox.close();
+      };
+
+      var openRobLightbox = function (image) {
+        lightboxImage.src = image.currentSrc || image.src;
+        lightboxImage.alt = image.alt;
+        lightboxCaption.textContent = image.alt;
+        robLightbox.showModal();
+      };
+
+      var imageFromEvent = function (event) {
+        if (!(event.target instanceof Element)) return null;
+        var image = event.target.closest('.rob-collage__img');
+        if (!image || !robCollage.contains(image)) return null;
+        if (!image.closest('.rob-collage__layer.is-active')) return null;
+        return image;
+      };
+
+      robCollage.addEventListener('click', function (event) {
+        var image = imageFromEvent(event);
+        if (image) openRobLightbox(image);
+      });
+
+      robCollage.addEventListener('keydown', function (event) {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        var image = imageFromEvent(event);
+        if (!image) return;
+        event.preventDefault();
+        openRobLightbox(image);
+      });
+
+      lightboxClose.addEventListener('click', closeRobLightbox);
+      robLightbox.addEventListener('click', function (event) {
+        if (event.target === robLightbox) closeRobLightbox();
+      });
+    } else {
+      console.error('Faltan elementos requeridos para el lightbox de Robótica.');
+    }
+  }
+
+  /* --- 9. Progreso visual de la línea de trayectoria --- */
   var timeline = document.querySelector('[data-timeline]');
 
   if (timeline && !reduceMotion) {

@@ -9,9 +9,9 @@ import '@fontsource-variable/inter/wght.css';
 import '@fontsource-variable/jetbrains-mono/wght.css';
 import '../styles/global.css';
 
-const canonical = new URL(Astro.url.pathname, Astro.site);
-// Imagen social (Open Graph / Twitter): el logo del sitio, en URL absoluta.
-const imagenSocial = new URL(withBase('/img/logo.png'), Astro.site);
+const canonical = new URL(withBase('/'), Astro.site);
+// La foto de portada hace que la tarjeta social se lea como un portafolio personal.
+const imagenSocial = new URL(withBase('/img/foto1.jpeg'), Astro.site);
 
 // Datos estructurados (JSON-LD, lista de la guía 18). Solo campos reales:
 // nombre, perfil y redes de `perfil.ts`. Nada inventado, igual que el resto.
@@ -45,11 +45,14 @@ const jsonLd = {
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_CO" />
+    <meta property="og:site_name" content="Rafael.dev" />
     <meta property="og:title" content={perfil.meta.title} />
     <meta property="og:description" content={perfil.meta.description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={imagenSocial.href} />
-    <meta property="og:image:alt" content="Logotipo de Rafael Arlant" />
+    <meta property="og:image:secure_url" content={imagenSocial.href} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content="Rafael Arlant, desarrollador de software" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={perfil.meta.title} />
     <meta name="twitter:description" content={perfil.meta.description} />
