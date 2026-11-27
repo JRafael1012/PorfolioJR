@@ -78,7 +78,7 @@
       var featuredIndex = 0;
       var featuredSwipeStart = null;
       var featuredHoldTimer = null;
-      var featuredAutoplay = !reduceMotion;
+      var featuredAutoplay = true;
       var featuredFocusWithin = false;
       var featuredTimer = null;
       var featuredProgressFrame = null;
@@ -318,7 +318,7 @@
       aboutProgress
     ) {
       var aboutIndex = 0;
-      var aboutAutoplay = !reduceMotion;
+      var aboutAutoplay = true;
       var aboutPointerInside = false;
       var aboutFocusWithin = false;
       var aboutTimer = null;
@@ -920,7 +920,7 @@
     var carouselProgress = projectCarousel.querySelector('[data-carousel-progress]');
     var carouselFrame = 0;
     var carouselIndex = 0;
-    var carouselAutoplay = !reduceMotion;
+    var carouselAutoplay = true;
     var carouselPointerInside = false;
     var carouselFocusWithin = false;
     var carouselTimer = null;
