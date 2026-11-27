@@ -906,10 +906,10 @@ export const stack: Tecnologia[] = [
 /**
  * PROYECTOS DE SOFTWARE.
  *
- * Las cuatro tarjetas tienen descripción, problema, funcionalidades y stack;
+ * Las cinco tarjetas tienen descripción, problema, funcionalidades y stack;
  * FinovaTech, AutoAlDía y Reaction Race tienen `imagen`. No hay diagramas.
  *
- * Las cuatro tarjetas enlazan su repo real. No queda ningún `demoPendiente`.
+ * Las cinco tarjetas enlazan su repo real. No queda ningún `demoPendiente`.
  *
  * RAF VESTIGIA vive en `robotica.proyectos`, su sitio natural. No se duplica
  * aquí: la sección "Proyectos" lo señala y el contador de Estadísticas lo suma.
@@ -1072,6 +1072,44 @@ export const proyectos: Proyecto[] = [
     ],
     stack: ['Next.js', 'React', 'TypeScript', 'Tailwind', 'Prisma', 'MySQL', 'Auth.js', 'Zod'],
     repositorio: 'https://github.com/JRafael1012/CursoTracker',
+  },
+  {
+    titulo: 'GYM Control',
+    estado: 'Web · v2.0',
+    descripcion:
+      'Aplicación web en Python (Flask) y MySQL para administrar un gimnasio: registro de clientes, inicio de sesión por correo, tres roles con permisos y gestión de reservas de entrenamientos con aprobación del administrador.',
+    problema:
+      'Coordinar entrenadores, horarios y solicitudes por mensajes o hojas sueltas duplica reservas y deja estados poco claros. El sistema centraliza la solicitud, la aprobación y el seguimiento de cada sesión.',
+    funcionalidades: [
+      'Registro de clientes y login por correo con roles de administrador, entrenador y cliente',
+      'Reserva directa (Modalidad A) o asignada por el gimnasio (Modalidad B)',
+      'Aprobación o rechazo con motivo y asignación de entrenador por el administrador',
+      'Agenda del entrenador, disponibilidad semanal y sesiones completadas o canceladas',
+    ],
+    participacion:
+      'Desarrollé la aplicación Flask, las reglas de negocio de reservas, el esquema MySQL, las validaciones por rol y la documentación técnica del sistema.',
+    seguridad: [
+      'Contraseñas cifradas con hash de Werkzeug y sesiones protegidas.',
+      'Validaciones en backend y permisos por rol en cada flujo: administrador, entrenador y cliente.',
+      'Solo el administrador crea entrenadores; quien se registra desde /registro queda como cliente.',
+    ],
+    arquitectura: [
+      'Flask con módulos separados para usuarios, disponibilidad y reservas, además de configuración y seguridad propias.',
+      'MySQL administrado en XAMPP con el esquema completo en database/schema.sql.',
+      'Estados de reserva: Pendiente → Aprobada/Rechazada → Completada/Cancelada.',
+    ],
+    calidad: [
+      'Prueba de humo de los 3 roles: login, reserva directa, bloqueo de horarios duplicados, rechazo, aprobación, asignación, completar y cancelar.',
+      'Script scripts/verificar.py para diagnosticar conexión y reglas del sistema.',
+      'Documentación completa función por función en docs/DOCUMENTACION_COMPLETA.md.',
+    ],
+    bitacora: [
+      'El horario queda bloqueado mientras la solicitud está pendiente y se libera al rechazar o cancelar.',
+      'En Modalidad B se separa la elección de horario de la asignación de entrenador.',
+      'Interfaz con Jinja2 y guía de ejecución en Windows con XAMPP y Flask.',
+    ],
+    stack: ['Python', 'Flask', 'MySQL', 'HTML5', 'CSS3', 'JavaScript', 'Git'],
+    repositorio: 'https://github.com/JRafael1012/GymControl',
   },
 ];
 
@@ -1373,7 +1411,7 @@ export const idiomas = [
  * La regla: solo números desprendidos de los datos reales de este archivo, o
  * confirmados por el usuario. Nada de "10+ proyectos" redondeado hacia arriba:
  * si el dato no existe, no se muestra.
- *  · proyectos: `proyectos.length` (4) + `robotica.proyectos.length` (1) = 5.
+ *  · proyectos: `proyectos.length` (5) + `robotica.proyectos.length` (1) = 6.
  *  · añosRobotica: los 6 que ya afirma el subtítulo de `robotica`.
  *  · tecnologiasYHerramientas: `stack.length` = 27, incluidas las que la
  *    cinta separa en "Conocimientos básicos".
