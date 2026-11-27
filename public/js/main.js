@@ -5,7 +5,7 @@
  * 2. Cuenta las cifras de `[data-count]` cuando entran en pantalla.
  * 3. Avanza fotos y collage, y dibuja la línea de la trayectoria.
  * 4. Despliega los paneles de competencias y torneos.
- * 5. Salta desde el menú a una sección compensando el header fijo.
+ * 5. Abre y cierra el menú móvil y salta a una sección compensando el header fijo.
  * 6. Encoge y oscurece el header al hacer scroll, y marca la sección activa.
  *
  * La pausa de las marquesinas ya no tiene botón (D43): la cinta de STACK corta
@@ -298,9 +298,42 @@
     requestTimelineUpdate();
   }
 
-  /* --- 8. Compensación del header fijo al navegar por anclas --- */
   var header = document.querySelector('.site-header');
+  var navToggle = document.querySelector('[data-nav-toggle]');
+  var navMenu = document.querySelector('[data-nav-menu]');
 
+  var setMenu = function (abierto) {
+    if (!header || !navToggle) return;
+    header.classList.toggle('is-menu-open', abierto);
+    navToggle.setAttribute('aria-expanded', String(abierto));
+    navToggle.setAttribute('aria-label', abierto ? 'Cerrar menú' : 'Abrir menú');
+  };
+
+  if (header && navToggle && navMenu) {
+    navToggle.addEventListener('click', function () {
+      setMenu(!header.classList.contains('is-menu-open'));
+    });
+
+    navMenu.querySelectorAll('a[href^="#"]').forEach(function (link) {
+      link.addEventListener('click', function () {
+        setMenu(false);
+      });
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') setMenu(false);
+    });
+
+    document.addEventListener('click', function (event) {
+      if (!header.contains(event.target)) setMenu(false);
+    });
+
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 1180) setMenu(false);
+    });
+  }
+
+  /* --- 8. Compensación del header fijo al navegar por anclas --- */
   document.querySelectorAll('a[href^="#"]').forEach(function (link) {
     link.addEventListener('click', function (event) {
       var id = link.getAttribute('href');
@@ -329,8 +362,6 @@
      altura de la ventana: al descolgar el 35% de un bloque, se asume que es
      el que se lee. Solo cuentan los enlaces internos (`a[href^="#"]`), así que
      GitHub y Hoja de vida (externos/archivo) nunca se marcan. */
-  var header = document.querySelector('.site-header');
-
   var navAnclas = [];
   document.querySelectorAll('.nav-links a[href^="#"]').forEach(function (link) {
     var objetivo = document.querySelector(link.getAttribute('href'));
@@ -346,7 +377,7 @@
     if (header) header.classList.toggle('is-scrolled', desplazado);
 
     if (navAnclas.length) {
-      var referencia = window.scrollY + window.innerHeight * 0.35;
+      var referencia = window.innerHeight * 0.35;
       var activo = null;
 
       for (var i = 0; i < navAnclas.length; i += 1) {
@@ -375,6 +406,4 @@
   window.addEventListener('scroll', requestHeaderState, { passive: true });
   window.addEventListener('resize', requestHeaderState);
   requestHeaderState();
-
-  if (!header) return;
 })();

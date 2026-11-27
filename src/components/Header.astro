@@ -1,5 +1,5 @@
 ---
-import { perfil, nav, datosContacto } from '../data/perfil';
+import { perfil, nav } from '../data/perfil';
 import { withBase } from '../paths';
 ---
 
@@ -17,30 +17,52 @@ import { withBase } from '../paths';
       <span>{perfil.marca}</span>
     </a>
 
-    <ul class="nav-links">
-      {
-        nav.map((item) => (
-          <li>
-            <a href={item.href}>{item.label}</a>
-          </li>
-        ))
-      }
-    </ul>
+    <div class="nav-menu" id="nav-menu" data-nav-menu>
+      <ul class="nav-links">
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
 
     <div class="nav-actions">
       <a
         class="nav-cv"
-        href={datosContacto.githubUrl}
+        href="https://github.com"
         target="_blank"
         rel="noopener noreferrer"
       >
         GitHub
         <span class="btn__arrow" aria-hidden="true">↗</span>
       </a>
-      <a class="nav-cv" href={withBase(`/${perfil.cv.href}`)}>
+      <a
+        class="nav-cv"
+        href={withBase(`/${perfil.cv.href}`)}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         {perfil.cv.label}
         <span class="btn__arrow" aria-hidden="true">↗</span>
       </a>
     </div>
+
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+      aria-controls="nav-menu"
+      data-nav-toggle
+    >
+      <span class="nav-toggle__bars" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
   </nav>
 </header>

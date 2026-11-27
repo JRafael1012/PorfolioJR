@@ -57,6 +57,7 @@ const hayDetalles = Boolean(
       ) : (
         <div class="project-card__slot" aria-hidden="true">
           <span class="project-card__slot-text">Espacio para la captura</span>
+          <code class="project-card__slot-hint">{nombreArchivo}.webp</code>
         </div>
       )
     }
@@ -166,14 +167,6 @@ const hayDetalles = Boolean(
             </a>
           )}
         </div>
-      )
-    }
-
-    {
-      !imagenSrc && (
-        <p class="project-card__hint">
-          Falta <code>public/img/proyectos/{nombreArchivo}.webp</code>
-        </p>
       )
     }
   </div>

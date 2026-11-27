@@ -202,7 +202,7 @@ export const perfil = {
     'Hola, soy Rafael. Soy estudiante de Ingeniería de Sistemas y Computación y Técnico en Desarrollo de Software. Me apasiona aprender y construir cosas nuevas. Aprendo rápido, me adapto a nuevas tecnologías y utilizo la inteligencia artificial como herramienta para investigar, potenciar mis conocimientos y mejorar mi proceso de desarrollo. Me gusta enfrentar problemas reales y convertir ideas en soluciones funcionales.',
   ciudad: 'Bogotá, Colombia',
   areas: 'Frontend · Backend · SQL · Sistemas',
-  coordenadas: ["04° 42' N", "04° 04' W"],
+  coordenadas: ["04° 36' N", "74° 04' W"],
   fotoCaption: 'APRENDER HACIENDO',
   fotoAlt: 'Fotografía de Jonatan Rafael Arlant Cortes',
   badge: 'Software',

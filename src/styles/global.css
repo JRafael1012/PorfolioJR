@@ -94,6 +94,7 @@
      --maxw    ancho máximo de una línea de texto */
   --gutter: clamp(1rem, 4vw, 4.5rem);
   --maxw: 1595px;
+  --anchor-offset: 110px;
 }
 
 /* ============================================================
@@ -114,7 +115,6 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 110px;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -262,6 +262,10 @@ a:hover {
 .section {
   padding-block: clamp(4rem, 9vw, 7.5rem);
   border-top: 1px solid var(--line-soft);
+}
+
+section[id] {
+  scroll-margin-top: var(--anchor-offset);
 }
 
 .section__head {
@@ -850,10 +854,17 @@ a:hover {
   min-height: 84px;
   display: flex;
   align-items: center;
-  gap: 1rem 2rem;
-  flex-wrap: wrap;
+  gap: 1rem 1.25rem;
+  flex-wrap: nowrap;
   padding-block: 0.75rem;
   transition: min-height 0.25s ease, padding-block 0.25s ease;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  margin-left: auto;
 }
 
 .site-header.is-scrolled .nav {
@@ -896,23 +907,16 @@ a:hover {
 .nav-links {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  margin-left: auto;
-  gap: clamp(1rem, 2.6vw, 52px);
+  flex-wrap: nowrap;
+  gap: clamp(0.55rem, 1.05vw, 18px);
   list-style: none;
 }
-
-/* Grupos de acción (D50): GitHub y Hoja de vida ya no viven dentro de
-   `.nav-links`. En escritorio van pegados tras los enlaces; en pantallas
-   estrechas (≤1050 px) se quedan en la fila superior junto a la marca,
-   mientras los enlaces pasan a su propia fila debajo. Así los botones nunca
-   se caen al fondo del header. */
 
 .nav-actions {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  flex-wrap: nowrap;
+  gap: 0.6rem;
   flex: none;
 }
 
@@ -923,7 +927,8 @@ a:hover {
   align-items: center;
   color: var(--white);
   font-weight: 700;
-  font-size: 14px;
+  font-size: clamp(12px, 0.95vw, 14px);
+  white-space: nowrap;
   transition: color 0.2s ease;
 }
 
@@ -984,8 +989,9 @@ a:hover {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 12.5px;
+  font-size: clamp(11px, 0.9vw, 12.5px);
   letter-spacing: 0.4px;
+  white-space: nowrap;
   transition: transform 0.2s ease, border-color 0.2s ease,
     box-shadow 0.2s ease;
 }
@@ -1001,34 +1007,110 @@ a:hover {
   transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ≤1050 px (D50): los enlaces pasan a su fila propia de ancho completo;
-   arriba quedan solo la marca (izquierda) y los botones (derecha). */
-
-@media (max-width: 1050px) {
-  .nav-links {
-    flex: 1 1 100%;
-    gap: 1.25rem;
-  }
+.nav-toggle {
+  display: none;
 }
 
-@media (max-width: 700px) {
+.nav-toggle:focus-visible,
+.nav-cv:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (max-width: 1180px) {
   .nav {
     min-height: 76px;
+    gap: 0.75rem;
+    justify-content: space-between;
   }
 
   .site-header.is-scrolled .nav {
     min-height: 64px;
   }
 
+  .nav-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: none;
+    margin-left: 0;
+    padding: 0.75rem var(--gutter) 1rem;
+    background-color: var(--bg-nav);
+    border-bottom: 1px solid var(--line-soft);
+    box-shadow: 0 18px 32px -24px rgba(3, 7, 30, 0.9);
+  }
+
+  .site-header.is-menu-open .nav-menu {
+    display: block;
+  }
+
   .nav-links {
-    gap: 0.9rem 1.1rem;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
   }
 
   .nav-links a {
-    font-size: 11px;
+    height: 48px;
+    font-size: 14px;
   }
 
+  .nav-actions {
+    margin-left: auto;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #647087;
+    color: var(--white);
+    background: transparent;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .nav-toggle:hover {
+    border-color: var(--accent);
+    background-color: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+
+  .nav-toggle__bars {
+    display: grid;
+    gap: 5px;
+    width: 20px;
+  }
+
+  .nav-toggle__bars span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: currentColor;
+    transition: transform 0.25s ease, opacity 0.2s ease;
+  }
+
+  .site-header.is-menu-open .nav-toggle {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .site-header.is-menu-open .nav-toggle__bars span:first-child {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .site-header.is-menu-open .nav-toggle__bars span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .site-header.is-menu-open .nav-toggle__bars span:last-child {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+}
+
+@media (max-width: 700px) {
   .nav-cv {
     min-height: 32px;
     padding: 0 12px;
@@ -3128,8 +3210,10 @@ a:hover {
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.7rem;
   padding: 1.25rem;
 }
 
@@ -3152,6 +3236,15 @@ a:hover {
   width: 26px;
   height: 1px;
   background: color-mix(in srgb, var(--muted) 42%, transparent);
+}
+
+.project-card__slot-hint {
+  max-width: 100%;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.4px;
+  overflow-wrap: anywhere;
 }
 
 /* --- Contenido ---
@@ -3257,17 +3350,6 @@ a:hover {
 .project-card__features li::before {
   content: '▸';
   color: var(--accent);
-}
-
-.project-card__hint {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  color: var(--muted);
-  word-break: break-word;
-}
-
-.project-card__hint code {
-  color: var(--accent-2);
 }
 
 /* --- Detalles plegables ---
