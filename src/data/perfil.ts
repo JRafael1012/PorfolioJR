@@ -908,13 +908,13 @@ export const stack: Tecnologia[] = [
 /**
  * PROYECTOS DE SOFTWARE.
  *
- * Las dos tarjetas tienen descripción, problema, funcionalidades, stack y
- * acciones. FinovaTech ya tiene `imagen`; en la otra se deja fuera a propósito
- * mientras se sube la captura: conserva su hueco y el aviso con la ruta pendiente.
+ * Las cuatro tarjetas tienen descripción, problema, funcionalidades y stack.
+ * FinovaTech y AutoAlDía tienen `imagen`; al sistema web y a Reaction Race se
+ * les deja fuera a propósito mientras no haya captura: conservan su hueco.
  *
- * `repositorio` apunta al perfil en la tarjeta que aún no tiene repo público;
- * FinovaTech ya enlaza su repo real. `demoPendiente` muestra "Demo no publicada"
- * en la tarjeta que aún no tiene demo; FinovaTech no muestra botón de demo.
+ * FinovaTech enlaza su repo real. AutoAlDía y Reaction Race no muestran botón
+ * GitHub porque no hay repo público; el sistema web apunta al perfil.
+ * `demoPendiente` sigue "Demo no publicada" solo en el sistema vehicular.
  *
  * RAF VESTIGIA vive en `robotica.proyectos`, su sitio natural. No se duplica
  * aquí: la sección "Proyectos" lo señala y el contador de Estadísticas lo suma.
@@ -1000,6 +1000,79 @@ export const proyectos: Proyecto[] = [
     distincion:
       'Graduado con Honores · Mejor Proyecto Final de Promoción (Ficha 3154526) y Representante Institucional en la Muestra de Proyectos de Articulación SENA 2026 (CENIGRAF)',
     repositorio: 'https://github.com/RDVSYSTEMS/FinovaTech-',
+  },
+  {
+    titulo: 'AutoAlDía',
+    destacado: true,
+    estado: 'App móvil · Android',
+    imagen: 'img/proyectos/autoaldia-inicio.png',
+    descripcion:
+      'Aplicación móvil en Flutter para administrar uno o varios vehículos de forma offline-first: perfil, combustible, mantenimiento, gastos, documentos, seguros, impuestos, tuning y avisos. Todo se guarda en SQLite dentro del teléfono: sin servidor, sin nube y sin cuentas.',
+    problema:
+      'Llevar el control de un vehículo entre notas, recibos y recordatorios dispersos hace difícil saber cuándo darle servicio o cuánto se ha gastado. La app concentra ese historial en el dispositivo.',
+    funcionalidades: [
+      'Registro de vehículos, combustible, mantenimiento y gastos con resúmenes',
+      'Papelería, seguros, impuestos, préstamos, pagos recurrentes y presupuestos',
+      'Notificaciones locales y respaldo/restauración de la base de datos',
+      'PIN de bloqueo y modo claro/oscuro en Android',
+    ],
+    participacion:
+      'Proyecto de aprendizaje desarrollado en Dart y Flutter: diseño de la app, capa de datos, lógica de negocio, interfaz, pruebas y documentación de decisiones.',
+    seguridad: [
+      'PIN opcional con hash HMAC-SHA256, sal por usuario y 100 000 iteraciones, calculado en isolate.',
+      '5 intentos fallidos bloquean la app con espera creciente; el contador vive en SQLite, no en memoria.',
+      'Sin cuentas ni nube: la información permanece en SQLite local; el README documenta por qué no se añadió cifrado.',
+    ],
+    arquitectura: [
+      'Flutter 3.41 con Riverpod, Drift (SQLite), Material 3 y esquema versionado v12.',
+      '26 tablas y 22 DAOs; las cifras viven en docs/arquitectura.md §9 y un test las comprueba contra el código.',
+      'Offline-first con migraciones versionadas y borrados en cascada dentro de transacciones en los DAOs.',
+    ],
+    calidad: [
+      '221 pruebas en 27 archivos y flutter analyze sin issues, según el README y docs/arquitectura.md §9.',
+      'Suite con base de datos real en disco, sin mocks de infraestructura.',
+      'Test de ida y vuelta de respaldo/restauración y 14 capturas de diseño.',
+    ],
+    bitacora: [
+      'Rendimiento por tanque lleno y costo por km calculados con las mismas cargas, sin guardar datos derivados.',
+      'Las fotos se copian al almacenamiento permanente y se borran junto a su registro.',
+      'Decisiones rechazadas también documentadas en `plans/`: cifrado, biometría y formato de respaldo.',
+    ],
+    stack: ['Dart', 'Flutter', 'Riverpod', 'Drift', 'SQLite', 'Material 3', 'Android'],
+  },
+  {
+    titulo: 'Reaction Race',
+    estado: 'Proyecto en equipo · Local',
+    descripcion:
+      'Sistema local de competición de tiempo de reacción para dos jugadores, inspirado en las salidas de Fórmula 1. Funciona en el navegador con teclado y está preparado para conectarse a un Arduino UNO por USB/Serial.',
+    problema:
+      'Probar reflejos entre dos personas exigía un cronómetro manual y una señal visual improvisada. El proyecto unifica semáforo, medición, ganador e historial.',
+    funcionalidades: [
+      'Secuencia de luces roja, amarilla, verde y blanca con detección de salidas falsas',
+      'Medición con performance.now(), ganador/perdedor o empate y estadísticas',
+      'Historial persistente en localStorage',
+      'Firmware Arduino UNO y puente Web Serial',
+    ],
+    participacion:
+      'Proyecto en equipo con Camilo Orjuela, Daniel Conde y Dilman Celis; trabajamos la interfaz web, la lógica de carrera y el protocolo Serial.',
+    seguridad: [
+      'Las teclas A y L solo responden mientras hay una carrera activa.',
+      'La web funciona sin Internet ni dependencias externas; el historial queda en el navegador.',
+    ],
+    arquitectura: [
+      'HTML5, CSS3 y JavaScript vanilla sin frameworks; localStorage guarda historial y nombres.',
+      'handlePlayerReaction centraliza la reacción y handleArduinoMessage queda listo para mensajes Serial.',
+      'Firmware en arduino/ReactionRace.ino con pines fijos y eventos como SYSTEM_READY, RACE_START y RACE_FINISHED.',
+    ],
+    calidad: [
+      'Protocolo Serial documentado con tiempos en milisegundos, salidas falsas, ganador y empate.',
+      'Guía de conexión y puesta en marcha con Arduino UNO a 115200 baudios.',
+    ],
+    bitacora: [
+      'La secuencia de luces es idéntica en la web y en Arduino.',
+      'Web Serial exige localhost o HTTPS; por eso la guía incluye python -m http.server 8000 --bind 127.0.0.1.',
+    ],
+    stack: ['HTML5', 'CSS3', 'JavaScript', 'LocalStorage', 'Web Serial', 'Arduino', 'C++'],
   },
 ];
 
@@ -1301,7 +1374,7 @@ export const idiomas = [
  * La regla: solo números desprendidos de los datos reales de este archivo, o
  * confirmados por el usuario. Nada de "10+ proyectos" redondeado hacia arriba:
  * si el dato no existe, no se muestra.
- *  · proyectos: `proyectos.length` (2) + `robotica.proyectos.length` (1) = 3.
+ *  · proyectos: `proyectos.length` (4) + `robotica.proyectos.length` (1) = 5.
  *  · añosRobotica: los 6 que ya afirma el subtítulo de `robotica`.
  *  · tecnologiasYHerramientas: `stack.length` = 27, incluidas las que la
  *    cinta separa en "Conocimientos básicos".
