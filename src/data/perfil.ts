@@ -918,6 +918,85 @@ export const stack: Tecnologia[] = [
  */
 export const proyectos: Proyecto[] = [
   {
+    titulo: 'CursoTracker',
+    estado: 'SaaS · Fase 09: evaluación',
+    descripcion:
+      'SaaS multi-tenant para colegios y academias que gestiona estudiantes, cursos y notas y genera reportes y evidencias académicas en PDF/Excel. Web responsive, accesible desde cualquier dispositivo.',
+    problema:
+      'La gestión académica repartida entre hojas y documentos dificulta consolidar notas, asistencia y evidencias por centro. CursoTracker reúne esos datos con roles y aislamiento por institución.',
+    funcionalidades: [
+      'CRUD de estudiantes, cursos, períodos, asignaturas y usuarios',
+      'Carga de notas por clase, período y corte, y asistencia diaria',
+      'Reportes PDF/Excel: boletín por estudiante, sábana por curso y estadísticas',
+      'Roles para SuperAdmin, Rector, Coordinador, Docente, Estudiante, Padre y Secretario',
+    ],
+    participacion:
+      'Desarrollé el MVP completo: modelo de datos, autenticación, roles, CRUDs, carga de notas, reportes, pruebas y despliegue en red local.',
+    seguridad: [
+      'Auth.js con JWT, bcryptjs y validación Zod en los formularios.',
+      'Permisos por rol: el docente ve solo sus clases, el estudiante su boletín y el padre solo los de sus hijos.',
+      'Aislamiento multi-tenant verificado: rector ajeno 404 y padre ajeno 403.',
+      'AuditLog en cada exportación y backup/ restauración documentada con mysqldump.',
+    ],
+    arquitectura: [
+      'Next.js 16 App Router, React 19, TypeScript y Tailwind 4.',
+      'Prisma 6 + MySQL/MariaDB; modelo v2 con UUID, Estudiante = Usuario + perfil y CursoAsignaturaDocente.',
+      'Sesión con centroId y escala de calificación configurable por centro.',
+    ],
+    calidad: [
+      'tsc 0, eslint 0, vitest 3/3 y next build OK.',
+      'Smoke test 22/22 por rol y login de 5 roles demo con /panel 200.',
+      '6 exportaciones validadas por magic bytes (PK xlsx, %PDF) y UTF-8; restauración probada 85/85 filas.',
+    ],
+    bitacora: [
+      'Sesión con cookie inválida resuelta: el proxy valida el JWE y limpia la cookie.',
+      'Backup diario a las 23:00 con retención de 30 días y health check HTTP+BD en verde.',
+      'Auditoría npm documentada: 1 vulnerabilidad alta en xlsx sin fix disponible.',
+    ],
+    stack: ['Next.js', 'React', 'TypeScript', 'Tailwind', 'Prisma', 'MySQL', 'Auth.js', 'Zod'],
+    repositorio: 'https://github.com/JRafael1012/CursoTracker',
+  },
+  {
+    titulo: 'AutoAlDía',
+    destacado: true,
+    estado: 'App móvil · Android',
+    imagen: 'img/proyectos/autoaldia-inicio.png',
+    descripcion:
+      'Aplicación móvil en Flutter para administrar uno o varios vehículos de forma offline-first: perfil, combustible, mantenimiento, gastos, documentos, seguros, impuestos, tuning y avisos. Todo se guarda en SQLite dentro del teléfono: sin servidor, sin nube y sin cuentas.',
+    problema:
+      'Llevar el control de un vehículo entre notas, recibos y recordatorios dispersos hace difícil saber cuándo darle servicio o cuánto se ha gastado. La app concentra ese historial en el dispositivo.',
+    funcionalidades: [
+      'Registro de vehículos, combustible, mantenimiento y gastos con resúmenes',
+      'Papelería, seguros, impuestos, préstamos, pagos recurrentes y presupuestos',
+      'Notificaciones locales y respaldo/restauración de la base de datos',
+      'PIN de bloqueo y modo claro/oscuro en Android',
+    ],
+    participacion:
+      'Proyecto de aprendizaje desarrollado en Dart y Flutter: diseño de la app, capa de datos, lógica de negocio, interfaz, pruebas y documentación de decisiones.',
+    seguridad: [
+      'PIN opcional con hash HMAC-SHA256, sal por usuario y 100 000 iteraciones, calculado en isolate.',
+      '5 intentos fallidos bloquean la app con espera creciente; el contador vive en SQLite, no en memoria.',
+      'Sin cuentas ni nube: la información permanece en SQLite local; el README documenta por qué no se añadió cifrado.',
+    ],
+    arquitectura: [
+      'Flutter 3.41 con Riverpod, Drift (SQLite), Material 3 y esquema versionado v12.',
+      '26 tablas y 22 DAOs; las cifras viven en docs/arquitectura.md §9 y un test las comprueba contra el código.',
+      'Offline-first con migraciones versionadas y borrados en cascada dentro de transacciones en los DAOs.',
+    ],
+    calidad: [
+      '221 pruebas en 27 archivos y flutter analyze sin issues, según el README y docs/arquitectura.md §9.',
+      'Suite con base de datos real en disco, sin mocks de infraestructura.',
+      'Test de ida y vuelta de respaldo/restauración y 14 capturas de diseño.',
+    ],
+    bitacora: [
+      'Rendimiento por tanque lleno y costo por km calculados con las mismas cargas, sin guardar datos derivados.',
+      'Las fotos se copian al almacenamiento permanente y se borran junto a su registro.',
+      'Decisiones rechazadas también documentadas en `plans/`: cifrado, biometría y formato de respaldo.',
+    ],
+    stack: ['Dart', 'Flutter', 'Riverpod', 'Drift', 'SQLite', 'Material 3', 'Android'],
+    repositorio: 'https://github.com/JRafael1012/AutoAlDia',
+  },
+  {
     titulo: 'FinovaTech',
     destacado: true,
     estado: 'Proyecto final · SENA',
@@ -961,119 +1040,44 @@ export const proyectos: Proyecto[] = [
     repositorio: 'https://github.com/RDVSYSTEMS/FinovaTech-',
   },
   {
-    titulo: 'AutoAlDía',
-    destacado: true,
-    estado: 'App móvil · Android',
-    imagen: 'img/proyectos/autoaldia-inicio.png',
+    titulo: 'RDV SYSTEMS — Web corporativa',
+    estado: 'Sitio corporativo · GitHub Pages',
     descripcion:
-      'Aplicación móvil en Flutter para administrar uno o varios vehículos de forma offline-first: perfil, combustible, mantenimiento, gastos, documentos, seguros, impuestos, tuning y avisos. Todo se guarda en SQLite dentro del teléfono: sin servidor, sin nube y sin cuentas.',
+      'Sitio de presentación para RDV SYSTEMS con servicios de presencia digital, software a la medida y soporte TI, precios estimados, portafolio, testimonios y contacto por WhatsApp.',
     problema:
-      'Llevar el control de un vehículo entre notas, recibos y recordatorios dispersos hace difícil saber cuándo darle servicio o cuánto se ha gastado. La app concentra ese historial en el dispositivo.',
+      'Un negocio técnico necesita explicar con claridad qué ofrece, cuánto cuesta y cómo contactarlo. La web convierte esa información en una landing completa y adaptable a móvil.',
     funcionalidades: [
-      'Registro de vehículos, combustible, mantenimiento y gastos con resúmenes',
-      'Papelería, seguros, impuestos, préstamos, pagos recurrentes y presupuestos',
-      'Notificaciones locales y respaldo/restauración de la base de datos',
-      'PIN de bloqueo y modo claro/oscuro en Android',
+      'Hero con propuesta de valor, CTA de cotización y cifras del negocio',
+      'Secciones de servicios, precios estimados, para quién, nosotros y proceso',
+      'Portafolio con FinovaTech, Tungig Store y CursoTracker',
+      'Formulario de contacto que abre WhatsApp con honeypot anti-spam y chat flotante',
     ],
     participacion:
-      'Proyecto de aprendizaje desarrollado en Dart y Flutter: diseño de la app, capa de datos, lógica de negocio, interfaz, pruebas y documentación de decisiones.',
+      'Desarrollé la web completa en HTML, CSS y JavaScript, con SEO básico, PWA manifest, menú móvil, animaciones y despliegue en GitHub Pages.',
     seguridad: [
-      'PIN opcional con hash HMAC-SHA256, sal por usuario y 100 000 iteraciones, calculado en isolate.',
-      '5 intentos fallidos bloquean la app con espera creciente; el contador vive en SQLite, no en memoria.',
-      'Sin cuentas ni nube: la información permanece en SQLite local; el README documenta por qué no se añadió cifrado.',
+      'Formulario con honeypot anti-spam: los bots se ignoran sin mostrar error.',
+      'Enlaces externos de WhatsApp usan rel="noopener" y apertura en pestaña nueva.',
+      'Incluye robots.txt y site.webmanifest para indexación e instalación como app.',
     ],
     arquitectura: [
-      'Flutter 3.41 con Riverpod, Drift (SQLite), Material 3 y esquema versionado v12.',
-      '26 tablas y 22 DAOs; las cifras viven en docs/arquitectura.md §9 y un test las comprueba contra el código.',
-      'Offline-first con migraciones versionadas y borrados en cascada dentro de transacciones en los DAOs.',
+      'HTML semántico con secciones ancladas y CSS minificado en css/style.min.css; la fuente legible está en style.css.',
+      'JavaScript vanilla con IntersectionObserver, menú accesible con aria-expanded y contadores animados.',
+      'Despliegue estático en GitHub Pages mediante workflow de GitHub Actions.',
     ],
     calidad: [
-      '221 pruebas en 27 archivos y flutter analyze sin issues, según el README y docs/arquitectura.md §9.',
-      'Suite con base de datos real en disco, sin mocks de infraestructura.',
-      'Test de ida y vuelta de respaldo/restauración y 14 capturas de diseño.',
+      'Sitio publicado verificado: HTTP 200 en https://rdvsystems1012-oss.github.io/rdvsystems/.',
+      'Favicon en varios tamaños, site.webmanifest y meta tags SEO/Open Graph.',
+      'Las animaciones reveal, contadores y tilt 3D incluyen respeto a prefers-reduced-motion en los contadores.',
     ],
     bitacora: [
-      'Rendimiento por tanque lleno y costo por km calculados con las mismas cargas, sin guardar datos derivados.',
-      'Las fotos se copian al almacenamiento permanente y se borran junto a su registro.',
-      'Decisiones rechazadas también documentadas en `plans/`: cifrado, biometría y formato de respaldo.',
+      'El formulario arma el mensaje con nombre, negocio y texto antes de abrir WhatsApp.',
+      'El menú móvil actualiza aria-expanded y aria-label al abrir y cerrar.',
+      'El footer muestra el año dinámico y mantiene copyright y redes en una misma línea.',
     ],
-    stack: ['Dart', 'Flutter', 'Riverpod', 'Drift', 'SQLite', 'Material 3', 'Android'],
-    repositorio: 'https://github.com/JRafael1012/AutoAlDia',
-  },
-  {
-    titulo: 'Reaction Race',
-    estado: 'Proyecto en equipo · Local',
-    imagen: 'img/proyectos/reaction-race.png',
-    descripcion:
-      'Sistema local de competición de tiempo de reacción para dos jugadores, inspirado en las salidas de Fórmula 1. Funciona en el navegador con teclado y está preparado para conectarse a un Arduino UNO por USB/Serial.',
-    problema:
-      'Probar reflejos entre dos personas exigía un cronómetro manual y una señal visual improvisada. El proyecto unifica semáforo, medición, ganador e historial.',
-    funcionalidades: [
-      'Secuencia de luces roja, amarilla, verde y blanca con detección de salidas falsas',
-      'Medición con performance.now(), ganador/perdedor o empate y estadísticas',
-      'Historial persistente en localStorage',
-      'Firmware Arduino UNO y puente Web Serial',
-    ],
-    participacion:
-      'Proyecto en equipo con Camilo Orjuela, Daniel Conde y Dilman Celis; trabajamos la interfaz web, la lógica de carrera y el protocolo Serial.',
-    seguridad: [
-      'Las teclas A y L solo responden mientras hay una carrera activa.',
-      'La web funciona sin Internet ni dependencias externas; el historial queda en el navegador.',
-    ],
-    arquitectura: [
-      'HTML5, CSS3 y JavaScript vanilla sin frameworks; localStorage guarda historial y nombres.',
-      'handlePlayerReaction centraliza la reacción y handleArduinoMessage queda listo para mensajes Serial.',
-      'Firmware en arduino/ReactionRace.ino con pines fijos y eventos como SYSTEM_READY, RACE_START y RACE_FINISHED.',
-    ],
-    calidad: [
-      'Protocolo Serial documentado con tiempos en milisegundos, salidas falsas, ganador y empate.',
-      'Guía de conexión y puesta en marcha con Arduino UNO a 115200 baudios.',
-    ],
-    bitacora: [
-      'La secuencia de luces es idéntica en la web y en Arduino.',
-      'Web Serial exige localhost o HTTPS; por eso la guía incluye python -m http.server 8000 --bind 127.0.0.1.',
-    ],
-    stack: ['HTML5', 'CSS3', 'JavaScript', 'LocalStorage', 'Web Serial', 'Arduino', 'C++'],
-    repositorio: 'https://github.com/JRafael1012/-Reaction-Race',
-  },
-  {
-    titulo: 'CursoTracker',
-    estado: 'SaaS · Fase 09: evaluación',
-    descripcion:
-      'SaaS multi-tenant para colegios y academias que gestiona estudiantes, cursos y notas y genera reportes y evidencias académicas en PDF/Excel. Web responsive, accesible desde cualquier dispositivo.',
-    problema:
-      'La gestión académica repartida entre hojas y documentos dificulta consolidar notas, asistencia y evidencias por centro. CursoTracker reúne esos datos con roles y aislamiento por institución.',
-    funcionalidades: [
-      'CRUD de estudiantes, cursos, períodos, asignaturas y usuarios',
-      'Carga de notas por clase, período y corte, y asistencia diaria',
-      'Reportes PDF/Excel: boletín por estudiante, sábana por curso y estadísticas',
-      'Roles para SuperAdmin, Rector, Coordinador, Docente, Estudiante, Padre y Secretario',
-    ],
-    participacion:
-      'Desarrollé el MVP completo: modelo de datos, autenticación, roles, CRUDs, carga de notas, reportes, pruebas y despliegue en red local.',
-    seguridad: [
-      'Auth.js con JWT, bcryptjs y validación Zod en los formularios.',
-      'Permisos por rol: el docente ve solo sus clases, el estudiante su boletín y el padre solo los de sus hijos.',
-      'Aislamiento multi-tenant verificado: rector ajeno 404 y padre ajeno 403.',
-      'AuditLog en cada exportación y backup/ restauración documentada con mysqldump.',
-    ],
-    arquitectura: [
-      'Next.js 16 App Router, React 19, TypeScript y Tailwind 4.',
-      'Prisma 6 + MySQL/MariaDB; modelo v2 con UUID, Estudiante = Usuario + perfil y CursoAsignaturaDocente.',
-      'Sesión con centroId y escala de calificación configurable por centro.',
-    ],
-    calidad: [
-      'tsc 0, eslint 0, vitest 3/3 y next build OK.',
-      'Smoke test 22/22 por rol y login de 5 roles demo con /panel 200.',
-      '6 exportaciones validadas por magic bytes (PK xlsx, %PDF) y UTF-8; restauración probada 85/85 filas.',
-    ],
-    bitacora: [
-      'Sesión con cookie inválida resuelta: el proxy valida el JWE y limpia la cookie.',
-      'Backup diario a las 23:00 con retención de 30 días y health check HTTP+BD en verde.',
-      'Auditoría npm documentada: 1 vulnerabilidad alta en xlsx sin fix disponible.',
-    ],
-    stack: ['Next.js', 'React', 'TypeScript', 'Tailwind', 'Prisma', 'MySQL', 'Auth.js', 'Zod'],
-    repositorio: 'https://github.com/JRafael1012/CursoTracker',
+    stack: ['HTML5', 'CSS3', 'JavaScript', 'GitHub Pages', 'GitHub Actions', 'SEO', 'PWA'],
+    demo: 'https://rdvsystems1012-oss.github.io/rdvsystems/',
+    demoEtiqueta: 'Ver sitio',
+    repositorio: 'https://github.com/rdvsystems1012-oss/rdvsystems',
   },
   {
     titulo: 'GYM Control',
@@ -1152,75 +1156,40 @@ export const proyectos: Proyecto[] = [
     repositorio: 'https://github.com/JRafael1012/Nexfin-JR',
   },
   {
-    titulo: 'Panel de Estudio ICFES',
-    estado: 'Web estática · Proyecto académico',
+    titulo: 'Reaction Race',
+    estado: 'Proyecto en equipo · Local',
+    imagen: 'img/proyectos/reaction-race.png',
     descripcion:
-      'Panel de estudio en HTML, CSS y JavaScript para organizar la preparación del ICFES: tareas con progreso, registro de horas por materia y estadísticas en barras.',
+      'Sistema local de competición de tiempo de reacción para dos jugadores, inspirado en las salidas de Fórmula 1. Funciona en el navegador con teclado y está preparado para conectarse a un Arduino UNO por USB/Serial.',
     problema:
-      'Preparar un examen sin un lugar único para tareas y horas de estudio dificulta medir el avance. Este panel guarda el progreso en el navegador y lo muestra con reloj, calendario y gráfico.',
+      'Probar reflejos entre dos personas exigía un cronómetro manual y una señal visual improvisada. El proyecto unifica semáforo, medición, ganador e historial.',
     funcionalidades: [
-      'Barra lateral con vistas de Tareas, Estadísticas y Plan ICFES',
-      'Alta, finalización y borrado de tareas con barra de progreso',
-      'Registro de horas por materia con localStorage',
-      'Gráfico de barras con Chart.js y reloj/fecha en vivo',
+      'Secuencia de luces roja, amarilla, verde y blanca con detección de salidas falsas',
+      'Medición con performance.now(), ganador/perdedor o empate y estadísticas',
+      'Historial persistente en localStorage',
+      'Firmware Arduino UNO y puente Web Serial',
     ],
     participacion:
-      'Construí la interfaz y la lógica en JavaScript puro, incluido el guardado local y la vista de estadísticas con Chart.js.',
+      'Proyecto en equipo con Camilo Orjuela, Daniel Conde y Dilman Celis; trabajamos la interfaz web, la lógica de carrera y el protocolo Serial.',
     seguridad: [
-      'No envía datos a servidores: tareas y horas quedan en localStorage del navegador.',
-      'Valida que las horas sean mayores a cero antes de guardar una sesión de estudio.',
+      'Las teclas A y L solo responden mientras hay una carrera activa.',
+      'La web funciona sin Internet ni dependencias externas; el historial queda en el navegador.',
     ],
     arquitectura: [
-      'HTML fijo con barra lateral, contenido dinámico y widgets de calendario/reloj.',
-      'JavaScript organizado por funciones: verTareas, planICFES y verEstadisticas.',
-      'Chart.js cargado por CDN para el gráfico de horas por materia.',
+      'HTML5, CSS3 y JavaScript vanilla sin frameworks; localStorage guarda historial y nombres.',
+      'handlePlayerReaction centraliza la reacción y handleArduinoMessage queda listo para mensajes Serial.',
+      'Firmware en arduino/ReactionRace.ino con pines fijos y eventos como SYSTEM_READY, RACE_START y RACE_FINISHED.',
     ],
     calidad: [
-      'Sintaxis verificada con node --check en app.js.',
-      'Datos persistentes entre recargas mediante localStorage.',
-      'Interfaz en español con las materias del ICFES: Matemáticas, Lectura crítica, Ciencias, Sociales e Inglés.',
+      'Protocolo Serial documentado con tiempos en milisegundos, salidas falsas, ganador y empate.',
+      'Guía de conexión y puesta en marcha con Arduino UNO a 115200 baudios.',
     ],
     bitacora: [
-      'Corregí el reloj: sus elementos salieron del contenido reemplazable y ahora se actualizan sin error cada segundo.',
-      'El progreso se calcula como tareas finalizadas sobre total y se redondea a enteros.',
+      'La secuencia de luces es idéntica en la web y en Arduino.',
+      'Web Serial exige localhost o HTTPS; por eso la guía incluye python -m http.server 8000 --bind 127.0.0.1.',
     ],
-    stack: ['HTML5', 'CSS3', 'JavaScript', 'Chart.js', 'LocalStorage'],
-  },
-  {
-    titulo: 'Quiz de Mecánica Automotriz',
-    estado: 'Web estática · Proyecto académico',
-    descripcion:
-      'Quiz interactivo de 15 preguntas sobre carros, motos y camiones con navegación entre preguntas, puntaje, mensaje según el nivel y gráfico de aciertos y errores.',
-    problema:
-      'Repasar conceptos de mecánica sin retroalimentación inmediata dificulta detectar fallos. El quiz entrega un puntaje final y un resumen visual al terminar.',
-    funcionalidades: [
-      '15 preguntas de mecánica automotriz con opciones seleccionables',
-      'Botones Siguiente y Anterior con barra de progreso',
-      'Puntaje final con mensaje según porcentaje y opción de reinicio',
-      'Gráfico de aciertos y errores con Chart.js',
-    ],
-    participacion:
-      'Implementé la interfaz, el banco de preguntas, la navegación, el cálculo de puntaje y la vista de estadísticas en JavaScript puro.',
-    seguridad: [
-      'Todo el quiz se ejecuta en el navegador; no requiere backend ni envío de datos.',
-      'La selección se valida antes de avanzar: no permite seguir sin elegir una opción.',
-    ],
-    arquitectura: [
-      'HTML con contenedor del quiz y sección de estadísticas oculta hasta el final.',
-      'preguntas.js separa el banco de preguntas, script.js controla el flujo y estadisticas.js dibuja la gráfica.',
-      'Chart.js se carga por CDN y los resultados se mantienen en memoria durante la sesión.',
-    ],
-    calidad: [
-      'Sintaxis verificada con node --check en preguntas.js, script.js y estadisticas.js.',
-      'Corregí una referencia sobrante en estadisticas.js que impedía cargar la gráfica.',
-      'El reinicio limpia respuestas, resultados y puntaje antes de volver a la primera pregunta.',
-    ],
-    bitacora: [
-      'La carpeta de origen menciona ICFES, pero el contenido real del quiz es mecánica automotriz.',
-      'Los mensajes van de “Sigue estudiando” a “Maestro Mecánico” según el porcentaje obtenido.',
-      'El gráfico muestra aciertos y errores en porcentaje con escala de 0 a 100.',
-    ],
-    stack: ['HTML5', 'CSS3', 'JavaScript', 'Chart.js'],
+    stack: ['HTML5', 'CSS3', 'JavaScript', 'LocalStorage', 'Web Serial', 'Arduino', 'C++'],
+    repositorio: 'https://github.com/JRafael1012/-Reaction-Race',
   },
   {
     titulo: 'Buscaminas Web',
@@ -1259,76 +1228,75 @@ export const proyectos: Proyecto[] = [
     stack: ['HTML5', 'CSS3', 'JavaScript', 'LocalStorage', 'Web Audio'],
   },
   {
-    titulo: 'Calculadora Básica',
-    estado: 'Script de consola · Python',
+    titulo: 'Quiz de Mecánica Automotriz',
+    estado: 'Web estática · Proyecto académico',
     descripcion:
-      'Calculadora de consola en Python con menú de suma, resta, multiplicación y división, validación de entrada y control de división por cero.',
+      'Quiz interactivo de 15 preguntas sobre carros, motos y camiones con navegación entre preguntas, puntaje, mensaje según el nivel y gráfico de aciertos y errores.',
     problema:
-      'Una calculadora por terminal sirve para practicar entrada de datos, condicionales y bucles con mensajes claros de error.',
+      'Repasar conceptos de mecánica sin retroalimentación inmediata dificulta detectar fallos. El quiz entrega un puntaje final y un resumen visual al terminar.',
     funcionalidades: [
-      'Menú con operaciones 1-4 y opción 0 para salir',
-      'Lectura de números decimales con reintento si la entrada no es válida',
-      'Resultado mostrado junto con la expresión formateada',
-      'Manejo explícito de división por cero',
+      '15 preguntas de mecánica automotriz con opciones seleccionables',
+      'Botones Siguiente y Anterior con barra de progreso',
+      'Puntaje final con mensaje según porcentaje y opción de reinicio',
+      'Gráfico de aciertos y errores con Chart.js',
     ],
     participacion:
-      'Implementé las funciones obtener_numero, calcular y main para separar validación, operación y menú.',
+      'Implementé la interfaz, el banco de preguntas, la navegación, el cálculo de puntaje y la vista de estadísticas en JavaScript puro.',
     seguridad: [
-      'Valida el tipo de dato antes de calcular y repite la pregunta si no es número.',
-      'La división por cero se detecta antes de operar y muestra un error controlado.',
+      'Todo el quiz se ejecuta en el navegador; no requiere backend ni envío de datos.',
+      'La selección se valida antes de avanzar: no permite seguir sin elegir una opción.',
     ],
     arquitectura: [
-      'Funciones separadas para cálculo y validación, reutilizables desde el menú.',
-      'Bucle principal con continue para opción inválida y break para salir.',
-      'Salida formateada con cajas Unicode y f-strings.',
+      'HTML con contenedor del quiz y sección de estadísticas oculta hasta el final.',
+      'preguntas.js separa el banco de preguntas, script.js controla el flujo y estadisticas.js dibuja la gráfica.',
+      'Chart.js se carga por CDN y los resultados se mantienen en memoria durante la sesión.',
     ],
     calidad: [
-      'Sintaxis verificada con py_compile.',
-      'Sin dependencias externas: usa solo la biblioteca estándar.',
-      'Flujo completo: elegir operación, ingresar datos, mostrar resultado y repetir.',
+      'Sintaxis verificada con node --check en preguntas.js, script.js y estadisticas.js.',
+      'Corregí una referencia sobrante en estadisticas.js que impedía cargar la gráfica.',
+      'El reinicio limpia respuestas, resultados y puntaje antes de volver a la primera pregunta.',
     ],
     bitacora: [
-      'La validación evita que ValueError interrumpa el programa.',
-      'El menú distingue operación inválida de división por cero para dar mensajes distintos.',
-      'Los números se manejan como float para admitir decimales.',
+      'La carpeta de origen menciona ICFES, pero el contenido real del quiz es mecánica automotriz.',
+      'Los mensajes van de “Sigue estudiando” a “Maestro Mecánico” según el porcentaje obtenido.',
+      'El gráfico muestra aciertos y errores en porcentaje con escala de 0 a 100.',
     ],
-    stack: ['Python'],
+    stack: ['HTML5', 'CSS3', 'JavaScript', 'Chart.js'],
   },
   {
-    titulo: 'El Enigma del Valle Perdido',
-    estado: 'Aventura de texto · Python',
+    titulo: 'Panel de Estudio ICFES',
+    estado: 'Web estática · Proyecto académico',
     descripcion:
-      'Aventura de texto interactiva con tres caminos, acertijos, inventario, energía, finales alternos, logros y sistema de experiencia.',
+      'Panel de estudio en HTML, CSS y JavaScript para organizar la preparación del ICFES: tareas con progreso, registro de horas por materia y estadísticas en barras.',
     problema:
-      'Una narrativa ramificada permite practicar control de flujo, validación de entradas y estado del jugador sin interfaz gráfica.',
+      'Preparar un examen sin un lugar único para tareas y horas de estudio dificulta medir el avance. Este panel guarda el progreso en el navegador y lo muestra con reloj, calendario y gráfico.',
     funcionalidades: [
-      'Tres rutas: sendero del sol, río y bosque, cada una con su acertijo',
-      'Inventario dinámico con objetos que se consumen o se combinan',
-      'Exploración de zonas, energía limitada y finales según decisiones',
-      'Logros, experiencia y tres niveles: Novato, Explorador Experto y Leyenda',
+      'Barra lateral con vistas de Tareas, Estadísticas y Plan ICFES',
+      'Alta, finalización y borrado de tareas con barra de progreso',
+      'Registro de horas por materia con localStorage',
+      'Gráfico de barras con Chart.js y reloj/fecha en vivo',
     ],
     participacion:
-      'Implementé la historia y sus sistemas en Python: validación sí/no, rutas, inventario, energía, finales secretos y progresión.',
+      'Construí la interfaz y la lógica en JavaScript puro, incluido el guardado local y la vista de estadísticas con Chart.js.',
     seguridad: [
-      'Valida respuestas sí/no y edad antes de continuar, evitando entradas inválidas.',
-      'Las opciones de camino se repiten hasta recibir 1, 2 o 3.',
+      'No envía datos a servidores: tareas y horas quedan en localStorage del navegador.',
+      'Valida que las horas sean mayores a cero antes de guardar una sesión de estudio.',
     ],
     arquitectura: [
-      'Funciones por camino: camino_sol, camino_rio y camino_bosque devuelven energía y modifican inventario.',
-      'Estado sencillo en variables de inventario, energía, zonas exploradas y experiencia.',
-      'Salida por consola con emojis y mensajes narrativos.',
+      'HTML fijo con barra lateral, contenido dinámico y widgets de calendario/reloj.',
+      'JavaScript organizado por funciones: verTareas, planICFES y verEstadisticas.',
+      'Chart.js cargado por CDN para el gráfico de horas por materia.',
     ],
     calidad: [
-      'Sintaxis verificada con py_compile.',
-      'Corregí la validación de sí/no para aceptar tildes y mayúsculas.',
-      'Corregí una barra invertida sobrante en el mensaje final.',
+      'Sintaxis verificada con node --check en app.js.',
+      'Datos persistentes entre recargas mediante localStorage.',
+      'Interfaz en español con las materias del ICFES: Matemáticas, Lectura crítica, Ciencias, Sociales e Inglés.',
     ],
     bitacora: [
-      'La brújula y el agua se consumen y cambian la energía según la ruta elegida.',
-      'La llave dorada tiene prioridad sobre la antigua para evitar finales duplicados.',
-      'La combinación de gema solar y pluma encantada desbloquea el Sendero de los Ecos.',
+      'Corregí el reloj: sus elementos salieron del contenido reemplazable y ahora se actualizan sin error cada segundo.',
+      'El progreso se calcula como tareas finalizadas sobre total y se redondea a enteros.',
     ],
-    stack: ['Python'],
+    stack: ['HTML5', 'CSS3', 'JavaScript', 'Chart.js', 'LocalStorage'],
   },
   {
     titulo: 'JRAC Hacker Clock',
@@ -1368,44 +1336,76 @@ export const proyectos: Proyecto[] = [
     stack: ['Python', 'Tkinter', 'ZoneInfo', 'Requests', 'Threading'],
   },
   {
-    titulo: 'RDV SYSTEMS — Web corporativa',
-    estado: 'Sitio corporativo · GitHub Pages',
+    titulo: 'El Enigma del Valle Perdido',
+    estado: 'Aventura de texto · Python',
     descripcion:
-      'Sitio de presentación para RDV SYSTEMS con servicios de presencia digital, software a la medida y soporte TI, precios estimados, portafolio, testimonios y contacto por WhatsApp.',
+      'Aventura de texto interactiva con tres caminos, acertijos, inventario, energía, finales alternos, logros y sistema de experiencia.',
     problema:
-      'Un negocio técnico necesita explicar con claridad qué ofrece, cuánto cuesta y cómo contactarlo. La web convierte esa información en una landing completa y adaptable a móvil.',
+      'Una narrativa ramificada permite practicar control de flujo, validación de entradas y estado del jugador sin interfaz gráfica.',
     funcionalidades: [
-      'Hero con propuesta de valor, CTA de cotización y cifras del negocio',
-      'Secciones de servicios, precios estimados, para quién, nosotros y proceso',
-      'Portafolio con FinovaTech, Tungig Store y CursoTracker',
-      'Formulario de contacto que abre WhatsApp con honeypot anti-spam y chat flotante',
+      'Tres rutas: sendero del sol, río y bosque, cada una con su acertijo',
+      'Inventario dinámico con objetos que se consumen o se combinan',
+      'Exploración de zonas, energía limitada y finales según decisiones',
+      'Logros, experiencia y tres niveles: Novato, Explorador Experto y Leyenda',
     ],
     participacion:
-      'Desarrollé la web completa en HTML, CSS y JavaScript, con SEO básico, PWA manifest, menú móvil, animaciones y despliegue en GitHub Pages.',
+      'Implementé la historia y sus sistemas en Python: validación sí/no, rutas, inventario, energía, finales secretos y progresión.',
     seguridad: [
-      'Formulario con honeypot anti-spam: los bots se ignoran sin mostrar error.',
-      'Enlaces externos de WhatsApp usan rel="noopener" y apertura en pestaña nueva.',
-      'Incluye robots.txt y site.webmanifest para indexación e instalación como app.',
+      'Valida respuestas sí/no y edad antes de continuar, evitando entradas inválidas.',
+      'Las opciones de camino se repiten hasta recibir 1, 2 o 3.',
     ],
     arquitectura: [
-      'HTML semántico con secciones ancladas y CSS minificado en css/style.min.css; la fuente legible está en style.css.',
-      'JavaScript vanilla con IntersectionObserver, menú accesible con aria-expanded y contadores animados.',
-      'Despliegue estático en GitHub Pages mediante workflow de GitHub Actions.',
+      'Funciones por camino: camino_sol, camino_rio y camino_bosque devuelven energía y modifican inventario.',
+      'Estado sencillo en variables de inventario, energía, zonas exploradas y experiencia.',
+      'Salida por consola con emojis y mensajes narrativos.',
     ],
     calidad: [
-      'Sitio publicado verificado: HTTP 200 en https://rdvsystems1012-oss.github.io/rdvsystems/.',
-      'Favicon en varios tamaños, site.webmanifest y meta tags SEO/Open Graph.',
-      'Las animaciones reveal, contadores y tilt 3D incluyen respeto a prefers-reduced-motion en los contadores.',
+      'Sintaxis verificada con py_compile.',
+      'Corregí la validación de sí/no para aceptar tildes y mayúsculas.',
+      'Corregí una barra invertida sobrante en el mensaje final.',
     ],
     bitacora: [
-      'El formulario arma el mensaje con nombre, negocio y texto antes de abrir WhatsApp.',
-      'El menú móvil actualiza aria-expanded y aria-label al abrir y cerrar.',
-      'El footer muestra el año dinámico y mantiene copyright y redes en una misma línea.',
+      'La brújula y el agua se consumen y cambian la energía según la ruta elegida.',
+      'La llave dorada tiene prioridad sobre la antigua para evitar finales duplicados.',
+      'La combinación de gema solar y pluma encantada desbloquea el Sendero de los Ecos.',
     ],
-    stack: ['HTML5', 'CSS3', 'JavaScript', 'GitHub Pages', 'GitHub Actions', 'SEO', 'PWA'],
-    demo: 'https://rdvsystems1012-oss.github.io/rdvsystems/',
-    demoEtiqueta: 'Ver sitio',
-    repositorio: 'https://github.com/rdvsystems1012-oss/rdvsystems',
+    stack: ['Python'],
+  },
+  {
+    titulo: 'Calculadora Básica',
+    estado: 'Script de consola · Python',
+    descripcion:
+      'Calculadora de consola en Python con menú de suma, resta, multiplicación y división, validación de entrada y control de división por cero.',
+    problema:
+      'Una calculadora por terminal sirve para practicar entrada de datos, condicionales y bucles con mensajes claros de error.',
+    funcionalidades: [
+      'Menú con operaciones 1-4 y opción 0 para salir',
+      'Lectura de números decimales con reintento si la entrada no es válida',
+      'Resultado mostrado junto con la expresión formateada',
+      'Manejo explícito de división por cero',
+    ],
+    participacion:
+      'Implementé las funciones obtener_numero, calcular y main para separar validación, operación y menú.',
+    seguridad: [
+      'Valida el tipo de dato antes de calcular y repite la pregunta si no es número.',
+      'La división por cero se detecta antes de operar y muestra un error controlado.',
+    ],
+    arquitectura: [
+      'Funciones separadas para cálculo y validación, reutilizables desde el menú.',
+      'Bucle principal con continue para opción inválida y break para salir.',
+      'Salida formateada con cajas Unicode y f-strings.',
+    ],
+    calidad: [
+      'Sintaxis verificada con py_compile.',
+      'Sin dependencias externas: usa solo la biblioteca estándar.',
+      'Flujo completo: elegir operación, ingresar datos, mostrar resultado y repetir.',
+    ],
+    bitacora: [
+      'La validación evita que ValueError interrumpa el programa.',
+      'El menú distingue operación inválida de división por cero para dar mensajes distintos.',
+      'Los números se manejan como float para admitir decimales.',
+    ],
+    stack: ['Python'],
   },
   {
     titulo: 'Calculadora PHP — Taller de funciones',
