@@ -908,11 +908,10 @@ export const stack: Tecnologia[] = [
 /**
  * PROYECTOS DE SOFTWARE.
  *
- * Las tres tarjetas tienen descripción, problema, funcionalidades y stack.
- * FinovaTech y AutoAlDía tienen `imagen`; a Reaction Race se le deja fuera a
- * propósito mientras no haya captura: conserva su hueco.
+ * Las tres tarjetas tienen `imagen`, descripción, problema, funcionalidades y
+ * stack. El hueco del diagrama se conserva hasta que haya un DER real.
  *
- * FinovaTech enlaza su repo real. AutoAlDía y Reaction Race no muestran botón
+ * FinovaTech y AutoAlDía enlazan su repo real. Reaction Race no muestra botón
  * GitHub porque no hay repo público. No queda ningún `demoPendiente`.
  *
  * RAF VESTIGIA vive en `robotica.proyectos`, su sitio natural. No se duplica
@@ -1000,10 +999,12 @@ export const proyectos: Proyecto[] = [
       'Decisiones rechazadas también documentadas en `plans/`: cifrado, biometría y formato de respaldo.',
     ],
     stack: ['Dart', 'Flutter', 'Riverpod', 'Drift', 'SQLite', 'Material 3', 'Android'],
+    repositorio: 'https://github.com/JRafael1012/AutoAlDia',
   },
   {
     titulo: 'Reaction Race',
     estado: 'Proyecto en equipo · Local',
+    imagen: 'img/proyectos/reaction-race.png',
     descripcion:
       'Sistema local de competición de tiempo de reacción para dos jugadores, inspirado en las salidas de Fórmula 1. Funciona en el navegador con teclado y está preparado para conectarse a un Arduino UNO por USB/Serial.',
     problema:
