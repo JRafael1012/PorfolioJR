@@ -1760,6 +1760,10 @@ section[id] {
   );
 }
 
+.stack .marquee {
+  --marquee-duration: 28s;
+}
+
 .marquee__track {
   display: flex;
   width: max-content;
@@ -1835,7 +1839,7 @@ section[id] {
   animation-play-state: paused;
 }
 
-/* --- Sin movimiento: fila estática y desplazable --- */
+/* --- Sin movimiento: los torneos quedan fijos; Stack sigue en bucle --- */
 
 @media (prefers-reduced-motion: reduce) {
   #trayectoria::before {
@@ -1854,6 +1858,10 @@ section[id] {
 
   .marquee__track {
     animation: none;
+  }
+
+  .stack .marquee__track {
+    animation: marquee-scroll var(--marquee-duration) linear infinite;
   }
 
   .photo {
