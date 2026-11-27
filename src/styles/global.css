@@ -1761,7 +1761,7 @@ section[id] {
 }
 
 .stack .marquee {
-  --marquee-duration: 28s;
+  --marquee-duration: 60s;
 }
 
 .marquee__track {
@@ -1839,7 +1839,7 @@ section[id] {
   animation-play-state: paused;
 }
 
-/* --- Sin movimiento: los torneos quedan fijos; Stack sigue en bucle --- */
+/* --- Sin movimiento: Stack y torneos siguen avanzando solos --- */
 
 @media (prefers-reduced-motion: reduce) {
   #trayectoria::before {
@@ -1860,7 +1860,8 @@ section[id] {
     animation: none;
   }
 
-  .stack .marquee__track {
+  .stack .marquee__track,
+  .marquee--torneos .marquee__track {
     animation: marquee-scroll var(--marquee-duration) linear infinite;
   }
 
