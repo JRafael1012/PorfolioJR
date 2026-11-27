@@ -908,56 +908,17 @@ export const stack: Tecnologia[] = [
 /**
  * PROYECTOS DE SOFTWARE.
  *
- * Las cuatro tarjetas tienen descripción, problema, funcionalidades y stack.
- * FinovaTech y AutoAlDía tienen `imagen`; al sistema web y a Reaction Race se
- * les deja fuera a propósito mientras no haya captura: conservan su hueco.
+ * Las tres tarjetas tienen descripción, problema, funcionalidades y stack.
+ * FinovaTech y AutoAlDía tienen `imagen`; a Reaction Race se le deja fuera a
+ * propósito mientras no haya captura: conserva su hueco.
  *
  * FinovaTech enlaza su repo real. AutoAlDía y Reaction Race no muestran botón
- * GitHub porque no hay repo público; el sistema web apunta al perfil.
- * `demoPendiente` sigue "Demo no publicada" solo en el sistema vehicular.
+ * GitHub porque no hay repo público. No queda ningún `demoPendiente`.
  *
  * RAF VESTIGIA vive en `robotica.proyectos`, su sitio natural. No se duplica
  * aquí: la sección "Proyectos" lo señala y el contador de Estadísticas lo suma.
  */
 export const proyectos: Proyecto[] = [
-  {
-    titulo: 'Sistema Integral de Gestión Vehicular',
-    destacado: true,
-    descripcion:
-      'Sistema web para registrar y seguir vehículos, propietarios y movimientos operativos en un mismo lugar, con consultas rápidas desde cualquier navegador.',
-    problema:
-      'El control vehicular en hojas de cálculo o en papel genera datos duplicados e historiales difíciles de consultar. El sistema unifica esa información y facilita su seguimiento.',
-    funcionalidades: [
-      'Registro de vehículos y propietarios',
-      'Consulta y actualización del estado',
-      'Historial de movimientos',
-    ],
-    participacion:
-      'Construí la base de datos, la lógica del sistema y la interfaz web, y controlé los cambios con Git.',
-    seguridad: [
-      'Validación de placa y documento del propietario antes de insertar, con consulta previa por valores únicos.',
-      'Consultas SQL parametrizadas en PHP al buscar por placa o propietario.',
-      'Mensajes de error controlados en la interfaz, sin mostrar consultas ni rutas del servidor.',
-    ],
-    arquitectura: [
-      'Modelo Entidad-Relación con propietarios, vehículos y movimientos; claves foráneas para no repetir propietarios.',
-      'Historial ordenado por fecha y filtrado por placa, sin recorrer toda la tabla en pantalla.',
-      'Vistas PHP separadas de la lógica de validación para corregir reglas sin tocar el HTML.',
-    ],
-    calidad: [
-      'Pruebas funcionales de registro, consulta por placa y cambio de estado del vehículo.',
-      'Casos límite probados: placa duplicada, propietario sin documento y fecha de movimiento vacía.',
-      'Revisión manual en navegador para comprobar que el historial refleje el estado actual.',
-    ],
-    bitacora: [
-      'Centralicé el historial de movimientos para reconstruir el estado operativo sin repetir registros.',
-      'Normalicé propietarios y vehículos para que un mismo dato no quede duplicado en varias filas.',
-      'Separé consultas, validaciones y vistas para corregir errores sin reescribir la interfaz.',
-    ],
-    demoPendiente: true,
-    stack: ['PHP', 'MySQL', 'HTML5', 'CSS3', 'JavaScript', 'Git'],
-    repositorio: 'https://github.com/JRafael1012',
-  },
   {
     titulo: 'FinovaTech',
     destacado: true,
@@ -1374,7 +1335,7 @@ export const idiomas = [
  * La regla: solo números desprendidos de los datos reales de este archivo, o
  * confirmados por el usuario. Nada de "10+ proyectos" redondeado hacia arriba:
  * si el dato no existe, no se muestra.
- *  · proyectos: `proyectos.length` (4) + `robotica.proyectos.length` (1) = 5.
+ *  · proyectos: `proyectos.length` (3) + `robotica.proyectos.length` (1) = 4.
  *  · añosRobotica: los 6 que ya afirma el subtítulo de `robotica`.
  *  · tecnologiasYHerramientas: `stack.length` = 27, incluidas las que la
  *    cinta separa en "Conocimientos básicos".
