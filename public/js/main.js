@@ -9,8 +9,9 @@
  * 6. Encoge y oscurece el header al hacer scroll, y marca la sección activa.
  *
  * La pausa de las marquesinas ya no tiene botón (D43): la cinta de STACK corta
- * al pasar el puntero o al recibir foco, y con `prefers-reduced-motion` no se
- * mueve. Si el usuario prefiere menos movimiento, todo se muestra de inmediato.
+ * al pasar el puntero o al recibir foco. Las galerías de fotos siguen cambiando
+ * para que sus imágenes sean visibles; con movimiento reducido, el cambio es
+ * inmediato en vez de animarse.
  */
 (function () {
   'use strict';
@@ -124,34 +125,19 @@
   var photoFrame = document.querySelector('[data-photo-frame]');
 
   if (photoFrame) {
-    var photoToggle = photoFrame.querySelector('[data-photo-toggle]');
     var photos = Array.prototype.slice.call(photoFrame.querySelectorAll('.photo'));
 
-    if (photoToggle && photos.length > 1 && !reduceMotion) {
-      var photoToggleLabel = photoToggle.querySelector('[data-photo-toggle-label]');
-      var photoToggleIcon = photoToggle.querySelector('.photo-toggle__icon');
-      var activePhoto = 0;
-      var photosPaused = false;
-
-      photoToggle.hidden = false;
+    if (photos.length > 1) {
+      var activePhoto = photos.findIndex(function (photo) {
+        return photo.classList.contains('is-active');
+      });
+      if (activePhoto < 0) activePhoto = 0;
 
       window.setInterval(function () {
-        if (photosPaused) return;
-
         photos[activePhoto].classList.remove('is-active');
         activePhoto = (activePhoto + 1) % photos.length;
         photos[activePhoto].classList.add('is-active');
       }, 15000);
-
-      photoToggle.addEventListener('click', function () {
-        photosPaused = !photosPaused;
-        photoToggle.setAttribute('aria-pressed', photosPaused ? 'true' : 'false');
-
-        if (photoToggleLabel) {
-          photoToggleLabel.textContent = photosPaused ? 'Reanudar fotos' : 'Pausar fotos';
-        }
-        if (photoToggleIcon) photoToggleIcon.textContent = photosPaused ? '▶' : '❚❚';
-      });
     }
   }
 
@@ -208,7 +194,7 @@
      lea las dos fotos a la vez. */
   var credentialGallery = document.querySelector('[data-credential-gallery]');
 
-  if (credentialGallery && !reduceMotion) {
+  if (credentialGallery) {
     var credentialSlides = Array.prototype.slice.call(
       credentialGallery.querySelectorAll('[data-credential-slide]')
     );
@@ -237,10 +223,10 @@
      Cada casilla lleva dentro todas las capas y solo se ve la activa, para que
      el cambio sea un fundido y no un salto.
 
-     Va solo, sin botones: si el usuario pidió menos movimiento, no arranca. */
+     Va solo, sin botones. Con movimiento reducido, el cambio es inmediato. */
   var robCollage = document.querySelector('[data-rob-collage]');
 
-  if (robCollage && !reduceMotion) {
+  if (robCollage) {
     var robTiles = Array.prototype.slice.call(
       robCollage.querySelectorAll('.rob-collage__tile')
     );

@@ -1670,7 +1670,6 @@ section[id] {
    anula. */
 
 .marquee.marquee--torneos {
-  --marquee-duration: 15s;
   border-radius: 4px;
 }
 
@@ -1746,7 +1745,7 @@ section[id] {
 }
 
 .marquee {
-  --marquee-duration: 15s;
+  --marquee-duration: 30s;
   overflow: hidden;
   border-block: 1px solid var(--line-soft);
   padding-block: 1.75rem;
@@ -1758,10 +1757,6 @@ section[id] {
     #000 92%,
     transparent
   );
-}
-
-.stack .marquee {
-  --marquee-duration: 15s;
 }
 
 .marquee__track {
@@ -1839,11 +1834,7 @@ section[id] {
   animation-play-state: paused;
 }
 
-.marquee--torneos:hover .marquee__track {
-  animation-play-state: running;
-}
-
-/* --- Sin movimiento: Stack y torneos siguen avanzando solos --- */
+/* --- Mantiene las cintas en movimiento incluso con movimiento reducido --- */
 
 @media (prefers-reduced-motion: reduce) {
   #trayectoria::before {
@@ -1861,12 +1852,8 @@ section[id] {
   }
 
   .marquee__track {
-    animation: none;
-  }
-
-  .stack .marquee__track,
-  .marquee--torneos .marquee__track {
     animation: marquee-scroll var(--marquee-duration) linear infinite;
+    animation-duration: var(--marquee-duration) !important;
   }
 
   .photo {
