@@ -3285,6 +3285,21 @@ section[id] {
 
 .project-carousel__slide .project-card {
   height: 100%;
+  border-color: var(--line);
+  transition: border-color 380ms ease, box-shadow 380ms ease;
+}
+
+.project-carousel__slide[data-depth='front'] .project-card {
+  border-color: color-mix(in srgb, var(--accent) 42%, var(--line));
+  box-shadow: 0 24px 70px -46px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+.project-carousel__slide[data-depth='front'] .project-card__img {
+  transform: scale(1.045);
+}
+
+.project-carousel__slide[data-depth='mid'] .project-card__img {
+  transform: scale(1.02);
 }
 
 .project-carousel__hint {
@@ -3312,7 +3327,9 @@ section[id] {
 @media (prefers-reduced-motion: reduce) {
   .project-carousel__slide,
   .project-carousel__slide::after,
-  .project-carousel__nav {
+  .project-carousel__slide .project-card,
+  .project-carousel__nav,
+  .project-card__img {
     transition: none;
   }
 }
@@ -3341,6 +3358,8 @@ section[id] {
   height: 100%;
   object-fit: cover;
   display: block;
+  transform: scale(1);
+  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Hueco vacio: se queda en silencio a proposito. Sin rayas ni iconos: solo
@@ -3377,6 +3396,15 @@ section[id] {
   width: 26px;
   height: 1px;
   background: color-mix(in srgb, var(--muted) 42%, transparent);
+}
+
+.project-card__slot-mark {
+  color: color-mix(in srgb, var(--accent) 24%, transparent);
+  font-family: var(--mono);
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -0.07em;
+  line-height: 1;
 }
 
 /* --- Contenido ---
@@ -3501,13 +3529,57 @@ section[id] {
   color: var(--accent);
 }
 
-/* --- Detalles del caso ---
-   En "Todos los proyectos" el caso se lee completo, sin plegado. */
-
 .project-card__details-body {
   display: grid;
   gap: 1rem;
   padding: 1.1rem 0 0.25rem;
+}
+
+.project-card__more {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.project-card__more[data-expanded='true'] {
+  grid-template-rows: 1fr;
+}
+
+.project-card__more-inner {
+  display: grid;
+  gap: 1rem;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.project-card__more-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 44px;
+  width: 100%;
+  padding: 0 1rem;
+  border: 1px dashed color-mix(in srgb, var(--accent) 42%, var(--line));
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.project-card__more-btn:hover,
+.project-card__more-btn:focus-visible {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.project-card__more-icon {
+  font-size: 1rem;
+  line-height: 1;
 }
 
 /* --- Botones ---
@@ -3615,7 +3687,9 @@ section[id] {
 
 @media (prefers-reduced-motion: reduce) {
   .project-card__btn,
-  .project-card__btn-arrow {
+  .project-card__btn-arrow,
+  .project-card__more,
+  .project-card__more-btn {
     transition: none;
   }
 }

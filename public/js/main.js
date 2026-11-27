@@ -481,6 +481,7 @@
         var depth = Math.max(0, 1 - Math.min(distance, 1));
         if (slide.matches(':hover') || slide.contains(focused)) depth = 1;
         slide.style.setProperty('--depth', depth.toFixed(3));
+        slide.dataset.depth = depth > 0.82 ? 'front' : depth > 0.4 ? 'mid' : 'back';
       });
 
       carouselIndex = centeredSlide();
@@ -549,6 +550,29 @@
       requestCarouselPaint();
     }
   }
+
+  document.querySelectorAll('[data-project-more-toggle]').forEach(function (button) {
+    var more = button.closest('[data-project-more]');
+    var inner = button.parentElement.querySelector('[data-project-more-inner]');
+    if (!more || !inner) return;
+
+    var label = button.querySelector('[data-project-more-label]');
+    var icon = button.querySelector('[data-project-more-icon]');
+
+    var setExpanded = function (expanded) {
+      more.dataset.expanded = String(expanded);
+      button.setAttribute('aria-expanded', String(expanded));
+      inner.inert = !expanded;
+      inner.setAttribute('aria-hidden', String(!expanded));
+      if (label) label.textContent = expanded ? 'Ver menos' : 'Ver detalles';
+      if (icon) icon.textContent = expanded ? '−' : '+';
+    };
+
+    setExpanded(false);
+    button.addEventListener('click', function () {
+      setExpanded(button.getAttribute('aria-expanded') !== 'true');
+    });
+  });
 
   var header = document.querySelector('.site-header');
   var navToggle = document.querySelector('[data-nav-toggle]');

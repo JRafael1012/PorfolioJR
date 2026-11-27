@@ -50,15 +50,16 @@ const distincionResumen = proyecto.distincion
   ? [proyecto.distincion.split(' · ')[0], senaEnEstado].filter(Boolean).join(' · ')
   : undefined;
 
-const hayDetalles = Boolean(
-  proyecto.problema ||
-    proyecto.funcionalidades?.length ||
+const hayProblema = Boolean(proyecto.problema);
+const hayResto = Boolean(
+  proyecto.funcionalidades?.length ||
     proyecto.participacion ||
     proyecto.seguridad?.length ||
     proyecto.arquitectura?.length ||
     proyecto.calidad?.length ||
     proyecto.bitacora?.length,
 );
+const detallesId = `proyecto-detalles-${nombreArchivo}`;
 ---
 
 <article
@@ -83,6 +84,7 @@ const hayDetalles = Boolean(
             />
           ) : (
             <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaCaptura}>
+              <span class="project-card__slot-mark">{proyecto.stack?.[0] ?? 'JR'}</span>
               <span class="project-card__slot-text">Sin imagen publicada</span>
             </div>
           )
@@ -101,6 +103,7 @@ const hayDetalles = Boolean(
             />
           ) : (
             <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaCaptura}>
+              <span class="project-card__slot-mark">{proyecto.stack?.[0] ?? 'JR'}</span>
               <span class="project-card__slot-text">Sin imagen publicada</span>
             </div>
           )
@@ -150,10 +153,10 @@ const hayDetalles = Boolean(
     }
 
     {
-      !esResumen && hayDetalles && (
+      !esResumen && (hayProblema || hayResto) && (
         <div class="project-card__details-body project-card__details-body--abierto">
           {
-            proyecto.problema && (
+            hayProblema && (
               <div class="project-card__block">
                 <p class="project-card__label">Problema que resuelve</p>
                 <p class="project-card__text">{proyecto.problema}</p>
@@ -162,76 +165,103 @@ const hayDetalles = Boolean(
           }
 
           {
-            proyecto.funcionalidades && proyecto.funcionalidades.length > 0 && (
-              <div class="project-card__block">
-                <p class="project-card__label">Funcionalidades</p>
-                <ul class="project-card__features">
-                  {proyecto.funcionalidades.map((funcionalidad) => (
-                    <li>{funcionalidad}</li>
-                  ))}
-                </ul>
+            hayResto && (
+              <div class="project-card__more" data-project-more>
+                <div
+                  class="project-card__more-inner"
+                  id={detallesId}
+                  data-project-more-inner
+                >
+                  {
+                    proyecto.funcionalidades && proyecto.funcionalidades.length > 0 && (
+                      <div class="project-card__block">
+                        <p class="project-card__label">Funcionalidades</p>
+                        <ul class="project-card__features">
+                          {proyecto.funcionalidades.map((funcionalidad) => (
+                            <li>{funcionalidad}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )
+                  }
+
+                  {
+                    proyecto.participacion && (
+                      <div class="project-card__block">
+                        <p class="project-card__label">Arquitectura y mi participación</p>
+                        <p class="project-card__text">{proyecto.participacion}</p>
+                      </div>
+                    )
+                  }
+
+                  {
+                    proyecto.seguridad && proyecto.seguridad.length > 0 && (
+                      <div class="project-card__block">
+                        <p class="project-card__label">Seguridad y Buenas Prácticas</p>
+                        <ul class="project-card__features">
+                          {proyecto.seguridad.map((practica) => (
+                            <li>{practica}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )
+                  }
+
+                  {
+                    proyecto.arquitectura && proyecto.arquitectura.length > 0 && (
+                      <div class="project-card__block">
+                        <p class="project-card__label">Arquitectura y Base de Datos</p>
+                        <ul class="project-card__features">
+                          {proyecto.arquitectura.map((decision) => (
+                            <li>{decision}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )
+                  }
+
+                  {
+                    proyecto.calidad && proyecto.calidad.length > 0 && (
+                      <div class="project-card__block">
+                        <p class="project-card__label">Calidad y Pruebas (QA)</p>
+                        <ul class="project-card__features">
+                          {proyecto.calidad.map((prueba) => (
+                            <li>{prueba}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )
+                  }
+
+                  {
+                    proyecto.bitacora && proyecto.bitacora.length > 0 && (
+                      <div class="project-card__block">
+                        <p class="project-card__label">Retos Técnicos Resueltos (Bitácora de ingeniería)</p>
+                        <ul class="project-card__features">
+                          {proyecto.bitacora.map((reto) => (
+                            <li>{reto}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )
+                  }
+                </div>
               </div>
             )
           }
 
           {
-            proyecto.participacion && (
-              <div class="project-card__block">
-                <p class="project-card__label">Arquitectura y mi participación</p>
-                <p class="project-card__text">{proyecto.participacion}</p>
-              </div>
-            )
-          }
-
-          {
-            proyecto.seguridad && proyecto.seguridad.length > 0 && (
-              <div class="project-card__block">
-                <p class="project-card__label">Seguridad y Buenas Prácticas</p>
-                <ul class="project-card__features">
-                  {proyecto.seguridad.map((practica) => (
-                    <li>{practica}</li>
-                  ))}
-                </ul>
-              </div>
-            )
-          }
-
-          {
-            proyecto.arquitectura && proyecto.arquitectura.length > 0 && (
-              <div class="project-card__block">
-                <p class="project-card__label">Arquitectura y Base de Datos</p>
-                <ul class="project-card__features">
-                  {proyecto.arquitectura.map((decision) => (
-                    <li>{decision}</li>
-                  ))}
-                </ul>
-              </div>
-            )
-          }
-
-          {
-            proyecto.calidad && proyecto.calidad.length > 0 && (
-              <div class="project-card__block">
-                <p class="project-card__label">Calidad y Pruebas (QA)</p>
-                <ul class="project-card__features">
-                  {proyecto.calidad.map((prueba) => (
-                    <li>{prueba}</li>
-                  ))}
-                </ul>
-              </div>
-            )
-          }
-
-          {
-            proyecto.bitacora && proyecto.bitacora.length > 0 && (
-              <div class="project-card__block">
-                <p class="project-card__label">Retos Técnicos Resueltos (Bitácora de ingeniería)</p>
-                <ul class="project-card__features">
-                  {proyecto.bitacora.map((reto) => (
-                    <li>{reto}</li>
-                  ))}
-                </ul>
-              </div>
+            hayResto && (
+              <button
+                class="project-card__more-btn"
+                type="button"
+                data-project-more-toggle
+                aria-expanded="false"
+                aria-controls={detallesId}
+              >
+                <span data-project-more-label>Ver detalles</span>
+                <span class="project-card__more-icon" aria-hidden="true" data-project-more-icon>+</span>
+              </button>
             )
           }
         </div>
