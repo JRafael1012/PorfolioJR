@@ -906,11 +906,11 @@ export const stack: Tecnologia[] = [
 /**
  * PROYECTOS DE SOFTWARE.
  *
- * Las nueve tarjetas tienen descripción, problema, funcionalidades y stack;
+ * Las doce tarjetas tienen descripción, problema, funcionalidades y stack;
  * FinovaTech, AutoAlDía y Reaction Race tienen `imagen`. No hay diagramas.
  *
- * Seis tarjetas enlazan su repo real; las tres webs académicas no tienen repo
- * público. No queda ningún `demoPendiente`.
+ * Seis tarjetas enlazan su repo real; las seis prácticas académicas (tres webs
+ * y tres scripts Python) no tienen repo público. No queda `demoPendiente`.
  *
  * RAF VESTIGIA vive en `robotica.proyectos`, su sitio natural. No se duplica
  * aquí: la sección "Proyectos" lo señala y el contador de Estadísticas lo suma.
@@ -1257,6 +1257,115 @@ export const proyectos: Proyecto[] = [
     ],
     stack: ['HTML5', 'CSS3', 'JavaScript', 'LocalStorage', 'Web Audio'],
   },
+  {
+    titulo: 'Calculadora Básica',
+    estado: 'Script de consola · Python',
+    descripcion:
+      'Calculadora de consola en Python con menú de suma, resta, multiplicación y división, validación de entrada y control de división por cero.',
+    problema:
+      'Una calculadora por terminal sirve para practicar entrada de datos, condicionales y bucles con mensajes claros de error.',
+    funcionalidades: [
+      'Menú con operaciones 1-4 y opción 0 para salir',
+      'Lectura de números decimales con reintento si la entrada no es válida',
+      'Resultado mostrado junto con la expresión formateada',
+      'Manejo explícito de división por cero',
+    ],
+    participacion:
+      'Implementé las funciones obtener_numero, calcular y main para separar validación, operación y menú.',
+    seguridad: [
+      'Valida el tipo de dato antes de calcular y repite la pregunta si no es número.',
+      'La división por cero se detecta antes de operar y muestra un error controlado.',
+    ],
+    arquitectura: [
+      'Funciones separadas para cálculo y validación, reutilizables desde el menú.',
+      'Bucle principal con continue para opción inválida y break para salir.',
+      'Salida formateada con cajas Unicode y f-strings.',
+    ],
+    calidad: [
+      'Sintaxis verificada con py_compile.',
+      'Sin dependencias externas: usa solo la biblioteca estándar.',
+      'Flujo completo: elegir operación, ingresar datos, mostrar resultado y repetir.',
+    ],
+    bitacora: [
+      'La validación evita que ValueError interrumpa el programa.',
+      'El menú distingue operación inválida de división por cero para dar mensajes distintos.',
+      'Los números se manejan como float para admitir decimales.',
+    ],
+    stack: ['Python'],
+  },
+  {
+    titulo: 'El Enigma del Valle Perdido',
+    estado: 'Aventura de texto · Python',
+    descripcion:
+      'Aventura de texto interactiva con tres caminos, acertijos, inventario, energía, finales alternos, logros y sistema de experiencia.',
+    problema:
+      'Una narrativa ramificada permite practicar control de flujo, validación de entradas y estado del jugador sin interfaz gráfica.',
+    funcionalidades: [
+      'Tres rutas: sendero del sol, río y bosque, cada una con su acertijo',
+      'Inventario dinámico con objetos que se consumen o se combinan',
+      'Exploración de zonas, energía limitada y finales según decisiones',
+      'Logros, experiencia y tres niveles: Novato, Explorador Experto y Leyenda',
+    ],
+    participacion:
+      'Implementé la historia y sus sistemas en Python: validación sí/no, rutas, inventario, energía, finales secretos y progresión.',
+    seguridad: [
+      'Valida respuestas sí/no y edad antes de continuar, evitando entradas inválidas.',
+      'Las opciones de camino se repiten hasta recibir 1, 2 o 3.',
+    ],
+    arquitectura: [
+      'Funciones por camino: camino_sol, camino_rio y camino_bosque devuelven energía y modifican inventario.',
+      'Estado sencillo en variables de inventario, energía, zonas exploradas y experiencia.',
+      'Salida por consola con emojis y mensajes narrativos.',
+    ],
+    calidad: [
+      'Sintaxis verificada con py_compile.',
+      'Corregí la validación de sí/no para aceptar tildes y mayúsculas.',
+      'Corregí una barra invertida sobrante en el mensaje final.',
+    ],
+    bitacora: [
+      'La brújula y el agua se consumen y cambian la energía según la ruta elegida.',
+      'La llave dorada tiene prioridad sobre la antigua para evitar finales duplicados.',
+      'La combinación de gema solar y pluma encantada desbloquea el Sendero de los Ecos.',
+    ],
+    stack: ['Python'],
+  },
+  {
+    titulo: 'JRAC Hacker Clock',
+    estado: 'Aplicación de escritorio · Python/Tkinter',
+    descripcion:
+      'Reloj de escritorio en Tkinter con estética Matrix, hora de Bogotá, zonas horarias, clima por wttr.in, alarma configurable y animación en canvas.',
+    problema:
+      'Un reloj de escritorio sirve para practicar interfaces gráficas, hilos y consumo de APIs sin bloquear la interfaz.',
+    funcionalidades: [
+      'Hora grande en Bogotá y fecha en vivo',
+      'Hora de New York y Tokio con ZoneInfo',
+      'Clima de Bogotá consultado cada 10 minutos en un hilo secundario',
+      'Alarma HH:MM:SS configurable, beep multiplataforma y animación Matrix',
+    ],
+    participacion:
+      'Construí la interfaz con Tkinter, el bucle de actualización con after(), el hilo del clima y la lógica de alarma.',
+    seguridad: [
+      'La consulta de clima usa timeout de 5 segundos y muestra mensaje amigable si falla.',
+      'Si requests no está instalado, la app indica la dependencia en vez de cerrarse.',
+      'Escape cierra la ventana en modo pantalla completa.',
+    ],
+    arquitectura: [
+      'Tkinter con labels, frame de alarma y canvas para la animación.',
+      'datetime más ZoneInfo para Bogotá, New York y Tokio.',
+      'threading para clima y beep; ventana.after(1000, actualizar) para no bloquear la UI.',
+    ],
+    calidad: [
+      'Sintaxis verificada con py_compile.',
+      'El hilo del clima es daemon y se cierra con la ventana.',
+      'La alarma usa una bandera para sonar una sola vez por minuto.',
+    ],
+    bitacora: [
+      'La animación Matrix dibuja columnas "01" en verde sobre el canvas.',
+      'La hora de alarma se cambia desde un Entry sin reiniciar el programa.',
+      'El beep usa winsound en Windows y carácter de campana en Mac/Linux.',
+    ],
+    stack: ['Python', 'Tkinter', 'ZoneInfo', 'Requests', 'Threading'],
+  },
 ];
 
 /**
@@ -1557,7 +1666,7 @@ export const idiomas = [
  * La regla: solo números desprendidos de los datos reales de este archivo, o
  * confirmados por el usuario. Nada de "10+ proyectos" redondeado hacia arriba:
  * si el dato no existe, no se muestra.
- *  · proyectos: `proyectos.length` (9) + `robotica.proyectos.length` (1) = 10.
+ *  · proyectos: `proyectos.length` (12) + `robotica.proyectos.length` (1) = 13.
  *  · añosRobotica: los 6 que ya afirma el subtítulo de `robotica`.
  *  · tecnologiasYHerramientas: `stack.length` = 27, incluidas las que la
  *    cinta separa en "Conocimientos básicos".
