@@ -3382,16 +3382,11 @@ section[id] {
   scroll-padding-inline: var(--gutter);
   margin-inline: calc(-1 * var(--gutter));
   padding: 1.5rem var(--gutter) 2rem;
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent) transparent;
+  scrollbar-width: none;
 }
 
 .project-carousel__track::-webkit-scrollbar {
-  height: 6px;
-}
-
-.project-carousel__track::-webkit-scrollbar-thumb {
-  background: var(--accent);
+  display: none;
 }
 
 .project-carousel__slide {

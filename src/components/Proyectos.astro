@@ -1,10 +1,6 @@
 ---
-import { estadisticas, proyectos, robotica } from '../data/perfil';
+import { proyectos } from '../data/perfil';
 import ProyectoCard from './ProyectoCard.astro';
-
-const proyectosRobotica = robotica.proyectos
-  .map((proyecto) => proyecto.titulo)
-  .join(', ');
 
 /**
  * Sección "Proyectos" — la lista completa.
@@ -17,10 +13,6 @@ const proyectosRobotica = robotica.proyectos
  * y con avance automático que se pausa al interactuar. Cada tarjeta conserva
  * su caso completo.
  *
- * Hay catorce proyectos de software en `proyectos` (tres destacados) y uno de
- * robótica en `robotica.proyectos` (RAF VESTIGIA), que se muestra en su propia
- * sección. El contador de Estadísticas suma los quince; el aviso de abajo lo
- * explica para que la cifra y lo que se ve en pantalla sean coherentes.
  */
 ---
 
@@ -29,11 +21,6 @@ const proyectosRobotica = robotica.proyectos
     <div class="section__head">
       <p class="eyebrow">PROYECTOS</p>
       <h2 class="section__title">Todos los proyectos</h2>
-      <p class="section__subtitle">
-        Carrusel horizontal con profundidad, sin rotación y con avance
-        automático que se pausa cuando interactúas. Cada uno con su problema,
-        su stack y lo que aporté.
-      </p>
     </div>
 
     <div class="project-carousel" data-project-carousel>
@@ -90,12 +77,5 @@ const proyectosRobotica = robotica.proyectos
         }
       </div>
     </div>
-
-    <p class="proyectos__nota">
-    El contador de <strong>{estadisticas.proyectos} Proyectos</strong> suma{' '}
-      {proyectos.length} de software y {robotica.proyectos.length} de robótica:
-      <a href="#robotica">{proyectosRobotica}</a>, presentado en su propia
-      sección.
-    </p>
   </div>
 </section>
