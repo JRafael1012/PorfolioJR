@@ -5,11 +5,12 @@ import { withBase } from '../paths';
 // Tres fuentes de iconos, en este orden:
 //   1. Simple Icons, que además permite teñir el SVG del color de acento.
 //   2. Devicon, para lo que Simple Icons no tiene (Java, PowerShell, VS Code).
-//   3. `icono`: un SVG guardado en public/img/logos/ (Windows, Copilot,
-//      ChatGPT, AntiGravity y Canva). Pasa por withBase porque en GitHub
-//      Pages el sitio vive bajo /<repositorio>/.
+//   3. `icono`: un SVG guardado en public/img/logos/ (Windows). Pasa por
+//      withBase porque en GitHub Pages el sitio vive bajo /<repositorio>/.
 // El nombre siempre se escribe al lado, así el logo es decorativo: si el
 // CDN falla o no hay conexión, el texto sigue diciendo qué es cada cosa.
+// La lista se pinta UNA sola vez: antes se duplicaba para el bucle infinito
+// de la marquesina, y eso hacía que cada herramienta apareciera dos veces.
 const iconUrl = (slug?: string, di?: string, icono?: string) => {
   if (slug) return `https://cdn.simpleicons.org/${slug}/ffba08`;
   if (di) {
@@ -19,10 +20,6 @@ const iconUrl = (slug?: string, di?: string, icono?: string) => {
   return undefined;
 };
 
-const fila = (repetir: number) =>
-  Array.from({ length: repetir }, (_, vuelta) =>
-    stack.map((tech, indice) => ({ ...tech, clave: `${vuelta}-${indice}` }))
-  );
 ---
 
 <section class="section stack" id="stack">
@@ -40,34 +37,29 @@ const fila = (repetir: number) =>
 
   <div class="marquee">
     <div class="marquee__track">
-      {
-        fila(2).map((copia, indice) => (
-          <ul
-            class="marquee__group"
-            aria-hidden={indice === 1 ? 'true' : undefined}
-          >
-            {copia.map((tech) => {
-              const url = iconUrl(tech.slug, tech.di, tech.icono);
-              return (
-                <li class="marquee__item">
-                  {url && (
-                    <img
-                      class="marquee__logo"
-                      src={url}
-                      alt=""
-                      width="30"
-                      height="30"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  )}
-                  <span class="marquee__name">{tech.nombre}</span>
-                </li>
-              );
-            })}
-          </ul>
-        ))
-      }
+      <ul class="marquee__group">
+        {
+          stack.map((tech) => {
+            const url = iconUrl(tech.slug, tech.di, tech.icono);
+            return (
+              <li class="marquee__item">
+                {url && (
+                  <img
+                    class="marquee__logo"
+                    src={url}
+                    alt=""
+                    width="30"
+                    height="30"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
+                <span class="marquee__name">{tech.nombre}</span>
+              </li>
+            );
+          })
+        }
+      </ul>
     </div>
   </div>
 </section>

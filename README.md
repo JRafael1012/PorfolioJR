@@ -49,10 +49,9 @@ public/                       Header → Hero → Stack → Sobre mí →
 │   ├── mexico 2.jpg          │
 │   ├── wro.jpg               │
 │   ├── wro1.jpg             ─┘
-│   ├── logos/               SVG locales: canva, chatgpt, copilot,
-│   │                        antigravity y windows. Cada uno lleva su
-│   │                        fuente y licencia en un comentario interno
-│   └── cv.pdf               ← PENDIENTE: colocar la hoja de vida
+│   ├── logos/               SVG locales (windows y antiguos iconos de
+│   │                        herramientas ya retiradas del stack)
+│   └── cv-ats.html          ← Hoja de vida ATS, imprimible en PDF
 └── js/
     └── main.js              Revelado al hacer scroll, anclas, carrusel de
                              fotos del hero, galería de credenciales,
@@ -64,11 +63,11 @@ src/
 │   ├── Hero.astro           Carrusel de 3 fotos, cartel de disponibilidad,
 │   │                        línea de tecnologías clave, 2 botones y 6
 │   │                        botones circulares de redes bajo la foto
-│   ├── Stack.astro          Marquesina infinita de logos; pausa solo con
-│   │                        hover o foco (botón eliminado, D43)
+│   ├── Stack.astro          Cinta desplazable de logos, una sola vez por
+│   │                        tecnología (sin duplicados)
 │   ├── SobreMi.astro        Seis preguntas plegables y propuesta de valor
 │   ├── Trayectoria.astro    Timeline con línea que avanza al hacer scroll,
-│   │                        galería del diploma del SENA (Finovateh) y
+│   │                        galería del diploma del SENA (FinovaTech) y
 │   │                        panel de "Ver experiencia"
 │   ├── Robotica.astro       D28: trayectoria de Fundación Biosbot, 5 cifras
 │   │                        calculadas, 2 reconocimientos, 9 torneos en
@@ -82,7 +81,7 @@ src/
 │   ├── Estadisticas.astro   Cifras calculadas desde `perfil.ts`, nunca a mano (D38)
 │   ├── Certificaciones.astro Certificados; aviso si `certificaciones` está vacío
 │   ├── Proceso.astro         "Cómo trabajo": 7 pasos de desarrollo (D42)
-│   ├── Idiomas.astro         Idiomas honestos (B1·IFEC) + escala CEFR (D48)
+│   ├── Idiomas.astro         Idiomas honestos (B1·ICFES) + escala CEFR (D48)
 │   ├── Contacto.astro        Cuatro tarjetas de contacto + CTA de correo
 │   └── Footer.astro
 ├── data/
@@ -186,17 +185,18 @@ venta (D37 se mantiene), y aprovecha el bajo de la sección sin inventar datos.
 con `categoria` de tecnología o herramienta y `certificaciones.length` — así
 que **ningún número se escribe a mano y ninguno puede mentir**: si cambian los
 datos, cambia la cifra. La regla es que solo se muestra lo justificable: no hay
-"10+ proyectos" si hay 3. La marquesina del Stack muestra 37 items con logo;
-en Estadísticas solo se cuentan las **24 tecnologías y herramientas**
-(13 tecnologías de programación + 9 herramientas de desarrollo + 2 bases de
-datos; quedan fuera las plataformas y los asistentes de IA). Estadísticas no
+"10+ proyectos" si hay 3. La cinta del Stack muestra 27 tecnologías;
+en Estadísticas solo se cuentan las **23 tecnologías y herramientas**
+(13 de programación, 8 herramientas de desarrollo y 2 bases de datos;
+quedan fuera las 4 plataformas: GitHub, Linux, Kali Linux y Windows).
+Estadísticas no
 tiene entrada en el nav: es una franja corta pegada a Servicios.
 
 **Proceso de trabajo (D42).** Entre Certificaciones y Contacto, una rejilla de
 siete pasos —01 Entender → 07 Publicar— alimentada por `proceso` en
 `perfil.ts`. Son descripciones del proceso, no logros. Sin entrada en el nav,
 como Estadísticas. **Idiomas (D42/D48):** dos filas honestas —Español nativo,
-Inglés **B1 (según IFEC), mejorando**— desde `idiomas`; no se sube el nivel sin
+Inglés **B1 (según ICFES), mejorando**— desde `idiomas`; no se sube el nivel sin
 certificado. En ancho de escritorio las píldoras van a la izquierda y a su lado
 una **escala CEFR A1→C2** marca la posición real (B1, con `aria-current`); solo
 sitúa datos ciertos, sin objetivo ni percentil inventados. El hueco que dejaban
@@ -325,8 +325,11 @@ unos 425 px, así que no hay riesgo de desbordamiento.
 
 1. `stack` — **un logo es una afirmación.** Quita las tecnologías que no
    manejes: quien lo ve da por hecho que sí.
-2. Coloca tu hoja de vida en `public/cv.pdf`.
-3. `proyectos[].enlace.url` apunta al perfil de GitHub, no a repositorios. **RESUELTO en D21:** los cuatro proyectos inventados se borraron y ahora los enlaces van a repositorios reales.
+2. La hoja de vida ATS ya está en `public/cv-ats.html` y los dos botones de
+   descarga apuntan a ella. Ábrela y usa "Imprimir → Guardar como PDF".
+3. `proyectos[].repositorio` apunta a `https://github.com` de forma temporal:
+   sustitúyelo por la URL exacta de cada repositorio cuando los subas. Las
+   capturas siguen pendientes y sus rutas se conservan en `ProyectoCard.astro`.
 4. **Sin confirmar, marcado con `TODO` en `perfil.ts`:** el torneo de Brasil
    (falta cuál y en qué año), los canales del documental, la URL de Instagram,
    el nombre de RAF VESTIGIA y un segundo correo. No se inventó ninguno.

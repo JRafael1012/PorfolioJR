@@ -65,6 +65,8 @@ export interface Proyecto {
   destacado?: boolean;
   /** Qué es, en una o dos frases. */
   descripcion?: string;
+  /** Reconocimiento destacado que se muestra como insignia en la tarjeta. */
+  distincion?: string;
   /** El problema concreto que resuelve. */
   problema?: string;
   /** Tecnologías usadas. */
@@ -179,11 +181,12 @@ export interface Contacto {
  * las secciones ya están listos; lo que cambia es solo el texto de aquí.
  *
  * ⚠ PENDIENTE ANTES DE PUBLICAR
- *   1. proyectos[].enlace.url → los repositorios reales.
- *   2. El PDF de la hoja de vida: colócalo en `public/cv.pdf`.
+ *   1. proyectos[].repositorio → sustituir `https://github.com` por la URL
+ *      exacta de cada repositorio cuando estén publicados.
  *
  * YA RESUELTO: correo de contacto, URL de LinkedIn, fechas de SENA
- * (2025 — 2026), ingeniería (2027 — Actualidad) y robótica (2020 — Actualidad),
+ * (2025 — 2026), ingeniería (2027 — Actualidad), robótica (2020 — Actualidad),
+ * hoja de vida ATS en `public/cv-ats.html`,
  * y nombre de la universidad (Universidad Central) y de la fundación de
  * robótica (Fundación Biosbot Robótica / Team Biosbot Colombia).
  */
@@ -224,9 +227,9 @@ export const perfil = {
     'TypeScript',
   ],
   cv: {
-    label: 'Hoja de vida',
-    // Coloca el PDF en `public/cv.pdf` o cambia esta ruta.
-    href: 'cv.pdf',
+    label: 'Descargar CV',
+    // Hoja de vida ATS de una página, lista para imprimir en PDF.
+    href: 'cv-ats.html',
   },
   meta: {
     title: 'Rafael.dev — Portafolio',
@@ -779,7 +782,7 @@ reconocimientos: [
          `dirigidoA` sigue siendo 'fundacion'. */
       periodo: '2024',
       detalle:
-        'Galardío internacional en la categoría de tecnología innovadora y educación inclusiva, por un proyecto de inclusión social a través de la robótica.',
+        'Galardón internacional en la categoría de tecnología innovadora y educación inclusiva, por un proyecto de inclusión social a través de la robótica.',
       dirigidoA: 'fundacion',
     },
     {
@@ -841,49 +844,21 @@ reconocimientos: [
 /**
  * Tecnologías y herramientas — las que realmente usa.
  *
- * DOS FUENTES DE ICONOS (verificadas una a una el 2026-10-02):
+ * SOLO TECNOLOGÍAS DE DESARROLLO: lenguajes, frameworks, bases de datos,
+ * control de versiones, sistemas operativos y CAD. Las herramientas de
+ * productividad, el diseño gráfico y los asistentes de IA se dejan fuera:
+ * la IA se menciona como apoyo al trabajo en "Sobre mí", no como stack.
+ *
+ * FUENTES DE ICONOS:
  *   1. `slug` → Simple Icons, teñido del color de acento:
  *      https://cdn.simpleicons.org/<slug>/ffba08
- *   2. `di`   → Devicon, solo para lo que Simple Icons no tiene:
+ *   2. `di`   → Devicon, para lo que Simple Icons no tiene:
  *      https://cdn.jsdelivr.net/gh/devicons/devicon/icons/<di>/<di>-original.svg
- *      Hoy: Java, PowerShell y VS Code. Estos tres salen a color; los otros
- *      29 salen en ámbar.
- *   3. `icono` → un SVG guardado en `public/img/logos/`, para lo que no está
- *      en ninguna de las dos fuentes. Se lee con `withBase()`, sin esto
- *      devolvería 404 en GitHub Pages.
+ *      Hoy: Java, PowerShell y VS Code.
+ *   3. `icono` → SVG local en `public/img/logos/`. Solo Windows sigue en uso;
+ *      se lee con `withBase()` para no romper la ruta en GitHub Pages.
  *
- * Si no hay `slug`, ni `di`, ni `icono`, el nombre se muestra sin logo. Así la
- * cinta nunca muestra un icono roto.
- *
- * ⚠ IMPORTANTE
- *   Un logo es una afirmación: quien lo ve da por hecho que la manejas.
- *   Quita lo que no sepas antes de publicar.
- *
- * ICONOS GUARDADOS EN EL PROYECTO (public/img/logos/), 2026-10-02:
- *   · Windows → skillicons.dev (licencia del origen no verificada).
- *   · Copilot → Wikimedia Commons, dominio público. Se le añadió
- *     fill="#ffba08" porque venía en negro y no se veía sobre este fondo.
- *   · ChatGPT → Wikimedia Commons (ChatGPT-Logo.svg), dominio público. Se le
- *     añadió fill="#ffba08": el primer archivo que se probó era el icono de
- *     la app, un cuadrado verde azulado que desentonaba con la cinta.
- *   · AntiGravity → thesvg.org, MIT. Conserva sus colores de marca.
- *   · Canva → thesvg.org, MIT. Conserva su degradado de marca.
- *   Cada archivo lleva su fuente y licencia anotadas dentro del propio SVG.
- *
- * ERRORES EVITADOS AL BUSCAR LOS SLUGS:
- *   · Node.js → 'nodejs' da 404; el correcto es 'nodedotjs'.
- *   · Bash → 'bash' da 404; el correcto es 'gnubash'.
- *   · CSS → 'css3' da 404; el correcto es 'css'.
- *   · En Devicon el archivo es '<nombre>-original.svg'. Ojo: los '-plain'
- *     NO son monocromos (JavaScript sale amarillo con cuadrado de fondo) y
- *     algunos salen en negro puro, invisible sobre este fondo oscuro.
- *   · ChatGPT: ni 'chatgpt' ni 'openai' existen en ninguna de las dos fuentes.
- *   · Canva sí está en el paquete npm de Simple Icons, pero NO en
- *     cdn.simpleicons.org (lo retiraron). Por eso va como icono local.
- *
- * QUITADAS POR DECISIÓN DEL USUARIO (2026-10-02): SQL, Word, Excel y
- * 'Programación por bloques'. En su lugar entra Scratch, que sí es la
- * herramienta concreta que usa en robótica. Python ya estaba en la lista.
+ * ⚠ Un logo es una afirmación: quien lo ve da por hecho que la manejas.
  */
 export const stack: Tecnologia[] = [
   // Lenguajes
@@ -907,12 +882,9 @@ export const stack: Tecnologia[] = [
   { nombre: 'SQLite', categoria: 'base-de-datos', slug: 'sqlite' },
   { nombre: 'Arduino', categoria: 'herramienta', slug: 'arduino' },
   { nombre: 'Android Studio', categoria: 'herramienta', slug: 'androidstudio' },
-  { nombre: 'Scratch', categoria: 'plataforma', slug: 'scratch' },
 
-  // Diseño
+  // CAD
   { nombre: 'AutoCAD 2D y 3D', categoria: 'herramienta', slug: 'autocad' },
-  { nombre: 'Figma', categoria: 'herramienta', slug: 'figma' },
-  { nombre: 'Canva', categoria: 'plataforma', icono: 'img/logos/canva.svg' },
 
   // Control de versiones
   { nombre: 'Git', categoria: 'herramienta', slug: 'git' },
@@ -927,57 +899,62 @@ export const stack: Tecnologia[] = [
   { nombre: 'Kali Linux', categoria: 'plataforma', slug: 'kalilinux' },
   { nombre: 'Windows', categoria: 'plataforma', icono: 'img/logos/windows.svg' },
 
-  // Herramientas
+  // Editor
   { nombre: 'VS Code', categoria: 'herramienta', di: 'vscode' },
-  { nombre: 'Notion', categoria: 'plataforma', slug: 'notion' },
-
-  // Asistentes de IA
-  { nombre: 'Claude Code', categoria: 'ia', slug: 'claude' },
-  { nombre: 'ChatGPT', categoria: 'ia', icono: 'img/logos/chatgpt.svg' },
-  { nombre: 'GitHub Copilot', categoria: 'ia', slug: 'githubcopilot' },
-  { nombre: 'Copilot (Windows)', categoria: 'ia', icono: 'img/logos/copilot.svg' },
-  { nombre: 'OpenCode', categoria: 'ia', slug: 'opencode' },
-  { nombre: 'AntiGravity', categoria: 'ia', icono: 'img/logos/antigravity.svg' },
 ];
 
 /**
- * PROYECTOS — PENDIENTE de datos.
+ * PROYECTOS DE SOFTWARE.
  *
- * Solo hay dos proyectos confirmados por el usuario: el título. Todo lo demás
- * está vacío a propósito (ver D21 en plans/plan_midegs_completo.md): la
- * tarjeta dibuja solo los campos que existen, así que **no se inventa nada**.
- * Los 4 proyectos de relleno que había antes se borraron porque eran
- * inventados y sus enlaces apuntaban al perfil de GitHub, no a repositorios.
+ * Las dos tarjetas tienen descripción, problema, funcionalidades, stack y
+ * acciones. `imagen` se deja fuera a propósito mientras se suben las capturas:
+ * la tarjeta conserva su hueco y el aviso con la ruta pendiente.
  *
- * PARA TERMINAR CADA TARJETA, rellena lo que falte en este array:
- *   descripcion    qué es, en una o dos frases
- *   problema       el problema concreto que resuelve
- *   stack          ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL']
- *   funcionalidades ['Registro de usuarios', 'Ingresos', ...]
- *   participacion  qué hiciste tú dentro del equipo
- *   estado         'En desarrollo' | 'Terminado' | 'En pausa' | ...
- *   imagen         'img/proyectos/finovatech.webp'  (déjalo en public/)
- *   repositorio    'https://github.com/JRafael1012/...'  URL REAL del repo
- *   demo           'https://...'                        URL REAL publicada
+ * `repositorio` apunta a `https://github.com` hasta que existan las URLs
+ * exactas de cada repo. `demo` se deja fuera hasta que haya una demo real:
+ * mientras tanto, el botón "Ver detalles" abre la información de cada proyecto.
  *
- * `destacado: true` lo sube a la sección "Proyectos destacados". El usuario
- * pidió los 3 mejores; de momento solo hay 2 confirmados, y el tercero sigue
- * vacante en vez de rellenarse con lo que haya.
+ * RAF VESTIGIA vive en `robotica.proyectos`, su sitio natural. No se duplica
+ * aquí: la sección "Proyectos" lo señala y el contador de Estadísticas lo suma.
  */
 export const proyectos: Proyecto[] = [
   {
     titulo: 'Sistema Integral de Gestión Vehicular',
     destacado: true,
+    descripcion:
+      'Sistema web para registrar y seguir vehículos, propietarios y movimientos operativos en un mismo lugar, con consultas rápidas desde cualquier navegador.',
+    problema:
+      'El control vehicular en hojas de cálculo o en papel genera datos duplicados e historiales difíciles de consultar. El sistema unifica esa información y facilita su seguimiento.',
+    funcionalidades: [
+      'Registro de vehículos y propietarios',
+      'Consulta y actualización del estado',
+      'Historial de movimientos',
+    ],
+    participacion:
+      'Construí la base de datos, la lógica del sistema y la interfaz web, y controlé los cambios con Git.',
+    stack: ['PHP', 'MySQL', 'HTML5', 'CSS3', 'JavaScript', 'Git'],
+    repositorio: 'https://github.com',
   },
   {
     titulo: 'FinovaTech',
     destacado: true,
-    // El proyecto final del SENA, según D13.
+    estado: 'Proyecto final · SENA',
+    descripcion:
+      'Aplicación web para organizar la información financiera de un negocio: registra movimientos, consulta el estado de las cuentas y presenta resúmenes para tomar decisiones.',
+    problema:
+      'Cuando los ingresos y egresos se anotan por separado, saber cuánto entra, cuánto sale y en qué momento requiere reconstruir los datos. FinovaTech los concentra en un solo lugar.',
+    funcionalidades: [
+      'Registro de ingresos y egresos',
+      'Consulta y filtrado de movimientos',
+      'Resúmenes financieros para seguimiento',
+    ],
+    participacion:
+      'Desarrollé el proyecto final de la formación técnica: modelado de datos, lógica de negocio, interfaz y pruebas.',
+    stack: ['Python', 'MySQL', 'HTML5', 'CSS3', 'JavaScript', 'PHP', 'Git'],
+    distincion:
+      'Graduado con Honores · Mejor Proyecto Final de Promoción (Ficha 3154526) y Representante Institucional en la Muestra de Proyectos de Articulación SENA 2026 (CENIGRAF)',
+    repositorio: 'https://github.com',
   },
-  // RAF VESTIGIA se mudó a `robotica.proyectos` (D28.3): es un proyecto de
-  // robótica y su sitio natural es la sección de Robótica. Si se dejara aquí
-  // con `destacado: true`, el mismo nombre saldría en "Proyectos destacados"
-  // y en "Robótica", duplicado.
 ];
 
 /**
@@ -1265,11 +1242,11 @@ export const proceso: PasoProceso[] = [
 
 /**
  * Idiomas (guía 27). Nivel honesto y con fuente: el B1 lo confirma el usuario
- * "según el IFEC". Si algún día hay un certificado a la mano, se actualiza.
+ * "según el ICFES". Si algún día hay un certificado a la mano, se actualiza.
  */
 export const idiomas = [
   { idioma: 'Español', nivel: 'Nativo' },
-  { idioma: 'Inglés', nivel: 'B1 · IFEC, mejorando' },
+  { idioma: 'Inglés', nivel: 'B1 · ICFES, mejorando' },
 ] as const;
 
 /**
@@ -1282,8 +1259,7 @@ export const idiomas = [
  *  · añosRobotica: los 6 que ya afirma el subtítulo de `robotica`.
  *  · tecnologiasYHerramientas: los items del stack con `categoria`
  *    'tecnologia', 'herramienta' o 'base-de-datos' (D41). Quedan fuera las
- *    plataformas y los asistentes de IA: son 24 de los 37 que muestra
- *    la marquesina.
+ *    plataformas: son 23 de las 27 tecnologías que muestra la cinta.
  *  · certificaciones: `certificaciones.length` = 13.
  */
 export const estadisticas = {

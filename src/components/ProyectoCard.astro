@@ -35,6 +35,12 @@ const nombreArchivo = proyecto.titulo
   .replace(/[̀-ͯ]/g, '')
   .replace(/[^a-z0-9]+/g, '-')
   .replace(/^-|-$/g, '');
+
+const hayDetalles = Boolean(
+  proyecto.problema ||
+    proyecto.funcionalidades?.length ||
+    proyecto.participacion,
+);
 ---
 
 <article class:list={['card', 'project-card', { 'project-card--wide': destacada }]}>
@@ -70,33 +76,11 @@ const nombreArchivo = proyecto.titulo
     {proyecto.descripcion && <p class="project-card__desc">{proyecto.descripcion}</p>}
 
     {
-      proyecto.problema && (
-        <div class="project-card__block">
-          <p class="project-card__label">Problema que resuelve</p>
-          <p class="project-card__text">{proyecto.problema}</p>
-        </div>
-      )
-    }
-
-    {
-      proyecto.funcionalidades && proyecto.funcionalidades.length > 0 && (
-        <div class="project-card__block">
-          <p class="project-card__label">Funcionalidades</p>
-          <ul class="project-card__features">
-            {proyecto.funcionalidades.map((funcionalidad) => (
-              <li>{funcionalidad}</li>
-            ))}
-          </ul>
-        </div>
-      )
-    }
-
-    {
-      proyecto.participacion && (
-        <div class="project-card__block">
-          <p class="project-card__label">Mi participación</p>
-          <p class="project-card__text">{proyecto.participacion}</p>
-        </div>
+      proyecto.distincion && (
+        <p class="project-card__honor">
+          <span class="project-card__honor-mark" aria-hidden="true">★</span>
+          {proyecto.distincion}
+        </p>
       )
     }
 
@@ -114,6 +98,49 @@ const nombreArchivo = proyecto.titulo
     }
 
     {
+      hayDetalles && (
+        <details class="project-card__details">
+          <summary class="project-card__btn project-card__btn--primary">
+            Ver detalles
+            <span class="project-card__btn-arrow" aria-hidden="true">↓</span>
+          </summary>
+          <div class="project-card__details-body">
+            {
+              proyecto.problema && (
+                <div class="project-card__block">
+                  <p class="project-card__label">Problema que resuelve</p>
+                  <p class="project-card__text">{proyecto.problema}</p>
+                </div>
+              )
+            }
+
+            {
+              proyecto.funcionalidades && proyecto.funcionalidades.length > 0 && (
+                <div class="project-card__block">
+                  <p class="project-card__label">Funcionalidades</p>
+                  <ul class="project-card__features">
+                    {proyecto.funcionalidades.map((funcionalidad) => (
+                      <li>{funcionalidad}</li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            }
+
+            {
+              proyecto.participacion && (
+                <div class="project-card__block">
+                  <p class="project-card__label">Mi participación</p>
+                  <p class="project-card__text">{proyecto.participacion}</p>
+                </div>
+              )
+            }
+          </div>
+        </details>
+      )
+    }
+
+    {
       (proyecto.demo || proyecto.repositorio) && (
         <div class="project-card__actions">
           {proyecto.demo && (
@@ -123,7 +150,7 @@ const nombreArchivo = proyecto.titulo
               target="_blank"
               rel="noopener noreferrer"
             >
-              Ver proyecto
+              Demo
               <span class="project-card__btn-arrow" aria-hidden="true">↗</span>
             </a>
           )}

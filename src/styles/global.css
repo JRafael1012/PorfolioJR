@@ -1684,6 +1684,19 @@ a:hover {
   animation: marquee-scroll var(--marquee-duration) linear infinite;
 }
 
+/* La cinta del Stack se renderiza una sola vez, así que no puede desplazarse
+   en bucle: con una sola lista aparecería un hueco al reiniciar. Se queda
+   como una tira desplazable con el mismo aspecto. La de torneos conserva
+   su bucle, que es otra sección y sí tiene dos copias. */
+.stack .marquee {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.stack .marquee__track {
+  animation: none;
+}
+
 .marquee__group {
   display: flex;
   align-items: center;
@@ -2177,6 +2190,15 @@ a:hover {
   color: var(--white);
   font-size: 1rem;
   transition: color 220ms ease;
+}
+
+.exp-project__honor {
+  max-width: 38ch;
+  margin-top: 0.35rem;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  line-height: 1.6;
 }
 
 @media (hover: hover) {
@@ -3058,6 +3080,20 @@ a:hover {
   gap: 2rem;
 }
 
+.proyectos__nota {
+  margin-top: 1.5rem;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  line-height: 1.7;
+}
+
+.proyectos__nota a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .project-card {
   padding: 0;
   overflow: hidden;
@@ -3168,6 +3204,24 @@ a:hover {
   color: var(--muted);
 }
 
+.project-card__honor {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: start;
+  padding: 0.7rem 0.85rem;
+  border-left: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg));
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  line-height: 1.6;
+}
+
+.project-card__honor-mark {
+  color: var(--accent);
+}
+
 .project-card__block {
   display: grid;
   gap: 0.5rem;
@@ -3214,6 +3268,30 @@ a:hover {
 
 .project-card__hint code {
   color: var(--accent-2);
+}
+
+/* --- Detalles plegables ---
+   El resumen reutiliza el botón primario de la tarjeta, así el único botón
+   que no es un enlace sigue teniendo el mismo aspecto y zona táctil. */
+
+.project-card__details > summary {
+  width: fit-content;
+  list-style: none;
+  cursor: pointer;
+}
+
+.project-card__details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.project-card__details[open] .project-card__btn-arrow {
+  transform: rotate(180deg);
+}
+
+.project-card__details-body {
+  display: grid;
+  gap: 1rem;
+  padding: 1.1rem 0 0.25rem;
 }
 
 /* --- Botones ---

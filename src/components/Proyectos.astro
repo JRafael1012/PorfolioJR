@@ -10,8 +10,10 @@ import ProyectoCard from './ProyectoCard.astro';
  * resto. La tarjeta es la misma (`ProyectoCard.astro`), sin `destacada`, así
  * que sale en la rejilla y no en ancho completo.
  *
- * El usuario pidió entre 5 y 8. Ahora mismo hay 3 confirmados, que es lo
- * único que hay; los que falten se añaden en `proyectos` y aparecem solos.
+ * Hay dos proyectos de software en `proyectos` y un tercero de robótica en
+ * `robotica.proyectos` (RAF VESTIGIA), que se muestra en su propia sección.
+ * El contador de Estadísticas suma los tres; el aviso de abajo lo explica
+ * para que la cifra y lo que se ve en pantalla sean coherentes.
  */
 ---
 
@@ -32,5 +34,10 @@ import ProyectoCard from './ProyectoCard.astro';
         ))
       }
     </div>
+
+    <p class="proyectos__nota">
+      El tercer proyecto del contador es <a href="#robotica">RAF VESTIGIA</a>,
+      un proyecto de robótica que se presenta en su propia sección.
+    </p>
   </div>
 </section>
