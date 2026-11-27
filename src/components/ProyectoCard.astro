@@ -36,9 +36,6 @@ const esResumen = variante === 'resumen';
 const imagenSrc = proyecto.imagen
   ? withBase(proyecto.imagen.startsWith('/') ? proyecto.imagen : `/${proyecto.imagen}`)
   : undefined;
-const diagramaSrc = proyecto.diagrama
-  ? withBase(proyecto.diagrama.startsWith('/') ? proyecto.diagrama : `/${proyecto.diagrama}`)
-  : undefined;
 const nombreArchivo = proyecto.titulo
   .toLowerCase()
   .normalize('NFD')
@@ -46,7 +43,6 @@ const nombreArchivo = proyecto.titulo
   .replace(/[^a-z0-9]+/g, '-')
   .replace(/^-|-$/g, '');
 const rutaCaptura = `/img/proyectos/${nombreArchivo}.webp`;
-const rutaDer = `/img/proyectos/${nombreArchivo}-der.webp`;
 const stackPrincipal = proyecto.stack?.slice(0, 3) ?? [];
 const tecnologiasVisibles = esResumen ? stackPrincipal : (proyecto.stack ?? []);
 const senaEnEstado = proyecto.estado?.includes('SENA') ? 'SENA' : undefined;
@@ -93,41 +89,22 @@ const hayDetalles = Boolean(
         }
       </div>
     ) : (
-      <div class="project-card__media project-card__media--caso">
-        <div class="project-card__media-panel">
-          {
-            imagenSrc ? (
-              <img
-                class="project-card__img"
-                src={imagenSrc}
-                alt={`Captura de ${proyecto.titulo}`}
-                loading={destacada ? 'eager' : 'lazy'}
-                decoding="async"
-              />
-            ) : (
-              <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaCaptura}>
-                <span class="project-card__slot-text">Sin imagen publicada</span>
-              </div>
-            )
-          }
-        </div>
-        <div class="project-card__media-panel">
-          {
-            diagramaSrc ? (
-              <img
-                class="project-card__img"
-                src={diagramaSrc}
-                alt={`Diagrama Entidad-Relación de ${proyecto.titulo}`}
-                loading="lazy"
-                decoding="async"
-              />
-            ) : (
-              <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaDer}>
-                <span class="project-card__slot-text">Sin diagrama publicado</span>
-              </div>
-            )
-          }
-        </div>
+      <div class="project-card__media">
+        {
+          imagenSrc ? (
+            <img
+              class="project-card__img"
+              src={imagenSrc}
+              alt={`Captura de ${proyecto.titulo}`}
+              loading={destacada ? 'eager' : 'lazy'}
+              decoding="async"
+            />
+          ) : (
+            <div class="project-card__slot" aria-hidden="true" data-imagen-path={rutaCaptura}>
+              <span class="project-card__slot-text">Sin imagen publicada</span>
+            </div>
+          )
+        }
       </div>
     )
   }

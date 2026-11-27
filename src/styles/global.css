@@ -3205,20 +3205,6 @@ section[id] {
   display: block;
 }
 
-.project-card__media--caso {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--line);
-}
-
-.project-card__media-panel {
-  position: relative;
-  min-width: 0;
-  overflow: hidden;
-  background: var(--bg);
-}
-
 /* Hueco vacio: se queda en silencio a proposito. Sin rayas ni iconos: solo
    una linea de monoespaciada con dos filetes a los lados, como una linea
    editorial. Un hueco debe leerse como "aun sin captura", no como error. */
@@ -3253,13 +3239,6 @@ section[id] {
   width: 26px;
   height: 1px;
   background: color-mix(in srgb, var(--muted) 42%, transparent);
-}
-
-.project-card__media--caso .project-card__slot-text {
-  font-size: 0.54rem;
-  letter-spacing: 0.8px;
-  white-space: normal;
-  text-align: center;
 }
 
 /* --- Contenido ---

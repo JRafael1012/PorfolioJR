@@ -79,8 +79,6 @@ export interface Proyecto {
   estado?: string;
   /** Ruta dentro de `public/`, por ejemplo `img/proyectos/finovatech.webp`. */
   imagen?: string;
-  /** Ruta o URL del diagrama Entidad-Relación de la base de datos. */
-  diagrama?: string;
   /** URL del repositorio, o del perfil mientras el repo no esté publicado. */
   repositorio?: string;
   /** URL de la demo publicada. */
@@ -909,10 +907,9 @@ export const stack: Tecnologia[] = [
  * PROYECTOS DE SOFTWARE.
  *
  * Las tres tarjetas tienen `imagen`, descripción, problema, funcionalidades y
- * stack. El hueco del diagrama se conserva hasta que haya un DER real.
+ * stack. No se muestra ningún diagrama.
  *
- * FinovaTech y AutoAlDía enlazan su repo real. Reaction Race no muestra botón
- * GitHub porque no hay repo público. No queda ningún `demoPendiente`.
+ * Las tres tarjetas enlazan su repo real. No queda ningún `demoPendiente`.
  *
  * RAF VESTIGIA vive en `robotica.proyectos`, su sitio natural. No se duplica
  * aquí: la sección "Proyectos" lo señala y el contador de Estadísticas lo suma.
@@ -1035,6 +1032,7 @@ export const proyectos: Proyecto[] = [
       'Web Serial exige localhost o HTTPS; por eso la guía incluye python -m http.server 8000 --bind 127.0.0.1.',
     ],
     stack: ['HTML5', 'CSS3', 'JavaScript', 'LocalStorage', 'Web Serial', 'Arduino', 'C++'],
+    repositorio: 'https://github.com/JRafael1012/-Reaction-Race',
   },
 ];
 
