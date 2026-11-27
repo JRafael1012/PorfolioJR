@@ -909,8 +909,8 @@ export const stack: Tecnologia[] = [
  * PROYECTOS DE SOFTWARE.
  *
  * Las dos tarjetas tienen descripción, problema, funcionalidades, stack y
- * acciones. `imagen` se deja fuera a propósito mientras se suben las capturas:
- * la tarjeta conserva su hueco y el aviso con la ruta pendiente.
+ * acciones. FinovaTech ya tiene `imagen`; en la otra se deja fuera a propósito
+ * mientras se sube la captura: conserva su hueco y el aviso con la ruta pendiente.
  *
  * `repositorio` apunta al perfil en la tarjeta que aún no tiene repo público;
  * FinovaTech ya enlaza su repo real. `demoPendiente` muestra "Demo no publicada"
@@ -962,6 +962,7 @@ export const proyectos: Proyecto[] = [
     titulo: 'FinovaTech',
     destacado: true,
     estado: 'Proyecto final · SENA',
+    imagen: 'img/proyectos/finovatech.jpeg',
     descripcion:
       'Sistema de finanzas personales para estudiantes de bachillerato: registra ingresos y gastos, controla el presupuesto mensual, genera alertas y permite agendar sesiones. Aplicación web con HTML/CSS/JS, Flask y MySQL, desarrollada por RDV Systems.',
     problema:
