@@ -906,10 +906,10 @@ export const stack: Tecnologia[] = [
 /**
  * PROYECTOS DE SOFTWARE.
  *
- * Las cinco tarjetas tienen descripción, problema, funcionalidades y stack;
+ * Las seis tarjetas tienen descripción, problema, funcionalidades y stack;
  * FinovaTech, AutoAlDía y Reaction Race tienen `imagen`. No hay diagramas.
  *
- * Las cinco tarjetas enlazan su repo real. No queda ningún `demoPendiente`.
+ * Las seis tarjetas enlazan su repo real. No queda ningún `demoPendiente`.
  *
  * RAF VESTIGIA vive en `robotica.proyectos`, su sitio natural. No se duplica
  * aquí: la sección "Proyectos" lo señala y el contador de Estadísticas lo suma.
@@ -1110,6 +1110,44 @@ export const proyectos: Proyecto[] = [
     ],
     stack: ['Python', 'Flask', 'MySQL', 'HTML5', 'CSS3', 'JavaScript', 'Git'],
     repositorio: 'https://github.com/JRafael1012/GymControl',
+  },
+  {
+    titulo: 'Nexfin Jr',
+    estado: 'Bot de Telegram · Prototipo',
+    descripcion:
+      'Bot de Telegram en Python que consulta Yahoo Finance y envía reportes de mercado global, S&P 500 y Colombia con gráficos y una recomendación basada en reglas.',
+    problema:
+      'Seguir divisas, criptomonedas, acciones y materias primas en varias fuentes es lento. Nexfin Jr reúne esos datos en un solo reporte periódico con una lectura rápida del mercado.',
+    funcionalidades: [
+      'Comando /start con presentación del asistente financiero',
+      'Reporte cada 30 minutos con USD/COP, EUR/USD, BTC/USD, ETH/USD, oro y petróleo',
+      'Listado del S&P 500 desde Wikipedia con fallback y lista base de la BVC',
+      'Gráfico de barras de variaciones y recomendación según promedios global, S&P 500 y Colombia',
+    ],
+    participacion:
+      'Implementé el bot en Python con python-telegram-bot, yfinance, pandas y matplotlib, incluyendo el cálculo de variaciones, el gráfico y el envío automático al chat.',
+    seguridad: [
+      'Token de Telegram y chat ID se leen desde variables de entorno; no se publican credenciales.',
+      'Las consultas de mercado tienen manejo de excepciones para omitir tickers sin datos sin detener el reporte.',
+      'El fallback del S&P 500 mantiene el reporte operativo si Wikipedia no responde.',
+    ],
+    arquitectura: [
+      'Python con python-telegram-bot para el bot, yfinance para cotizaciones, pandas para tablas y matplotlib para gráficos.',
+      'El listado del S&P 500 se obtiene con pandas.read_html desde Wikipedia y cae a 5 símbolos si falla.',
+      'El gráfico se genera en memoria con BytesIO y se envía como foto al mismo chat.',
+    ],
+    calidad: [
+      'Sintaxis verificada con py_compile en los dos módulos publicados.',
+      'Cada ticker se salta si no tiene dos días de historia, evitando promedios con datos incompletos.',
+      'Documento por fases: base del bot, análisis de noticias, consejero adaptativo e interfaz; las fases IA/web quedan planeadas, no implementadas.',
+    ],
+    bitacora: [
+      'La recomendación compara promedios con un umbral de ±0,5% para indicar oportunidad, cautela o estabilidad.',
+      'HORA_ENVIO aparece desactivada en la configuración; el envío real se controla con el bucle de 30 minutos.',
+      'El documento de fases prevé marca y versión 2.0 en la nube como expansión futura.',
+    ],
+    stack: ['Python', 'Telegram', 'python-telegram-bot', 'yfinance', 'pandas', 'matplotlib'],
+    repositorio: 'https://github.com/JRafael1012/Nexfin-JR',
   },
 ];
 
@@ -1411,7 +1449,7 @@ export const idiomas = [
  * La regla: solo números desprendidos de los datos reales de este archivo, o
  * confirmados por el usuario. Nada de "10+ proyectos" redondeado hacia arriba:
  * si el dato no existe, no se muestra.
- *  · proyectos: `proyectos.length` (5) + `robotica.proyectos.length` (1) = 6.
+ *  · proyectos: `proyectos.length` (6) + `robotica.proyectos.length` (1) = 7.
  *  · añosRobotica: los 6 que ya afirma el subtítulo de `robotica`.
  *  · tecnologiasYHerramientas: `stack.length` = 27, incluidas las que la
  *    cinta separa en "Conocimientos básicos".
