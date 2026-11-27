@@ -906,11 +906,12 @@ export const stack: Tecnologia[] = [
 /**
  * PROYECTOS DE SOFTWARE.
  *
- * Las doce tarjetas tienen descripción, problema, funcionalidades y stack;
+ * Las trece tarjetas tienen descripción, problema, funcionalidades y stack;
  * FinovaTech, AutoAlDía y Reaction Race tienen `imagen`. No hay diagramas.
  *
- * Seis tarjetas enlazan su repo real; las seis prácticas académicas (tres webs
- * y tres scripts Python) no tienen repo público. No queda `demoPendiente`.
+ * Siete tarjetas enlazan su repo real; las seis prácticas académicas (tres webs
+ * y tres scripts Python) no tienen repo público. RDV SYSTEMS también tiene
+ * demo pública. No queda `demoPendiente`.
  *
  * RAF VESTIGIA vive en `robotica.proyectos`, su sitio natural. No se duplica
  * aquí: la sección "Proyectos" lo señala y el contador de Estadísticas lo suma.
@@ -1366,6 +1367,46 @@ export const proyectos: Proyecto[] = [
     ],
     stack: ['Python', 'Tkinter', 'ZoneInfo', 'Requests', 'Threading'],
   },
+  {
+    titulo: 'RDV SYSTEMS — Web corporativa',
+    estado: 'Sitio corporativo · GitHub Pages',
+    descripcion:
+      'Sitio de presentación para RDV SYSTEMS con servicios de presencia digital, software a la medida y soporte TI, precios estimados, portafolio, testimonios y contacto por WhatsApp.',
+    problema:
+      'Un negocio técnico necesita explicar con claridad qué ofrece, cuánto cuesta y cómo contactarlo. La web convierte esa información en una landing completa y adaptable a móvil.',
+    funcionalidades: [
+      'Hero con propuesta de valor, CTA de cotización y cifras del negocio',
+      'Secciones de servicios, precios estimados, para quién, nosotros y proceso',
+      'Portafolio con FinovaTech, Tungig Store y CursoTracker',
+      'Formulario de contacto que abre WhatsApp con honeypot anti-spam y chat flotante',
+    ],
+    participacion:
+      'Desarrollé la web completa en HTML, CSS y JavaScript, con SEO básico, PWA manifest, menú móvil, animaciones y despliegue en GitHub Pages.',
+    seguridad: [
+      'Formulario con honeypot anti-spam: los bots se ignoran sin mostrar error.',
+      'Enlaces externos de WhatsApp usan rel="noopener" y apertura en pestaña nueva.',
+      'Incluye robots.txt y site.webmanifest para indexación e instalación como app.',
+    ],
+    arquitectura: [
+      'HTML semántico con secciones ancladas y CSS minificado en css/style.min.css; la fuente legible está en style.css.',
+      'JavaScript vanilla con IntersectionObserver, menú accesible con aria-expanded y contadores animados.',
+      'Despliegue estático en GitHub Pages mediante workflow de GitHub Actions.',
+    ],
+    calidad: [
+      'Sitio publicado verificado: HTTP 200 en https://rdvsystems1012-oss.github.io/rdvsystems/.',
+      'Favicon en varios tamaños, site.webmanifest y meta tags SEO/Open Graph.',
+      'Las animaciones reveal, contadores y tilt 3D incluyen respeto a prefers-reduced-motion en los contadores.',
+    ],
+    bitacora: [
+      'El formulario arma el mensaje con nombre, negocio y texto antes de abrir WhatsApp.',
+      'El menú móvil actualiza aria-expanded y aria-label al abrir y cerrar.',
+      'El footer muestra el año dinámico y mantiene copyright y redes en una misma línea.',
+    ],
+    stack: ['HTML5', 'CSS3', 'JavaScript', 'GitHub Pages', 'GitHub Actions', 'SEO', 'PWA'],
+    demo: 'https://rdvsystems1012-oss.github.io/rdvsystems/',
+    demoEtiqueta: 'Ver sitio',
+    repositorio: 'https://github.com/rdvsystems1012-oss/rdvsystems',
+  },
 ];
 
 /**
@@ -1666,7 +1707,7 @@ export const idiomas = [
  * La regla: solo números desprendidos de los datos reales de este archivo, o
  * confirmados por el usuario. Nada de "10+ proyectos" redondeado hacia arriba:
  * si el dato no existe, no se muestra.
- *  · proyectos: `proyectos.length` (12) + `robotica.proyectos.length` (1) = 13.
+ *  · proyectos: `proyectos.length` (13) + `robotica.proyectos.length` (1) = 14.
  *  · añosRobotica: los 6 que ya afirma el subtítulo de `robotica`.
  *  · tecnologiasYHerramientas: `stack.length` = 27, incluidas las que la
  *    cinta separa en "Conocimientos básicos".
